@@ -1,0 +1,1162 @@
+﻿<html>
+<head>
+	<title>REPORT SCREEN</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<script type="text/javascript" src="../../htm/js/indecator.js"></script>
+	<script type="text/javascript" src="../../htm/js/paging.js"></script>
+	<script type="text/javascript" src="../../htm/js/base.js"></script>
+	<link type="text/css" href="../../tmpl/css/redmond/jquery-ui-1.8.9.custom.css" rel="stylesheet" />
+	<link type="text/css" href="../../tmpl/css/popup.css" rel="stylesheet" />
+	<script type="text/javascript" src="../../htm/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../../htm/js/jquery-ui-1.8.9.custom.min.js"></script>
+	<script type="text/javascript" src="../../htm/js/jquery.crypt.js"></script>
+	
+	<style type="text/css">
+		body{
+			font-size: 12px;
+		}
+		
+		#outter{
+			width: 1120px;
+			margin: 0 auto;
+			/*margin-top: 20px;*/
+		}
+		
+		#header{
+		//	width:450px;	
+			/*padding-top:15px;*/
+		}
+		
+		#content1{
+			width: 100%;
+		}
+		
+		#content{
+			width: 100%;
+			display: table;
+		}
+		
+		#content1{
+			width: 100%;
+			display: table;
+			clear:both;
+		}
+		
+		#footer{
+			text-align:center;
+			/*margin-top:300px;*/
+			color: #827EB1;
+		}
+		
+		select{
+			height: 22px;
+			margin-top: 2px;
+		}
+		
+		.row{
+			display:table-row;
+			width:100%;
+		}
+		
+		.row:nth-child(even){
+			background-color: rgb(220, 230, 242);
+		}
+		
+		.row:nth-child(odd){
+			background-color:#FFF;
+		}
+		
+		.choose{
+			background-color:pink !important;
+		}
+		
+		/*.even{
+			background-color: #DCE6F2;
+		}*/
+		
+		.row-title{
+			display:table-row;
+			background-color: #17375E;
+			color: #FFFFFF;
+			font-weight:bold;
+		}
+		
+		.mssv, .name,.fromdate,.stt, .address, .ten, .birthday, .email, .cmnd{
+			display: table-cell;
+			vertical-align:middle;
+			border-right: 1px solid #8EB4E3;
+			border-top: 1px solid #8EB4E3;
+			padding-left:4px;
+			padding-top:2px;
+			padding-bottom:2px;
+		}
+		
+		.stt{
+			text-align:center;
+			width:30px;
+			border-left: 1px solid #8EB4E3;
+		}
+		
+		.mssv{
+			text-align: center;
+			width: 80px;
+			padding: 0;
+			margin: 0;
+		}
+		
+		.name{
+			width: 120px;
+		}
+		
+		.email{
+			width: 160px;
+		}
+		
+		.ten{
+			width:50px;
+		}
+		
+		.birthday{
+			width: 60px;
+		}
+		
+		.fromdate{
+			text-align: center;
+			width: 90px;
+		}
+		
+		.cmnd{
+			text-align: center;
+			width: 60px;
+		}
+		
+		.address{
+			width: 160px;
+		}
+		
+		.title{
+			height:34px;
+		}
+		
+		#select{
+			width: 245px;
+			margin-left: 2px;
+			height: 26px;
+		}
+		
+		.inputHeight{
+			height:25px;
+		}
+		
+		.text-center{
+			text-align:center;
+		}
+		
+		.text-left{
+			text-align:left;
+		}
+		
+		.text-right{
+			text-align:right;
+		}
+		
+		.color-title{
+			color:#17375e;
+		}
+			
+		.txt-center{
+			text-align:center;
+		}
+		
+		#indecator{
+			margin-left: 298px;
+			padding-top:5px;
+		}
+		/*header*/
+	.bg-titlemp{
+		color:#c00000;
+	}
+	.mp-title{
+		font-size: 16pt;
+		font-weight: bold;
+		margin: 5px;
+		float:left;
+	}
+	.bg-line{
+		color:#4a7ebb;
+		margin-bottom: 10px;
+	}
+	.bo-bottom{
+		border-bottom: 1px solid #8EB4E3;
+	}
+	a#logout{
+		float: right;
+		font-size: 10px;
+		margin-top: 15px;
+	}
+	.login{
+		color: blue;
+		float: right;
+		font-size: 15px;
+		font-style: italic;
+		font-weight: normal;
+		margin-right: 10px;
+		margin-top: 13px;
+	}
+	
+	
+	
+	.text-center{
+		text-align:center;
+	}
+	
+	.color-title{
+		color:#17375e;
+	}
+	
+	.text-left{
+		text-align:left;
+	}
+	
+	
+	
+	a{
+		color:#000000;
+	}
+	
+	a:hover{
+		color:blue;
+	}
+	
+	a.choose{
+		color: blue;
+		font-weight: bold;
+		text-decoration: underline;
+	}
+	
+	.display{
+		display:block;
+	}
+	.display-none{
+		display:none;
+	}
+	
+	.iconLogin {
+		background: url("../../img/ajax-loader.gif") no-repeat scroll left center transparent;
+		width: 33px;
+		height: 31px;
+		margin-left: 1021px;;
+		margin-top: -4px;
+	}
+	
+	.icon-search{
+		float:left;
+		padding-top: 3px;
+	}
+	
+	.iconArrow {
+		background: url("../../img/arrow.jpg") no-repeat scroll left center transparent;
+		width: 33px;
+		height: 31px;
+		margin: auto;
+		margin-top: -4px;
+	}
+	
+	.iconRed {
+		background: url("../../img/red.PNG") no-repeat scroll left center transparent;
+		width: 33px;
+		height: 31px;
+		margin: auto;
+		margin-top: -4px;
+	}
+	
+	.iconBlue {
+		background: url("../../img/blue.PNG") no-repeat scroll left center transparent;
+		width: 33px;
+		height: 31px;
+		margin: auto;
+		margin-top: -4px;
+	}
+	
+		#password{
+			position: absolute;
+			visibility: hidden;
+			width: 290px;
+			background-color: #DCE6F2;
+			border: 1px solid #8EB4E3;
+			padding: 25px;
+			top: 0;
+			left: 188px;
+		}
+		
+		.overflow{
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			left: 0px;
+			top: 0;
+			background: black;
+			opacity: 0.05;
+		}
+		
+		#pwd{
+			margin-left: 10px;
+			width: 173px;
+			float: left;
+			height: 25px;
+		}
+		
+		#scroll{
+			/*overflow-y: scroll;*/
+			max-height: 358px;
+			overflow-x: hidden;
+		}
+		
+		/*paging*/
+		#footer{
+		
+		}
+		
+		#footer-content{
+			margin-left: 460px;
+			margin-top: 5px;
+		}
+		
+		#footer-content .float-left{
+			border: medium none;
+			width: 15px;
+			float:left;
+		}
+		
+		.page{
+			left: 91px;
+			position: absolute;
+			top: 214px;
+			visibility: hidden;
+			width:1099px;
+		}
+		
+		.color-paging{
+			color:blue;
+		}
+		
+		.paging{
+			font-size:12pt;
+			font-weight:bold;
+		//	color:blue;
+		}
+		
+		.select-paging{
+			color:blue;
+			font-weight:bold;
+			text-decoration: underline;
+		}
+		
+		.none-select-paging{
+			color:#000000;
+			font-weight:none;
+		}
+		
+		.first, .last{
+			margin: 0 5px;
+		}
+		
+		.none-display{
+			display:none;
+		}
+		
+		form{
+			margin-bottom: 0;
+		}
+		
+		.cursor{
+			cursor: pointer;
+		}
+		
+		.red{
+			background-color:red !important;
+		}
+		
+		.yellow{
+			background-color:yellow !important;
+			/*color:red;*/
+		}
+	</style>
+	
+	<script type="text/javascript">
+		//HienHuynh 300811 Set default value for paging
+		var DEFAULT_ROW_PAGING = 10;
+		//End
+	
+		var dataSearch = "";
+		var page = 1;
+		var lag=false; //Co dung de cho biet da set paging chua
+		
+		var dat = '';
+		var dataSearch = '';
+		var subjectID = '';
+		var departmentID = '';
+		var stt='';
+		var clickedRow = '';
+		
+		function addClick(row){
+		//	alert(row.id);
+		//	alert(clickedRow);
+			//Tra lai mau cho dong vua click truoc do
+			if(clickedRow!=''){
+			//	alert(1);
+				removeClass(document.getElementById(clickedRow.id),'choose');
+			}
+			clickedRow = row;
+			//đổi màu cho dòng vừa click
+			addClass(document.getElementById(row.id),'choose');
+		}
+		
+		function getRowSelected(){
+			var strJson = "";
+			strJson = '{';
+			
+			var rowList = document.getElementsByClassName('choose');
+			strJson += '"Result":[';
+			for(var j=0;j<rowList.length;j++){
+				var divid = new String(rowList[j].id);
+				
+				if(divid.indexOf('r')==0){
+					var numberID = divid.replace(/r/g, "");
+					//alert(numberID);
+					//alert(dataSearch[numberID].isCreate);
+					var report = document.getElementById(divid);
+					strJson += '{';
+					strJson += '"staffID":"' + dataSearch[numberID].Code + '",';
+					strJson += '"firstName":"' + dataSearch[numberID].FirstName  + '",';
+					strJson += '"middleName":"' + dataSearch[numberID].MiddleName + '",';
+					strJson += '"lastName":"' + dataSearch[numberID].LastName + '",';
+					strJson += '"dateBirth":"' + dataSearch[numberID].DateBirth + '",';
+					strJson += '"monthBirth":"' + dataSearch[numberID].MonthBirth + '",';
+					strJson += '"yearBirth":"' + dataSearch[numberID].YearBirth + '",';
+					strJson += '"email":"' + dataSearch[numberID].Email + '",';
+					strJson += '"department":"' + dataSearch[numberID].Department + '",';
+					strJson += '"departmentID":"' + dataSearch[numberID].DepartmentID + '",';
+					strJson += '"departmentCode":"' + dataSearch[numberID].DepartmentCode + '",';
+					strJson += '"isPublicEmail":"' + dataSearch[numberID].isPublicEmail + '",';
+					strJson += '"isCreate":"' + dataSearch[numberID].isCreate + '"';
+				
+				}
+				if(j==rowList.length-1){
+					strJson += '}';
+				}else{
+					strJson += '},';
+				}
+			}
+			
+		//	alert(strJson);
+			var str = new String(strJson);
+			strJson = str.substr(0,str.length-1) + '}]}';
+			strJson = strJson.replace(/&/g, "%26");
+			strJson = strJson.replace(/\+/g, "%2B");
+			
+			return strJson;
+		}
+		
+		function resetStt(){
+			var temp1 = document.getElementsByClassName('row');
+			
+			for(i=0;i<temp1.length; i++){
+				var divid = new String(temp1[i].id);
+				if(divid.indexOf('r')==0){
+					document.getElementById(divid)[0].innerHTML = (i+1);
+				}
+			}
+			
+		}
+		
+		function deleteRowChoose(){
+			var table = document.getElementById('content');
+			var rowList = document.getElementsByClassName('choose');
+			for(j=rowList.length-1;j>=0;j--){
+				table.removeChild(rowList[j]);
+			}
+			//resetStt();
+		}
+		
+		function ajaxExportCSVFile() {
+			var url = "ajaxExportCSVFile.htm";
+			
+			var queryString = "info="+getRowSelected();
+			//alert(queryString);exit();
+			
+			if(document.getElementById('checkAll').value==1 || queryString!=''){
+				queryString += "&checkAll="+document.getElementById('checkAll').value;
+		
+				htmlRequest = ajaxFunction();
+				if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+					alert ("Browser does not support HTTP Request");
+					return;
+				}
+				htmlRequest.onreadystatechange = function(){
+					if(htmlRequest.readyState == 4){
+					//	alert(htmlRequest.responseText);
+						if(trim(htmlRequest.responseText)!= ''){
+							deleteRowChoose();
+							alert(htmlRequest.responseText);
+						}
+					}
+				}
+				
+				htmlRequest.open("POST", url,true);
+				htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+					
+				htmlRequest.send(queryString);
+			}else{
+				alert("Please choose the export record.");
+			}
+		}
+		
+		function getDataSearch(){
+			var strDataSearch = "";
+		
+			if(document.getElementById('userName').value){
+				strDataSearch = '&FullName='+document.getElementById('userName').value;
+			}
+			if(document.getElementById('userID').value){
+				strDataSearch += '&StaffID='+document.getElementById('userID').value;
+			}
+			
+			if(document.getElementById('userEmail').value){
+				strDataSearch += '&SchoolEmail='+document.getElementById('userEmail').value;
+			}
+			
+			if(departmentID!='' && departmentID!=0){
+				strDataSearch += '&department='+departmentID;
+			}
+			
+			if(document.getElementById('fromcreatecontractdate').value){
+				strDataSearch += '&FromCreateContractDate='+document.getElementById('fromcreatecontractdate').value;
+			}
+			
+			if(document.getElementById('tocreatecontractdate').value){
+				strDataSearch += '&ToCreateContractDate='+document.getElementById('tocreatecontractdate').value;
+			}
+			
+			if(document.getElementById('fromexpirecontractdate').value){
+				strDataSearch += '&FromExpireContractDate='+document.getElementById('fromexpirecontractdate').value;
+			}
+			
+			if(document.getElementById('toexpirecontractdate').value){
+				strDataSearch += '&ToExpireContractDate='+document.getElementById('toxpirecontractdate').value;
+			}
+			
+			if(document.getElementById('createstaffdate').value){
+				strDataSearch += '&CreateDate='+document.getElementById('createstaffdate').value;
+			}
+			
+			return strDataSearch;
+		}
+		
+		function ajaxLoadListSV() {
+			var content = document.getElementById('content');
+			removeContent(content);
+			
+			document.getElementById('searchBut').disabled = true;
+
+			addClass(document.getElementById('iconSearch'),'display-none');
+			removeClass(document.getElementById('iconLogin'),'display-none');
+			
+			var url = "ajaxLoadListImportedRows.htm";
+			
+			var data = getDataSearch();
+		//	alert(data);
+			var queryString = "";
+			queryString += data;
+		//	alert(queryString);
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			htmlRequest.onreadystatechange = function(){
+				if(htmlRequest.readyState == 4){
+				//	alert(htmlRequest.responseText);
+					if(trim(htmlRequest.responseText)!= 'NG'){
+						dataSearch = trim(htmlRequest.responseText);
+				
+						dataSearch = eval('(' + dataSearch + ')');
+						dataSearch = dataSearch.Result;
+						search();
+					}else{
+						dataSearch.Result = '';
+						search();
+					}
+					document.getElementById('searchBut').disabled = false;
+					addClass(document.getElementById('iconLogin'),'display-none');
+					removeClass(document.getElementById('iconSearch'),'display-none');
+				}
+			}
+			
+			htmlRequest.open("POST", url,true);
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				
+		//	htmlRequest.setRequestHeader("Content-length", queryString.length);
+		//	htmlRequest.setRequestHeader("Connection", "close");
+			htmlRequest.send(queryString);
+		//	htmlRequest.send(null);
+			
+		}
+		
+		function changeOption(f,type){
+			/*if(type==1){
+				subjectID = f.subject.options[f.subject.selectedIndex].value;
+				
+				subNameList=dat.subList;
+				for(var i=0; i< subNameList.length; i++){
+					if(subNameList[i].RecordID == subjectID){
+						departmentID = subNameList[i].DepartmentID;
+					}
+				}
+				
+				var frm_dep = document.getElementById('department');
+				frm_dep.value = departmentID;
+			}else */if(type==2){
+				departmentID = f.department.options[f.department.selectedIndex].value;
+				stt=1;
+				//loadSubject(departmentID);
+			}
+		}
+		
+		function submitForm(idRow)
+		{
+		//	alert(idRow);
+		//	alert('staff_form_'+idRow.id);
+		//	storeClickedRow(idRow); 
+			if('{val update}' > 1){
+				addClick(idRow);
+				document.getElementById('staff_form_'+idRow.id).target='_blank';
+				document.getElementById('staff_form_'+idRow.id).submit();
+			}
+		}
+		
+		function search(){
+		//	alert(stt);
+		//	var number = stt;
+		
+			var content = document.getElementById('content');
+		//	removeContent(content);
+			
+			var ResNum = dataSearch.Result.length;
+			var id = 0;
+			
+			for(var i=0;i<ResNum;i++)
+			{
+				var row = document.createElement('div');
+				row.onclick = Function("submitForm(r"+stt+");");
+				row.setAttribute('id','r'+stt);
+				//row.setAttribute('onBlur',"cursorEnable();");
+				row.setAttribute('class','row cursor');
+				if(dataSearch.Result[i].isExpire==1){
+					addClass(row,'yellow');
+				}
+				if(dataSearch.Result[i].isExpired==1){
+					addClass(row,'red');
+				}
+				/*if(i%2)
+				{
+					row.setAttribute('class','row even');
+				}else{
+					row.setAttribute('class','row');
+				}*/
+					
+					//STT
+					var STT = document.createElement('div');
+					STT.setAttribute('class','stt');
+					//STT.setAttribute('onclick',"addClick("+stt+")");
+					STT.innerHTML = stt;
+				//	number++;
+					if((i+1)==ResNum){
+						STT.setAttribute('class','stt bo-bottom');
+					}
+					
+					//StaffID
+					var MSSV = document.createElement('div');
+					MSSV.setAttribute('class','mssv');
+					if((i+1)==ResNum){
+						MSSV.setAttribute('class','mssv bo-bottom');
+					}
+					
+					var link = document.createElement('a');
+					link.setAttribute('target',"_blank");
+					link.innerHTML =  dataSearch.Result[i].StaffID;
+					
+					var form = document.createElement('form');
+					form.setAttribute('id',"staff_form_r"+stt);
+					form.setAttribute('action',"detailInfoStaff.htm");
+					form.setAttribute('method',"POST");
+					form.setAttribute('name',"staff");
+					
+					var StaffForm = document.createElement('input');
+					StaffForm.setAttribute('name',"staffID");
+					StaffForm.setAttribute('type',"hidden");
+					StaffForm.value = dataSearch.Result[i].StaffID;
+					
+					form.appendChild(StaffForm);
+					
+					MSSV.appendChild(form);
+					MSSV.appendChild(link);
+
+					//LastName
+					var FirstName = document.createElement('div');
+					FirstName.setAttribute('class','name text-left');
+					FirstName.setAttribute('style','width:50px');
+				//	FirstName.setAttribute('onclick',"addClick("+dataSearch.Result[i].StaffID+")");
+					if((i+1)==ResNum){
+						FirstName.setAttribute('class','name text-left bo-bottom');
+					}
+					FirstName.innerHTML = dataSearch.Result[i].LastName;
+					
+					//MiddleName
+					var MiddleName = document.createElement('div');
+					MiddleName.setAttribute('class','name text-left');
+				//	MiddleName.setAttribute('onclick',"addClick("+dataSearch.Result[i].StaffID+")");
+					if((i+1)==ResNum){
+						MiddleName.setAttribute('class','name text-left bo-bottom');
+					}
+					MiddleName.setAttribute('style','width:100px');
+					MiddleName.innerHTML = dataSearch.Result[i].MiddleName;
+					
+					//FirstName
+					var LastName = document.createElement('div');
+					LastName.setAttribute('class','ten text-left');
+					LastName.innerHTML = dataSearch.Result[i].FirstName;
+				//	LastName.setAttribute('onclick',"addClick("+dataSearch.Result[i].StaffID+")");
+					if((i+1)==ResNum){
+						LastName.setAttribute('class','ten text-left bo-bottom');
+					}
+					LastName.setAttribute('style','width:50px');
+					
+					//DateBirth
+					var DateBirth = document.createElement('div');
+					DateBirth.setAttribute('class','birthday text-center');
+				//	DateBirth.setAttribute('onclick',"addClick("+dataSearch.Result[i].StaffID+")");
+					if((i+1)==ResNum){
+						DateBirth.setAttribute('class','birthday bo-bottom text-center');
+					}
+					if(dataSearch.Result[i].BirthDate!=''&&dataSearch.Result[i].BirthDate!=0){
+						DateBirth.innerHTML = dataSearch.Result[i].BirthDate;
+					}else{
+						DateBirth.innerHTML = '';
+					}
+					
+					//MonthBirth
+					var MonthBirth = document.createElement('div');
+					MonthBirth.setAttribute('class','birthday text-center');
+				//	MonthBirth.setAttribute('onclick',"addClick("+dataSearch.Result[i].StaffID+")");
+					if((i+1)==ResNum){
+						MonthBirth.setAttribute('class','birthday bo-bottom text-center');
+					}
+					if(dataSearch.Result[i].BirthMonth!=''&&dataSearch.Result[i].BirthMonth!=0){
+						MonthBirth.innerHTML = dataSearch.Result[i].BirthMonth;
+					}else{
+						MonthBirth.innerHTML = '';
+					}
+					
+					//YearBirth
+					var YearBirth = document.createElement('div');
+					YearBirth.setAttribute('class','birthday text-center');
+				//	YearBirth.setAttribute('onclick',"addClick("+dataSearch.Result[i].StaffID+")");
+					if((i+1)==ResNum){
+						YearBirth.setAttribute('class','birthday bo-bottom text-center');
+					}
+					if(dataSearch.Result[i].BirthYear!=''&&dataSearch.Result[i].BirthYear!=0){
+						YearBirth.innerHTML = dataSearch.Result[i].BirthYear;
+					}else{
+						YearBirth.innerHTML = '';
+					}
+				/*	//CMND
+					var CMND = document.createElement('div');
+					CMND.setAttribute('class','cmnd');
+					if((i+1)==ResNum){
+						CMND.setAttribute('class','cmnd bo-bottom');
+					}
+					CMND.innerHTML = dataSearch.Result[i].CMND;
+					
+					
+					//Phone
+					var Phone = document.createElement('div');
+					Phone.setAttribute('class','fromdate');
+					if((i+1)==ResNum){
+						Phone.setAttribute('class','fromdate bo-bottom');
+					}
+					Phone.innerHTML = dataSearch.Result[i].Phone;
+					
+					//Mobile
+					var Mobile = document.createElement('div');
+					Mobile.setAttribute('class','fromdate');
+					if((i+1)==ResNum){
+						Mobile.setAttribute('class','fromdate bo-bottom');
+					}
+					Mobile.innerHTML = dataSearch.Result[i].Mobile;*/
+					
+					//Email
+					var Email = document.createElement('div');
+					Email.setAttribute('class','email text-left');
+				//	Email.setAttribute('onclick',"addClick("+dataSearch.Result[i].StaffID+")");
+					if((i+1)==ResNum){
+						Email.setAttribute('class','email text-left bo-bottom');
+					}
+					Email.innerHTML = dataSearch.Result[i].SchoolEmail;
+					
+					//EmailTruong
+				/*	var EmailTruong = document.createElement('div');
+					EmailTruong.setAttribute('class','email text-left');
+					if((i+1)==ResNum){
+						EmailTruong.setAttribute('class','email text-left bo-bottom');
+					}
+					EmailTruong.innerHTML = dataSearch.Result[i].EmailTruong;*/
+
+					//Department
+					var Department = document.createElement('div');
+					Department.setAttribute('class','address text-left');
+				//	Department.setAttribute('onclick',"addClick("+dataSearch.Result[i].StaffID+")");
+					if((i+1)==ResNum){
+						Department.setAttribute('class','address text-left bo-bottom');
+					}
+					//Department.innerHTML = dat.depList[dataSearch.Result[i].DepartmentID-1].FullName;
+					Department.innerHTML = dataSearch.Result[i].DepartmentName;
+					/*var deleteImg = document.createElement('div');
+					deleteImg.setAttribute('id','del-'+row.RecordID);
+					deleteImg.setAttribute('class','iconDelete');
+					deleteImg.setAttribute('onClick',"deleteRow('"+dataSearch[i].RecordID+"')");
+					td.appendChild(deleteImg);
+					tr.appendChild(td);*/
+					
+				/*	//check button
+					var checkbtn = document.createElement('input');
+					checkbtn.setAttribute('id','check-'+dataSearch[i].RecordID);
+					checkbtn.setAttribute('hidden','');
+					checkbtn.value=0;*/
+					
+				row.appendChild(STT);
+				row.appendChild(MSSV);
+				row.appendChild(FirstName);
+				row.appendChild(MiddleName);
+				row.appendChild(LastName);
+				row.appendChild(DateBirth);
+				row.appendChild(MonthBirth);
+				row.appendChild(YearBirth);
+			//	row.appendChild(CMND);
+			//	row.appendChild(Phone);
+			//	row.appendChild(Mobile);
+				row.appendChild(Email);
+			//	row.appendChild(EmailTruong);
+				row.appendChild(Department);
+			//	row.appendChild(checkbtn);
+				
+				content.appendChild(row);
+				stt=stt+1;
+			}
+		//	delete(number);
+		}
+		
+		function process(){
+			if('{val add}' > 0){
+				removeClass(document.getElementById('addUser'),'display-none');
+			}
+			if('{val reset}' > 0){
+				removeClass(document.getElementById('resetUser'),'display-none');
+			}
+		}
+		
+		function loadDepartmentList(){
+			var url = "ajaxLoadDepartmentList.htm";
+			queryString = "";
+			
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			htmlRequest.onreadystatechange = function(){
+				if(htmlRequest.readyState == 4){
+					//alert(htmlRequest.responseText);
+					dat = htmlRequest.responseText;
+				
+					dat = eval('(' + dat + ')');
+					
+					loadDepartment(dat);
+				}
+			}
+			
+			htmlRequest.open("POST", url,true);
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			htmlRequest.send(queryString);
+		}
+		
+		function loadDepartment(dat){
+			//alert(dat.depList);
+			stt = 1;
+			var department = document.getElementById("department");
+			department.innerHTML = "";
+			
+			var option = document.createElement('option');
+			option.innerHTML = "--Choose Department --";
+			option.value=0;
+			department.appendChild(option);
+			
+			if(dat!=''){
+				depNameList=dat.depList;
+				
+				for(var i=0; i< depNameList.length; i++){
+					var option = document.createElement('option');
+					option.innerHTML =  depNameList[i].Code + "-" + depNameList[i].FullName;
+					option.value =  depNameList[i].RecordID;
+					department.appendChild(option);
+				}
+			}
+		}
+		
+		function loadAjax(page) {
+			document.getElementById("total").innerHTML = "0";
+			stt=page*DEFAULT_ROW_PAGING-DEFAULT_ROW_PAGING+1;
+			clickedRow='';
+			var content = document.getElementById('content');
+			removeContent(content);
+			
+			document.getElementById('searchBut').disabled = true;
+			
+			var data = getDataSearch();
+			
+			queryString = "";
+			queryString += "page="+page;
+			if(data != ""){
+				queryString += data;
+			}
+			
+			
+			if(page==1){
+				if(document.getElementById("footer").innerHTML!=''){
+					document.getElementById("footer-content").innerHTML='';
+					lag=false;
+				}
+				stt=1;
+			}
+
+			var url = "ajaxLoadListStaff.htm";
+			// Start: Indecator
+			run=0;//indecator
+			document.getElementById('indecator').setAttribute('style','display:block;');
+			doload();
+			//exit();
+			//end
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			} 
+
+			htmlRequest.onreadystatechange = function(){
+				if(htmlRequest.readyState == 4){
+					//alert(htmlRequest.responseText);exit();
+					if(trim(htmlRequest.responseText)!='NG'){
+						dataSearch = htmlRequest.responseText;
+						dataSearch = eval('(' + dataSearch + ')');
+						
+						if(dataSearch!=""){							
+							if(dataSearch.Count<=1){
+								document.getElementById("total").innerHTML = dataSearch.Count+" employee";
+							}else{
+								document.getElementById("total").innerHTML = dataSearch.Count+" employees";
+							}
+							if(page==1&&lag==false){
+								setPaging(dataSearch);
+								lag=true;
+							}
+							search();
+							
+							if(page!=1){
+								//HienHuynh 300811: set color for FirstPage
+									if(document.getElementById('first')!==null){
+										removeClass(document.getElementById('first'),'color-paging');
+									}
+								//End
+								clickPaging(page);
+							}else{
+								//HienHuynh 300811: set color for FirstPage
+								if(document.getElementById('pre')!==null){
+									addClass(document.getElementById('pre'),'none-display');
+								}
+								
+								if(document.getElementById('first')!==null){
+									addClass(document.getElementById('first'),'color-paging');
+								}
+								//End
+								oldPage='C1';
+							}
+						}
+					}
+					loaded();
+					document.getElementById('searchBut').disabled = false;
+				}
+			}
+			
+			htmlRequest.open("POST", url,true);
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			htmlRequest.send(queryString);
+		}
+		
+		$(document).ready(function(){
+			$("#checkAll").click(function(){
+				var report = document.getElementById("content");
+				//alert(report);
+				if(report.hasChildNodes()){
+					for(i=0; i<report.childNodes.length;i++){
+						var divid = new String(report.childNodes[i].id);
+						if(divid.indexOf('r') ==0){
+							var numberID = divid.replace(/r/g,"");
+							addClick(numberID);
+							delete(numberID);
+						}
+						delete(divid);
+					}
+				}
+			});
+			$("#fromexpirecontractdate").datepicker({
+				changeMonth: true,
+				changeYear: true,
+				currentText: 'Now',
+				dateFormat: 'yy-mm-dd',
+				yearRange : ('-70:+10'),
+				dayNamesShort:['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+			});
+			$("#fromexpirecontractdate").click(function(){$("#fromexpirecontractdate").val('');});
+			$("#toexpirecontractdate").datepicker({
+				changeMonth: true,
+				changeYear: true,
+				currentText: 'Now',
+				dateFormat: 'yy-mm-dd',
+				yearRange : ('-70:+10'),
+				dayNamesShort:['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+			});
+			$("#toexpirecontractdate").click(function(){$("#toexpirecontractdate").val('');});
+			
+			
+			$("#createstaffdate").datepicker({
+				changeMonth: true,
+				changeYear: true,
+				currentText: 'Now',
+				dateFormat: 'yy-mm-dd',
+				yearRange : ('-70:+10'),
+				dayNamesShort:['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+			});
+			$("#createstaffdate").click(function(){$("#createstaffdate").val('');});
+			
+			$("#fromcreatecontractdate").datepicker({
+				changeMonth: true,
+				changeYear: true,
+				currentText: 'Now',
+				dateFormat: 'yy-mm-dd',
+				yearRange : ('-70:+10'),
+				dayNamesShort:['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+			});
+			$("#fromcreatecontractdate").click(function(){$("#fromcreatecontractdate").val('');});
+			
+			$("#tocreatecontractdate").datepicker({
+				changeMonth: true,
+				changeYear: true,
+				currentText: 'Now',
+				dateFormat: 'yy-mm-dd',
+				yearRange : ('-70:+10'),
+				dayNamesShort:['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+			});
+			$("#tocreatecontractdate").click(function(){$("#tocreatecontractdate").val('');});
+		});
+	</script>
+</head>
+<body style="overflow-y:hidden" onload="getCookiesUser();process();loadDepartmentList();">
+	<!--use for cookie-->
+	<input id="UserID" hidden value={val userId} />
+	<input id="StartTime" hidden value={val userLoginTime} />
+	
+<div id="outter">
+		<div><a href="logout.htm" id="logout">Logout</a><div class="login"><b>{val userName}</b> {val userLoginTime}</div>
+		<div style="float: left;"><img src="../../img/logo.PNG"/></div>
+		<div class="bo-bottom bg-line" style="float: right;width:1000px;">
+			<div class="bg-titlemp mp-title">TRƯỜNG ĐẠI HỌC QUỐC TẾ MIỀN ĐÔNG<br><span style="font-size: 13pt;color: #1C1757;padding-left: 46px;">EASTERN INTERNATIONAL UNIVERSITY</span></div>
+			<div class="" id=""><img src="../../img/changepassicon.jpg" title="Change Password User" onClick="back('changePasswordDetail')" style="cursor:pointer;float: right;padding-top: 10px;width:45px;" /></div>
+			<div class="display-none" id="addUser"><img src="../../img/icon_add_user.jpg" title="Add a new staff" onClick="back('addDetailInfoStaff')" style="cursor:pointer;float: right;padding-top: 10px;width:45px;" /></div>
+			<div class="display-none" id="resetUser"><img src="../../img/icon-reset-email.jpg" title="Reset password email" onClick="back('emailpage')" style="cursor:pointer;float: right;padding-top: 10px;width:45px;" /></div>
+		</div>
+		
+		<div id="content1" style="margin: 0 auto;clear:both">
+			<div class="text-center color-title"><h1>LIST STAFF INFORMATION</h1><h2>Total: <span style="color:red" id="total">0</span></h2></div>
+			<div style="margin:10px 0">
+				<div>
+					<a href="mainpage.htm">MAIN PAGE</a>
+					>>
+					<a href="importEmailStaff.htm">UPLOAD FILES</a>
+				</div>
+			</div>
+			<div id="header">
+				<div style="float:left">
+					<input style="width:100px;" type="text" onclick="this.value=''" placeholder="Staff ID" value='' name='userID' id='userID'/>
+					<input style="width:100px;" type="text" onclick="this.value=''" placeholder="User Name" value='' name='userName' id='userName'/>
+					<input style="width:100px;" type="text" onclick="this.value=''" placeholder="Email" value='' name='userEmail' id='userEmail'/>
+					<input type="text" id="createstaffdate" class="month" value="" placeholder="Create Staff Date" size="22" />
+				</div>
+				<div>
+					<!--<div style="float:left;">
+						<form action="no_value">
+							<select name="subject" id="subject" onchange="changeOption(this.form,1)"></select>
+						</form>
+					</div>-->
+					<div style="float:left;">
+						<form action="no_value">
+							<select name="department" id="department" onchange="changeOption(this.form,2)"></select>
+						</form>
+					</div>
+					<div style="float:left;">
+						<input type="submit" value='Search' id='searchBut' onclick="loadAjax(1);"/>
+					</div>
+					<div id="iconSearch" class="iconSearch"><img style="float:left;width: 20px;margin-top: 3px;" src="../../img/icon_search.png" /></div>
+					<div id="indecator" style="display:none;">
+						<form name="clkform" action="javascript:void(0);">
+							<input name="clk" size="25" style="background-color: transparent;border: medium none;color: #C00000;font-size: 10px;font-weight: bold;margin-left: 5px;" type="text" value="Loading ----" />
+						</form>
+					</div>
+					
+			</div>
+			<div id="advanceSearch" style="clear:both">
+				<div>
+					<!-- <label style="font-size: 12pt;margin-right: 2px;">Create Contract Date</label> --><input style="margin:0" size="22" type="text" id="fromcreatecontractdate" class="month" value="" placeholder="From Create Contract Date"/>
+					<input type="text" id="tocreatecontractdate" class="month" value="" placeholder="To Create Contract Date" size="22" />
+					<!-- <label style="font-size: 12pt;margin-left: 10px;">Expire Contract Date</label> --><input size="22" type="text" id="fromexpirecontractdate" class="month" value="" placeholder="From Expire Contract Date"/>
+					<input size="22" type="text" id="toexpirecontractdate" class="month" value="" placeholder="To Expire Contract Date"/>
+				</div>
+			</div>
+		</div>
+		<div id="content1">
+			<div id="titleContent" class="row-title">
+				<div style="width:40px; border-right:none;" class="stt title txt-center">No.</div>
+				<div style="width:125px; border-right:none;" class="mssv txt-center">Staff ID</div>
+				<div style="width:64px; border-right:none;" class="name txt-center">Last Name</div>
+				<div style="width:137px; border-right:none;" class="name txt-center">Middle Name</div>
+				<div style="width:64px; border-right:none;" class="ten txt-center">First Name</div>
+				<div style="width:81px; border-right:none;" class="birthday txt-center">Date Birth</div>
+				<div style="width:80px; border-right:none;" class="birthday txt-center">Month Birth</div>
+				<div style="width:80px; border-right:none;" class="birthday txt-center">Year Birth</div>
+			<!--	<div class="cmnd txt-center">CMND</div>
+				<div class="fromdate txt-center">Điện Thoại</div>
+				<div class="fromdate txt-center">Di Động</div>-->
+				<div style="width:250px; border-right:none;" class="email txt-center">Email</div>
+			<!--	<div class="email txt-center">Email Trường</div>-->
+				<div style="width:204px; border-right:none;"class="address txt-center">Department Name</div>
+				<!-- <div style="width:50px;" class="email txt-center"><input id="checkAll" type=checkbox /></div> -->
+			</div>
+		</div>
+		<div id="scroll">
+			<div id="content"></div>
+		</div>
+		<div id="footer">
+			<div id="footer-content"></div>
+		</div>
+		<div style="text-align:center;color: #827EB1;clear:both;margin-top:100px">@Copyright Office of Information Technology<br>it@eiu.edu.vn</div>
+</div>
+</html>

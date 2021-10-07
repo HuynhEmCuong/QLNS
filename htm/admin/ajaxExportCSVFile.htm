@@ -1,0 +1,113 @@
+<?php
+	header('Content-Type: text/html; charset=utf-8');
+	session_start();
+	
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	require_once (EIU_CLASS.'EmailClass.htm');
+
+	$info = json_decode($_POST['info'],true);
+//	print_r($info);
+	
+	$arrFileCsv = '';
+	$num = 0;
+	foreach($info['Result'] as $key=>$value){
+		if($value['isCreate']==1){
+			$arr_value = createNewEmail($value);
+			if($arr_value!='NG'){
+				$arrFileCsv[$num]['email'] = $arr_value['email'];
+				$arrFileCsv[$num]['lastName'] = $arr_value['firstName'];
+				$arrFileCsv[$num]['firstmiddleName'] = $arr_value['lastName']." ".$arr_value['middleName'];
+				$arrFileCsv[$num]['staffID'] = "pwd".$arr_value['code'];
+				$num++;
+			}
+		}else{
+			$arrFileCsv[$num]['email'] = $value['email'];
+			$arrFileCsv[$num]['lastName'] = $value['firstName'];
+			$arrFileCsv[$num]['firstmiddleName'] = $value['lastName']." ".$value['middleName'];
+			if(empty($value['staffID'])){
+				$arrStaff = selectALlTable("`StaffID`", "`staff_tbl`", "`isDeleted`=0 AND `SchoolEmail` LIKE '".$value['email']."'");
+				$value['staffID'] = $arrStaff[0]->StaffID;
+			}
+			$arrFileCsv[$num]['staffID'] = "pwd".$value['staffID'];
+			$num++;
+		}
+	}
+	
+//	print_r($arrFileCsv);
+	
+	//exit();
+	
+	//$oDB = new DBCommon();
+	//$conn =  $oDB->stl_openConn();
+	
+	$today = date("Ymd-hisa");
+	$filename = $today."-ResetEmail.csv";
+	//$condition = "`isDeleted` = 0";
+	
+	/*if(isset($_POST['isExported'])){
+		$condition = "`isDeleted`=1";
+		if(isset($_POST['FileName']) && !empty($_POST['FileName'])){
+			$filename = $_POST['FileName'];
+			$condition .= " AND r.FileName LIKE '%".$_POST['FileName']."%'";
+		}
+	}
+	
+	if(isset($_POST['RecordID']) && !empty($_POST['RecordID'])){
+		$condition .= " AND `RecordID` IN (".$_POST['RecordID'].")";
+	}*/
+	
+	//$q_select = "SELECT DISTINCT h.EmailTruong,h.TenVN, h.HoLotVN, h.MSSV FROM `resetpwdemail` as r LEFT JOIN `hososinhvien` as h ON(r.MSSV=h.MSSV) WHERE $condition";
+	
+	//print_r($q_select);
+	//$rs_select = $oDB->stl_db_select($q_select, $conn);
+	
+	//$filepath = "D:\\ResetEmail\\";
+	$filepath = "/usr/local/www/apache22/data/resetemail/";
+
+	
+	$fp = fopen($filepath.$filename, 'w');
+
+	if(is_array($arrFileCsv)){
+		$line .="email address,first name,last name,password\n";
+		foreach($arrFileCsv as $key => $row) {
+			$comma = "";
+			foreach($row as $value) {
+				//$line .= $comma . '"' . str_replace('"', '""', $value) . '"';
+				$line .= $comma. str_replace('"', '""', $value);
+				$comma = ",";
+			}
+			$line .= "\n";
+		}
+		
+		//print_r($line);
+		fwrite($fp, pack("CCC",0xef,0xbb,0xbf));
+		fwrite($fp, $line);
+		if(!empty($fp)){
+			/*if(isset($_POST['isExported']) && $_POST['isExported']==1){
+				echo "File created with path: $filepath$filename.";
+			}else{
+				//Update file name
+				if(isset($_POST['checkAll']) && !empty($_POST['checkAll']) && $_POST['checkAll']==1){
+					$q_update = "UPDATE `resetpwdemail` SET `FileName`='$filename',`isDeleted`=1";
+				}else{
+					$q_update = "UPDATE `resetpwdemail` SET `FileName`='$filename',`isDeleted`=1 WHERE `RecordID` IN (".$_POST['RecordID'].")";
+				}
+				$rs_update = $oDB->stl_db_change($q_update, $conn);
+				if($rs_update=='OK'){
+					echo "File created with path: $filepath$filename.";
+				}else{
+					echo "Create a file unsuccessful.";
+				}
+			}*/
+			echo "File created with path: $filepath$filename.";
+		}else{
+			echo "Create a file unsuccessful.";
+		}
+	}
+	
+	fclose($fp);
+	//$oDB->stl_closeConn($conn);
+?>

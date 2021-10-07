@@ -1,0 +1,21 @@
+<?php
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+	// Count costcode
+	$count = "SELECT count(`AssCode`) as count FROM `asset_detail_tbl` WHERE `isDeleted`=0 and`GroupCode`='".$_POST['groupCode']."'";
+	$rs_count = $oDB->stl_db_select($count, $conn);
+	//print_r($rs_count);
+	if(!empty($rs_count[0]->count)){
+		$arr["Count"] =(int)$rs_count[0]->count;
+	}
+	else
+	{
+		$arr["Count"]=0;
+	}
+	echo json_encode($arr);
+	$oDB->stl_closeConn($conn);
+?>

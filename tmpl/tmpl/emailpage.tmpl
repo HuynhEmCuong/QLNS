@@ -1,0 +1,799 @@
+<html>
+<head>
+	<title>RESET PASSWORD EMAIL SCREEN</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link type="text/css" href="../../tmpl/css/popup.css" rel="stylesheet" />
+	<script type="text/javascript" src="../../htm/js/indecator.js"></script>
+	<script type="text/javascript" src="../../htm/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../../htm/js/jquery-ui-1.8.9.custom.min.js"></script>
+	<script type="text/javascript" src="../../htm/js/jquery.crypt.js"></script>
+	<script type="text/javascript" src="../../htm/js/base.js"></script>
+	
+	<style type="text/css">
+		body{
+			font-size: 12px;
+		}
+		
+		#outter{
+			width:900px;
+			margin: 0 auto;
+			margin-top:20px;
+		}
+		
+		#header{
+			width:450px;	
+			padding-top:15px;
+		}
+		
+		#content{
+			/*width: 300px;
+			background-color: #DCE6F2;
+			border: 1px solid #8EB4E3;
+			padding: 25px;*/
+		}
+		
+		#footer{
+			text-align:center;
+			margin-top:300px;
+			color: #827EB1;
+		}
+		
+		.row{			
+			margin: 5px;
+			margin-right: 30px;
+		}
+		
+		.prpoNo{
+			font-weight: bold;
+			text-align: left;
+			width: 65px;
+			padding-right: 5px;
+			height: 20px;
+			float: left;
+			padding-top: 6px;
+			color: #17375E;
+		}
+		
+		.prpoNoDate{
+			margin-left: 90px;
+			margin-top: 42px;
+			float: left;
+			width: 196px;
+		}
+		.title{
+			height:34px;
+		}
+		
+		.inputHeight{
+			height:25px;
+		}
+		
+		.txt-center{
+			text-align:center;
+		}
+		
+		
+		#titleSResul{
+			width:100%; 
+			display:table;			
+			background-color: #17375E;
+			color: #FFFFFF;
+			font-weight:bold;
+		}
+		
+			
+		.txt-center{
+			text-align:center;
+		}
+		
+		#indecator{
+			margin-left: 298px;
+		}
+		/*header*/
+	.bg-titlemp{
+		color:#c00000;
+	}
+	.mp-title{
+		font-size: 16pt;
+		font-weight: bold;
+		margin: 5px;
+		float: left;
+	}
+	.bg-line{
+		color:#4a7ebb;
+		margin-bottom: 10px;
+	}
+	.bo-bottom{
+		border-bottom: 1px solid;
+	}
+	a#logout{
+		float: right;
+		font-size: 10px;
+		margin-top: 15px;
+	}
+	.login{
+		color: blue;
+		float: right;
+		font-size: 15px;
+		font-style: italic;
+		font-weight: normal;
+		margin-right: 10px;
+		margin-top: 13px;
+	}
+	
+	
+	
+	.text-center{
+		text-align:center;
+	}
+	
+	.color-title{
+		color:#17375e;
+	}
+	
+	.text-left{
+		text-align:left;
+	}
+	
+	
+	
+	a{
+		color:#000000;
+	}
+	
+	a:hover{
+		color:blue;
+	}
+	
+	a.choose{
+		color: blue;
+		font-weight: bold;
+		text-decoration: underline;
+	}
+	
+	.display{
+		display:block;
+	}
+	.display-none{
+		display:none;
+	}
+	
+	.iconLogin {
+		background: url("../../img/ajax-loader.gif") no-repeat scroll left center transparent;
+		width: 33px;
+		height: 31px;
+		margin: auto;
+	}
+	
+	.iconDelete{
+		background: url("../../img/icon-delete.png") no-repeat scroll left center transparent;
+		width: 16px;
+		height: 16px;
+		margin: auto;
+	}
+	
+	.iconArrow {
+		background: url("../../img/arrow.jpg") no-repeat scroll left center transparent;
+		width: 33px;
+		height: 31px;
+		margin: auto;
+		margin-top: -4px;
+	}
+	
+	.iconRed {
+		background: url("../../img/red.PNG") no-repeat scroll left center transparent;
+		width: 33px;
+		height: 31px;
+		top: 200px;
+		position: absolute;
+		left: 606px;
+	}
+	
+	.iconBlue {
+		background: url("../../img/blue.PNG") no-repeat scroll left center transparent;
+		width: 33px;
+		height: 31px;
+		top: 200px;
+		position: absolute;
+		left: 606px;
+	}
+	
+	#pwd{
+		margin-left: 10px;
+		width: 173px;
+		float: left;
+		height: 25px;
+	}
+	
+	/*
+		Table
+	*/
+	#info{
+		position: absolute;
+		left: 670px;
+		height: 109px;
+		border-radius: 10px;
+		top: 162px;
+		font-size: 16px;
+		font-family: Times New Roman;
+		padding: 5px 5px;
+		width: 400px;
+		border: 1px solid silver;
+	}
+	
+	#info img{
+		width: 85px;
+		float: right;
+	}
+	
+	#grid{
+		/*margin-top:50px;*/
+		overflow-y: auto;
+		max-height: 351px;
+		overflow-x: hidden;
+	}
+		
+	
+	table th{
+		background-color: #17375E;
+		color: white;
+		padding:2px;
+	}
+	table td{
+		padding:3px;
+		border-right: 1px solid #8EB4E3;
+		border-bottom: 1px solid #8EB4E3;
+	}
+	
+	table td.border{
+		border-left: 1px solid #8EB4E3;
+	}
+	
+	tr:nth-child(even){
+		background-color: rgb(220, 230, 242);
+	}
+	
+	tr:nth-child(odd){
+		background-color:#FFF;
+	}
+	
+	.choose{
+		background-color:pink !important;
+	}
+	
+	</style>
+	
+	<script type="text/javascript">
+		var stt=0;
+		var dataSearch='';
+		var lag=false; // cờ dùng để check MSSV chính xác
+	
+		function enableCheckIcon(){
+			document.getElementById("mssv").value="";
+			//removeClass(document.getElementById('iconArrow'),'display-none');
+			addClass(document.getElementById('iconRed'),'display-none');
+			addClass(document.getElementById('iconBlue'),'display-none');
+		}
+		
+		function disableCheckIcon(){
+			addClass(document.getElementById('iconRed'),'display-none');
+			addClass(document.getElementById('iconBlue'),'display-none');
+		}
+		
+		function resetStt(){
+			var temp1 = document.getElementsByClassName('border');
+			
+			for(i=0;i<temp1.length; i++){
+				var divid = new String(temp1[i].id);
+				if(divid.indexOf('r-td-')==0){
+					document.getElementById(divid).innerHTML = (i+1);
+				}
+			}
+			
+		}
+		
+		function showPopUp(){
+			addClass(document.getElementById('mssv'),'display-none');
+			openPopup("unlockApp","password");
+		}
+		
+		function checkPwd(){
+			var value = document.getElementById('pwd').value;
+			var url = "ajaxCheckPwd.htm";
+			
+			var queryString = "";
+			
+			queryString += "pwd="+value;
+		//	alert(queryString);
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			
+			htmlRequest.onreadystatechange = function(){
+				if(htmlRequest.readyState == 4){
+				//	alert(htmlRequest.responseText);
+					if(trim(htmlRequest.responseText)== 'OK'){
+						location.href = "reports.htm";
+					}else{
+						alert("Mật khẩu không hợp lệ. Vui lòng nhập lại mật khẩu!");
+					}
+				}
+			}
+			
+			htmlRequest.open("POST", url,true);
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				
+			htmlRequest.send(queryString);
+		}
+		
+		function checkEnter(e){
+			var keynum
+			var keychar
+			var numcheck
+			
+			if (e.keyCode == 13){
+				checkMSSV(document.getElementById('mssv'));
+			}
+		}
+		
+		function ajaxDeleteEmailResetPwd(rowID) {
+			var url = "ajaxDeleteEmailResetPwd.htm";
+			var queryString = "";
+			
+			queryString += "RowID="+rowID;
+		
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			htmlRequest.onreadystatechange = function(){
+				if(htmlRequest.readyState == 4){
+					if(trim(htmlRequest.responseText)!= 'NG'){
+						var rowDelete = document.getElementById('r-'+rowID);
+						document.getElementById('dsemail').removeChild(rowDelete);
+						resetStt();
+					}else{
+					}
+				}
+			}
+			
+			htmlRequest.open("POST", url,true);
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				
+			htmlRequest.send(queryString);
+			
+		}
+		
+		function getRowSelected(){
+			var rowList = document.getElementsByClassName('choose');
+			
+			if(rowList.length!=0){
+				var jsonString = "RecordID=";
+				for(var j=0;j<rowList.length;j++){
+					var divid = new String(rowList[j].id);
+					
+					if(divid.indexOf('r-')==0){
+						if(j==rowList.length-1){
+							jsonString += divid;
+						}else{
+							jsonString += divid+",";
+						}
+					}
+				}
+				return jsonString.replace(/r-/g, "");
+			}else{
+				return "";
+			}
+		}
+		
+		function deleteRowChoose(){
+			var table = document.getElementById('dsemail');
+			var rowList = document.getElementsByClassName('choose');
+			for(j=rowList.length-1;j>=0;j--){
+				table.removeChild(rowList[j]);
+			}
+			resetStt();
+		}
+		
+		function ajaxExportCSVFile() {
+			var url = "ajaxExportCSVFileResetPwd.htm";
+			
+			var queryString = getRowSelected();
+			
+			if(document.getElementById('checkAll').value==1 || queryString!=''){
+				queryString += "&checkAll="+document.getElementById('checkAll').value;
+		
+				htmlRequest = ajaxFunction();
+				if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+					alert ("Browser does not support HTTP Request");
+					return;
+				}
+				htmlRequest.onreadystatechange = function(){
+					if(htmlRequest.readyState == 4){
+						//alert(htmlRequest.responseText);
+						if(trim(htmlRequest.responseText)!= ''){
+							deleteRowChoose();
+						}
+						alert(trim(htmlRequest.responseText));
+					}
+				}
+				
+				htmlRequest.open("POST", url,true);
+				htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+					
+				htmlRequest.send(queryString);
+			}else{
+				alert("Please choose the export record.");
+			}
+		}
+		
+		function deleteRow(rowID){
+			msg=confirm('Are you sure you want to delete this record?');
+		//	alert(msg);
+			if (msg==true){
+				ajaxDeleteEmailResetPwd(rowID);
+			}
+		}
+		
+		function addClick(rowID){
+			var lag = document.getElementById('check-'+rowID).value;
+			if(lag==0){
+				addClass(document.getElementById('r-'+rowID),'choose');
+				document.getElementById('check-'+rowID).value=1;
+			}else{
+				removeClass(document.getElementById('r-'+rowID),'choose');
+				document.getElementById('check-'+rowID).value=0;
+			}
+		}
+		
+		function clickCheckBox(obj){
+			if(obj.value==0){
+				obj.value=1;
+				var trList = document.getElementsByTagName('TR');
+				for(k=0;k<trList.length;k++){
+					if(trList[k].id != 'title'){
+						addClass(trList[k],'choose');
+					}
+				}
+			}else{
+				obj.value=0;
+				var trList = document.getElementsByTagName('TR');
+				for(k=0;k<trList.length;k++){
+					if(trList[k].id!='title'){
+						removeClass(trList[k],'choose');
+					}
+				}
+			}
+		}
+		
+		function loadRowTable(row){
+			var tr = document.createElement('TR');
+			tr.setAttribute('id', 'r-'+row.RecordID);
+				
+			var td = document.createElement('td');
+			td.setAttribute('class','border');
+			td.setAttribute('id','r-td-'+row.RecordID);
+			td.setAttribute('onclick',"addClick("+row.RecordID+")");
+			td.innerHTML =(stt+1);
+			tr.appendChild(td);
+			
+			td = document.createElement('td');
+			var ta = document.createTextNode(row.StaffID);
+			td.appendChild(ta);
+			td.setAttribute('onclick',"addClick("+row.RecordID+")");
+			tr.appendChild(td);
+			
+			td = document.createElement('td');
+			ta = document.createTextNode(row.FullName);
+			td.appendChild(ta);
+			td.setAttribute('onclick',"addClick("+row.RecordID+")");
+			tr.appendChild(td);
+			
+			/*td = document.createElement('td');
+			ta = document.createTextNode(row.TenVN);
+			td.appendChild(ta);
+			td.setAttribute('onclick',"addClick("+row.RecordID+")");
+			tr.appendChild(td);*/
+			
+			td = document.createElement('td');
+			ta = document.createTextNode(row.SchoolEmail);
+			td.appendChild(ta);
+			td.setAttribute('onclick',"addClick("+row.RecordID+")");
+			tr.appendChild(td);
+			
+			td = document.createElement('td');
+			
+			var deleteImg = document.createElement('div');
+			deleteImg.setAttribute('id','del-'+row.RecordID);
+			deleteImg.setAttribute('class','iconDelete');
+			deleteImg.setAttribute('onClick',"deleteRow('"+row.RecordID+"')");
+			td.appendChild(deleteImg);
+			tr.appendChild(td);
+			
+			var checkbtn = document.createElement('input');
+			checkbtn.setAttribute('id','check-'+row.RecordID);
+			checkbtn.setAttribute('hidden','');
+			checkbtn.value=0;
+			
+			tr.appendChild(checkbtn);
+			
+			stt++;
+			return tr;
+		}
+		
+		function loadTable(arrList){
+			var ResNum = arrList.Result.length;
+			
+			i=0;
+			
+			document.getElementById('grid').innertHTML = '';
+			table = document.getElementById('dsemail');
+		
+			for(i;i<ResNum;i++){
+				tr = loadRowTable(arrList.Result[i]);
+				table.appendChild(tr);
+			}
+			
+			document.getElementById('grid').appendChild(table);
+		}		
+		
+		function ajaxLoadTableResetPwd(){
+			var url = "ajaxLoadListSVResetEmail.htm";
+			var queryString = "";
+			
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			
+			htmlRequest.onreadystatechange = function(){
+				if(htmlRequest.readyState == 4){
+					//alert(htmlRequest.responseText);exit();
+					if(trim(htmlRequest.responseText)!= 'NG'){
+						var data = trim(htmlRequest.responseText);
+						data = eval('(' + data + ')');
+					
+						loadTable(data);
+					}else{
+						
+					}
+				}
+			}
+			
+			htmlRequest.open("POST", url,true);
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				
+			htmlRequest.send(queryString);
+		}
+		
+		function getDataAdd(){
+			saveInfo = "{";
+			saveInfo += '"StaffID":"'+document.getElementById("masv").innerHTML+'",';
+			saveInfo += '"FullName":"'+document.getElementById("name").innerHTML+'",';
+			saveInfo += '"Birthday":"'+document.getElementById("birthday").innerHTML+'",';
+			saveInfo += '"SchoolEmail":"'+document.getElementById("email").innerHTML+'",';
+			saveInfo += '"Passport":"'+document.getElementById("cmnd").innerHTML+'",';
+			saveInfo += '"image":"'+document.getElementById("imageSV").src+'"';
+			
+			saveInfo += "}";
+			
+			return saveInfo;
+		}
+		
+		function checkMSSV(obj) {
+		//	addClass(document.getElementById('iconArrow'),'display-none');
+			removeClass(document.getElementById('iconLogin'),'display-none');
+			
+			var url = "ajaxCheckEmail.htm";
+			var queryString = "";
+			
+			queryString += "StaffID="+obj.value;
+						
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			htmlRequest.onreadystatechange = function(){
+				if(htmlRequest.readyState == 4){
+				//	alert(htmlRequest.responseText);
+					if(trim(htmlRequest.responseText)!= 'NG'){
+						lag=true;
+						data = trim(htmlRequest.responseText);
+						dataSearch = trim(htmlRequest.responseText);
+						data = eval('(' + data + ')');
+						addClass(document.getElementById('iconLogin'),'display-none');
+						removeClass(document.getElementById('iconBlue'),'display-none');
+						document.getElementById("masv").innerHTML = data.StaffID;
+						document.getElementById("name").innerHTML = data.FullName;
+						document.getElementById("birthday").innerHTML = data.Birthday;
+						document.getElementById("email").innerHTML = data.SchoolEmail;
+						document.getElementById("cmnd").innerHTML = data.Passport;
+						document.getElementById("imageSV").src = data.image;
+					}else{
+						addClass(document.getElementById('iconLogin'),'display-none');
+						removeClass(document.getElementById('iconRed'),'display-none');
+						alert("Staff ID is invalid!");
+						document.getElementById("mssv").focus();
+						data = '';
+						dataSearch = '';
+					}
+				}
+			}
+			
+			htmlRequest.open("POST", url,true);
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				
+		//	htmlRequest.setRequestHeader("Content-length", queryString.length);
+		//	htmlRequest.setRequestHeader("Connection", "close");
+			htmlRequest.send(queryString);
+		//	htmlRequest.send(null);
+			
+		}
+		
+		function ajaxInsertEmailResetPwd() {
+			if(lag==true){
+				var url = "ajaxInsertEmailResetPwd.htm";
+				var queryString = "";
+				
+				var dataAdd = getDataAdd();
+				queryString += "info="+dataAdd;
+			//	alert(dataSearch);
+				htmlRequest = ajaxFunction();
+				if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+					alert ("Browser does not support HTTP Request");
+					return;
+				}
+				htmlRequest.onreadystatechange = function(){
+					if(htmlRequest.readyState == 4){
+						if(trim(htmlRequest.responseText)!= 'NG'){
+							data = '';
+							data = trim(htmlRequest.responseText);
+						//	alert(data);exit();
+							dataSearch = trim(htmlRequest.responseText);
+							data = eval('(' + data + ')');
+						//	alert(data);
+							var row = loadRowTable(data);
+							document.getElementById('dsemail').appendChild(row);
+						}else{
+						}
+					}
+				}
+				
+				htmlRequest.open("POST", url,true);
+				htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+					
+				htmlRequest.send(queryString);
+			}
+			lag=false;
+			
+			delete dataAdd;
+		}
+		
+		function submitInfo()
+		{
+			CreateForm.submit();
+		}
+		
+		$(document).ready(function(){
+			$('#submit1').click(function() {
+				var pwEncrypt;
+				 
+				if( $('input#pwd').val() != '' ) {
+		            pwEncrypt = $().crypt( {
+		                method: 'md5',
+		                source: $('input#pwd').val()
+		            });
+		            $('input#pwd').val(pwEncrypt);
+					checkPwd();
+		            return;
+		        } else {
+		        //    alert('You must enter a password!');
+		            alert('Vui lòng nhập vào mật khẩu!');
+		            return false;
+		        } 		 
+			});
+			
+			$('#pwd').click(function(){
+				$('#pwd').val('');
+			});
+			
+			$('#cancelPopup').click(function(){
+				$('#pwd').val('');
+			});
+		});
+	</script>
+</head>
+
+<body scroll="no" style="overflow-y:hidden;" onload="getCookiesUser();ajaxLoadTableResetPwd();" >
+	<!--use for cookie-->
+	<input id="UserID" hidden value={val userId} />
+	<input id="StartTime" hidden value={val userLoginTime} />
+
+<div id="outter">
+		<div><a href="logout.htm" id="logout">Logout</a><div class="login"><b>{val userName}</b> {val userLoginTime}</div>
+		<div style="float: left;margin-right: 20px;"><img style="width:100px;" src="../../img/logo.PNG"/></div>
+		<div class="bo-bottom bg-line" style="float: right;width: 780px;">
+			<div class="bg-titlemp mp-title">TRƯỜNG ĐẠI HỌC QUỐC TẾ MIỀN ĐÔNG<br><span style="font-size: 13pt;color: #1C1757;padding-left: 46px;">EASTERN INTERNATIONAL UNIVERSITY</span></div>
+			<div><!-- <img src="../../img/restore-icon.png" title="Xem hồ sơ sinh viên" width=50px onClick="back('restoreTemplate');" style="float: right;padding-top: 10px;" /> --><img src="../../img/report-icon.png" title="Report" onClick="back('listStaff');" style="cursor:pointer;float: right;padding-top: 10px;" /></div>
+		</div>
+		<div id="password">
+			<div class="rowPopup ">
+					<div class="titlePopup" style="width:100px; padding: 5px 0 5px 0; float:left;">Mật khẩu</div>
+					<input type="password" id="pwd"/>					
+			</div>	
+			<div style="margin-top:4px;">
+				<div style="width:110px; color:red;float:left" id="res">&nbsp;</div>
+				<div style="float:right; width:150px">
+					<button id="cancelPopup" style="float:right;" onclick="closePopup('password');">Hủy</button>					
+					<button id="submit1" style="float:right;margin-left:0px;">Đồng ý</button>
+					
+				</div>
+			</div>
+			<input type="hidden" id="idEmp" value="" />
+		</div>
+		<div id="content" style="margin: 10px auto;clear:both">
+			<div class="color-title text-center "><h1>RESET PASSWORD EMAIL</h1></div>
+			<div class="row">
+				<div id="t-username" class="display-none" style="color:red;margin-left: 72px;">Please choose username!</div>
+				<div class="prpoNoDate">
+				<input id="mssv" onkeydown="return checkEnter(event)" onChange="disableCheckIcon();" onClick="enableCheckIcon();" type="text" class="inputHeight" type="text" size="20" placeholder="Import Staff ID.">
+				<div style="float:right" id="iconLogin" class="iconLogin display-none"></div>
+					<!-- <div style="float:right" id="iconArrow" class="iconArrow" onClick="checkMSSV(document.getElementById('mssv'));"></div> -->
+					<div style="float:right" id="iconRed" class="iconRed display-none"></div>
+					<div style="float:right" id="iconBlue" class="iconBlue display-none"></div>
+				</div>	
+				</div>
+			</div>
+			<button id="submit" style="margin-top:42px;margin-bottom: 10px;margin-left: 0px;" onClick="checkMSSV(document.getElementById('mssv'));">Choose</button>
+			<button id="submit" style="margin-top: -10px;margin-bottom: 10px;margin-left: 0;" onClick="ajaxInsertEmailResetPwd();">Add</button>
+		
+			
+			<div id="info">
+				<div style="float:left;">
+					<div style="width: 313px;">
+						<div style="float: left;">Staff ID: &nbsp;</div>
+						<div id="masv"></div>
+					</div>
+					<div style="width: 313px;clear:both">
+						<div style="float: left;">FullName: &nbsp;</div>
+						<div id="name"></div>
+					</div>
+					<div style="width: 313px;clear:both">
+						<div style="float: left;">Birthday: &nbsp;</div>
+						<div id="birthday"></div>
+					</div>
+					<div style="width: 313px;clear:both">
+						<div style="float: left;">Email: &nbsp;</div>
+						<div id="email"></div>
+					</div>
+					<div style="width: 313px;clear:both">
+						<div style="float: left;">ID/Passport: &nbsp;</div>
+						<div id="cmnd"></div>
+					</div>
+				</div>
+				<div><img id="imageSV" src=""/></div>
+			</div>
+		<table style="margin-top:60px" border=none cellpadding=0 cellspacing=0 width=100%>
+			<tr id="title">
+				<th style="width: 23px;">No</th>
+				<th style="width: 157px;">Staff ID</th>
+				<th style="width: 291px;">FullName</th>
+				<th style="width: 356px;">Email</th>
+				<th><input onclick="clickCheckBox(this);" id="checkAll" style="margin-left:25px;" type=checkbox value=0 /></th>
+			</tr>
+		</table>
+		
+		<div id="grid">
+			<table id="dsemail" border=none cellpadding=0 cellspacing=0 width=100%>
+			</table>
+			
+		</div>
+		<div><button id="submit" style="float:right;" onClick="window.location.href='exportedpage.htm'">View Exported CSV File</button><button id="submit" style="float:right;" onClick="ajaxExportCSVFile()">Export CSV File</button></div>
+		<div id="footer">@Copyright Phòng Công Nghệ Thông Tin<br>it@eiu.edu.vn</div>
+</div>
+</html>

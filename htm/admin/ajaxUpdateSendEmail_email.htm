@@ -1,0 +1,47 @@
+<?php
+	session_start();
+	
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');	
+	
+	if(isset($_POST['info']) && !empty($_POST['info']))
+	{
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		$_POST['info'] = str_replace('\"', '"',$_POST['info']);
+		$emailList = json_decode($_POST['info'],true);	
+		//print_r($emailList);exit();
+		if(is_array($emailList))
+		{
+			foreach($emailList['emailList'] as $key=>$value)
+			{
+				$name=$value['name'];
+				$staffID=$value['staffID'];
+				$email=$value['email'];
+				$typeID=$value['typeID'];
+				$departmentID=$value['departID'];
+				$roomID=$value['roomID'];
+				$modified=$value['modified'];
+				$q="SELECT `StaffID` FROM `send_email_tbl` WHERE `isDelete`=0";
+				$rs = $oDB->stl_db_select($q, $conn);
+				if(is_array($rs))
+				{
+					foreach($rs as $key=>$value)
+					{
+						if($staffID==$rs[$key]->StaffID)
+						{
+							$q_update="UPDATE `send_email_tbl` SET `TypeID`='".$typeID."',`DepartmentID`='".$departmentID."',`RoomID`='".$roomID."',`ModifyBy`='".$modified."' WHERE `StaffID`='".$staffID."'";
+							//print_r($q_update);exit();
+							//$q_update="UPDATE `send_email_tbl` SET `TypeID`='".$typeID."',`DepartmentID`='".$departmentID."',`RoomID`='".$roomID.",`LastUpdate`=now(),`ModifyBy`='".$modified."' WHERE `StaffID`='".$staffID."' AND `isDelete`=0";
+							$rs_update=$oDB->stl_db_change($q_update, $conn);
+						}
+					}
+				}
+			}
+		}
+	}
+	echo $rs_update;
+	$oDB->stl_closeConn($conn);
+?>

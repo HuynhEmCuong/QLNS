@@ -1,0 +1,25 @@
+<?php
+	session_start();
+	
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	
+	if(isset($_POST['RowID']) && !empty($_POST['RowID'])){
+		
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		$RecordID = $_POST['RowID'];
+		
+		$q_update = "DELETE FROM `emergency_contact_tbl` WHERE `RecordID`=$RecordID";
+		print_r($q_update);
+		$rs_update = $oDB->stl_db_change($q_update, $conn);
+		
+		echo $rs_update;
+		
+		
+		$oDB->stl_closeConn($conn);
+	}
+?>

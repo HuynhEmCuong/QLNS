@@ -1,0 +1,99 @@
+<?php
+	session_start();
+	
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	require_once (EIU_CLASS.'EmailClass.htm');
+	
+	//print_r($_POST['info']);
+	//print_r($_SERVER);
+	if(isset($_POST['info']) && !empty($_POST['info'])){	
+		$_POST['info'] = str_replace('\"', '"',$_POST['info']);
+		//print_r($_POST['info']);exit();
+		$customer = json_decode($_POST['info'],true);
+	//	print_r($customer);exit();
+		if(is_array($customer)){
+			$arrInfo['IRN_Old'] = $customer['IRN'];
+			$arrInfo['IRN'] = $customer['newIRN'];
+			$arrInfo['FirstName'] = $customer['FirstName'];
+			$arrInfo['MiddleName'] = $customer['MiddleName'];			
+			$arrInfo['LastName'] = $customer['LastName'];
+			$arrInfo['ModifyBy'] = $_SESSION['userName'];
+			
+			//Lay ma nganh cua SV dua tren new IRN 
+			$subjectCodeNewIRN = substr($arrInfo['IRN'], -6, 2);
+			
+			//Kiem tra neu chuyen nganh cung khoa => khong thay doi email
+			//Lay ma nganh old cua SV
+			$arrInfo['oldDepartmentID'] = $customer['Department'];
+			
+			//Lay ma khoa cua SV dua tren ma nganh new cua SV
+			$arrInfo['DepartmentID'] = getFieldOfTable($subjectCodeNewIRN, "RecordID", "department_student_tbl");
+			
+			if($arrInfo['oldDepartmentID'] != $arrInfo['DepartmentID']){
+				$email = createNewEmailStudent($arrInfo);
+			}else{
+				//-- Lay RecordID cua nganh hoc------------------------
+				$arrSubject = selectALlTable("`RecordID`", "`major_tbl`", "`Code` = '$subjectCodeNewIRN'");
+				
+				if(is_array($arrSubject)){
+					$arrInfo['MajorID'] = $arrSubject[0]->RecordID;
+				}
+			}
+			
+			$rs_update = changeIRN($arrInfo);
+			//print_r($rs_update);
+			//print_r($arrInfo);
+			//Send email
+			if($rs_update['Update'] == 'OK'){
+				//Get type id to send email
+				$screen = basename($_SERVER["HTTP_REFERER"]).PHP_EOL;				
+				$arrTypeEmail = getTypeByScreenName(RTRIM($screen));
+				$arrInfo['TypeDesc'] = $arrTypeEmail[0]->Description;
+				$arrInfo['TypeID'] = $arrTypeEmail[0]->RecordID;
+				
+				if(!empty($arrInfo['MiddleName'])){
+					$middleName = " ".$arrInfo['MiddleName']." ";
+				}else{
+					$middleName = "";
+				}
+				
+				$subject = '';
+				$subject .= "Status Notification - ".$arrInfo['TypeDesc'];
+				$subject .= " ".$arrInfo['LastName'].$middleName.$arrInfo['FirstName'];
+				$subject .= ": ".$arrInfo['IRN_Old']." -> ".$arrInfo['IRN'];
+		
+				$msg = '';
+				$msg .= '<div><b>Full Name:	'.$arrInfo['LastName'].$middleName.$arrInfo['FirstName'].'</div>';
+				$msg .= '<div><b>Changed IRN From	<i>'.$arrInfo['IRN_Old'].'</i> To <i>'.$arrInfo['IRN'].'</i> </div>';
+				if($arrInfo['oldDepartmentID'] != $arrInfo['DepartmentID']){
+					$msg .= '<div><b>Changed Email From	<i>'.$arrInfo['Email_Old'].'</i> To <i>'.$arrInfo['Email'].'</i> </div>';
+					$arrInfo['StaffID'] = $arrInfo['IRN'];
+					$rs_insert_resetpwdemail = insertResetPwdEmail($arrInfo);
+				}else{
+					$msg .='<div><b>Department Not Change => Email Not Change: '.$arrInfo['Email_Old'].'</b></div>';
+				}
+				
+				$result = SUCCESSFUL_CHANGED_IRN;
+				if(isset($arrInfo['TypeDesc']) && !empty($arrInfo['TypeDesc'])){
+					//print_r("hien");
+					$send = sendEmail($arrInfo,$subject,$msg);
+					if($send == 1){
+						$result .= "\n".SUCCESSFUL_EMAIL_SENT;
+					}else{
+						$result .= "\n".FAIL_EMAIL_SENT;
+						$result .= "\n".$send;
+					}
+				}
+				
+				echo $result;
+			}else{
+				echo FAIL_CHANGED_IRN;
+			}			
+		}
+	}else{
+		echo FAIL_TRANSPORT_INFO;
+	}
+?>

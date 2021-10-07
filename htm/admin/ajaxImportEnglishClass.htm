@@ -1,0 +1,346 @@
+<?php
+	set_time_limit(0);
+	session_unset();
+	session_start();
+	header('Content-Type: text/html; charset=utf-8');
+//	header("Location: importEnglishClass.htm");
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	require_once (EIU_CLASS.'EmailClass.htm');
+	require_once (EIU_CLASS.'ExcelClasses/PHPExcel.php');
+	require_once (EIU_CLASS.'ExcelClasses/PHPExcel/Reader/Excel2007.php');
+	require_once (EIU_CLASS.'ExcelClasses/PHPExcel/IOFactory.php');
+	require_once (EIU_CLASS.'ExcelClasses/PHPExcel/Shared/Date.php');
+	require_once (EIU_CLASS.'SwiftMail/lib/swift_required.php');
+	
+	//print_r($_POST);exit();	
+	$emailList = array();
+	//Get all email in 6 years before current year 	
+	if(isset($_POST['useIRN']) && $_POST['useIRN'] == 'on'){
+		$today = getdate();
+		$year = $today["year"];
+		
+		$arrEmailList = selectALlTable("`IRN`,`SchoolEmail`", "`student_tbl` ", "isDeleted=0 ORDER BY `IRN`");
+		//print_r($arrEmailList);
+		if(is_array($arrEmailList)){
+			foreach($arrEmailList as $key=>$value){
+				$emailList[$value->IRN] = $value->SchoolEmail;
+			}
+		}
+	}	
+	//print_r($emailList);
+	//exit();
+	$data1 = '';
+	$fromEmail='';
+	$pwdEmail='';
+	$data1['isSend'] = 0;
+	/*End xử lý người gởi*/
+	$userID = $_SESSION['userID'];
+	//print_r($userID);
+	//Cắt chuỗi lấy 2 kí tự đầu Ma phong ban
+	$maphong = substr($userID,0,2);
+	
+	//Hardcode: se xoa sau
+	if($maphong=='09'){
+		$maphong='11';
+		//$maphong='08';
+		//$maphong='10';
+	}
+	
+	if(isset($_POST['upload']) && !empty($_POST['upload']) && $_SESSION['ajaxImportExcelFile'] != true){
+		$host = $_SERVER['HTTP_HOST'];
+		$url = $_SERVER['REQUEST_URI'];
+		
+		$uploads_dir = '../../Files/uploads';
+		//print_r($uploads_dir);
+		foreach ($_FILES["pic"]["error"] as $key => $error) {
+			$msg = '';
+			if ($error == UPLOAD_ERR_OK) {
+				$tmp_name = $_FILES["pic"]["tmp_name"][$key];
+				$name = $_FILES["pic"]["name"][$key];
+				
+				if(move_uploaded_file($tmp_name, "$uploads_dir/$name")==1){					
+					//Read File Uploaded
+					$objPHPExcel = PHPExcel_IOFactory::load('../../Files/uploads/'.$name);
+					
+					foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
+						$worksheetTitle     = $worksheet->getTitle();
+						//only read sheet = SHEET_ACTIVE (define in BaseDir)
+						if($worksheetTitle==SHEET_ACTIVE1){
+							$highestRow         = $worksheet->getHighestRow();
+							$highestColumn      = $worksheet->getHighestColumn();
+							$nrColumns = ord($highestColumn) - 64;
+							$highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
+							
+							//Get Form Title
+							$cellSubject = $worksheet->getCellByColumnAndRow("A", 1);
+							$data[$name]['subject'] = $cellSubject->getValue();
+							
+							//Get Form Title
+							$cellTitle = $worksheet->getCellByColumnAndRow("A", 2);
+							$data[$name]['title'] = $cellTitle->getValue();							
+							
+							for ($row = 1; $row <= $highestRow; ++$row) {
+								for ($col = 0; $col < $highestColumnIndex; ++$col) {
+									$cell = $worksheet->getCellByColumnAndRow($col, $row);
+									
+									//Get format style
+									/*$cellID = $worksheet->getCellByColumnAndRow($col, $row)->getCoordinate();
+									$result = $objPHPExcel->getActiveSheet()->getStyle($cellID)->getNumberFormat()->getFormatCode();
+									print_r($result);
+									*/
+									
+									$val = $cell->getCalculatedValue();
+									$val1 = $cell->getValue();
+								
+									//Check in case cell (have style number) is 0 -> convert to text
+									if($val=="0"){
+										$val = "0";
+									}
+									//Check in case cell have style date
+									if (PHPExcel_Shared_Date::isDateTime($cell)) {  
+									   $dateValue = PHPExcel_Shared_Date::ExcelToPHP($val);
+										$val = date('m/d/Y',$dateValue);
+									}
+								
+									//A4
+									if($col=="0" && $row==4){
+										$data[$name]['A4'] = $val1;
+									}
+									//A5
+									if($col=="0" && $row==5){
+										$data[$name]['A5'] = $val1;
+									}
+									
+									//A6
+									if($col=="0" && $row==6){
+										$data[$name]['A6'] = $val1;
+									}
+									
+									//A7
+									if($col=="0" && $row==7){
+										$data[$name]['A7'] = $val1;
+									}
+									
+									//A8
+									if($col=="0" && $row==8){
+										$data[$name]['A8'] = $val1;
+									}
+								
+									//B4
+									if($col=="1" && $row==4){
+										$data[$name]['B4'] = $val1;
+									}
+									//B5
+									if($col=="1" && $row==5){
+										$data[$name]['B5'] = $val1;
+									}
+									
+									//B6
+									if($col=="1" && $row==6){
+										$data[$name]['B6'] = $val1;
+									}
+									
+									//B7
+									if($col=="1" && $row==7){
+										$data[$name]['B7'] = $val1;
+									}
+									
+									//B8
+									if($col=="1" && $row==8){
+										$data[$name]['B8'] = $val1;
+									}
+									
+									if($val==FIELD_CHECK_NUMBER1){//IRN
+										$startRow = $row;
+										//Incase: Email to student, hardcode because English Center have 2 email
+										if($maphong=='08'){//TTNN
+											$arrTmp = getValue("email_tbl","`Email`,`Password`,`DepartmentID`","RecordID=8");
+										
+											if(!empty($arrTmp->Email) && !empty($arrTmp->Password)){
+												$fromEmail = $arrTmp->Email;
+												$pwdEmail = $arrTmp->Password;
+												$pwdEmail = generatePassEmailConfig($pwdEmail,2,$arrTmp->DepartmentID);
+												//print_r($pwdEmail);exit();
+											}
+											//$fromEmail = GUSER_TTNN;
+											//$pwdEmail = GPWD_TTNN;
+										}
+									}
+									//Hard code check IRN or STT
+									if($val==FIELD_CHECK_NUMBER){//STT
+										$startRow = $row;
+									}
+									
+									if($startRow>0&&$row>$startRow){
+										$cellMain = $worksheet->getCellByColumnAndRow($col, $startRow);
+										$valMain = $cellMain->getValue();
+										$data[$name][$row][$valMain] = $val;
+									}
+									//print_r($data);
+									$dataType = PHPExcel_Cell_DataType::dataTypeForValue($val);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		// Tạo đối tượng transport
+		$transport = Swift_SmtpTransport::newInstance('smtp.gmail.com',465,'ssl');
+	//	print_r($fromEmail);
+		/*Xử lý người gởi*/
+		if(empty($fromEmail)){
+			//print_r($maphong);
+			$arrEmail = getEmailPwd($maphong);
+			//print_r($arrEmail);
+			//print_r($arrEmail->Email);
+			
+			if(!empty($arrEmail->Email) && !empty($arrEmail->Password)){
+				$fromEmail = $arrEmail->Email;
+				$pwdEmail = $arrEmail->Password;
+				$pwdEmail = generatePassEmailConfig($pwdEmail,2,$arrEmail->DepartmentID);
+			}
+		}
+		
+		//$fromEmail = "test1@eiu.edu.vn";
+		//$pwdEmail = "pwd123456789";
+		//print_r($fromEmail);
+		//print_r($pwdEmail);exit();
+		$transport->setUsername($fromEmail);
+		$transport->setPassword($pwdEmail);
+		//phpinfo();exit();
+		//print_r($fromEmail);print_r($pwdEmail);exit();
+		// Tạo đối tượng mailer sẽ đảm nhận nhiệm vụ gởi mail đi
+		$mailer = Swift_Mailer::newInstance($transport);
+		
+		/*Send Email*/
+		foreach($data as $key=>$value){			
+			foreach($value as $s_key=>$s_val){				
+				$msg = '';
+				if(is_array($s_val)){
+					if(!empty($emailList)){							
+						if(isset($s_val['IRN']) && strlen($s_val['IRN'])==10 && !empty($emailList[$s_val['IRN']])){
+							//$s_val['Email'] = selectOneColumnOfTable("SchoolEmail", "`student_tbl`", "`IRN`=".$s_val['IRN']);
+							$s_val['Email'] = $emailList[$s_val['IRN']];
+							//print_r($s_val['Email']);exit();
+						}						
+					}
+					$validateEmail = email($s_val['Email']);
+					
+					if($validateEmail==0){
+						$data1['msg'] .= "Fail: Row: ".$s_key.' - Email: '.$s_val['Email']."<br>";
+						continue;
+					}else{
+						//Tạo message để gởi đi
+						$message = Swift_Message::newInstance($value['subject'], $value['title']);
+
+						$message->setFrom('sender@gmail.com');
+						//$message->setFrom(array('sender@gmail.com' => 'From mr. 007'));
+						//echo GUSER;
+						
+						//Mr Loi Nguyen
+						/*$msg .= '<b>Dear Class,</b><br>';
+						$msg .= '<br>';
+						$msg .= 'I am sending you current grades for update.<br><br>';
+						$msg .= 'Please notify me immediately if your grade(s) is(are) not correct. Please provide me your IRN and Full Name with both your correct and incorrect grades to bbssupport@eiu.edu.vn.
+DISCUSS 10% - your participation grade will be updated last.<br><br>';*/
+						
+						$msg .= '<div style="font-size:14pt;font-weight:bold">'.$value['title'].'</div>';
+						$msg .= '<div><b>'.$value['A4'].'</b>&nbsp;'.$value['B4'].'</div>';
+						$msg .= '<div><b>'.$value['A5'].'</b>&nbsp;'.$value['B5'].'</div>';
+						$msg .= '<div><b>'.$value['A6'].'</b>&nbsp;'.$value['B6'].'</div>';
+						$msg .= '<div><b>'.$value['A7'].'</b>&nbsp;'.$value['B7'].'</div>';
+						$msg .= '<div><b>'.$value['A8'].'</b>&nbsp;'.$value['B8'].'</div>';
+						/*$msg .= '<div>Class: '.$value['class'].'</div>';
+						$msg .= '<div>Room: '.$value['room'].'</div>';
+						$msg .= '<div>Teacher: '.$value['teacher'].'</div>';*/
+						$msg .= '<div></br>--------------------------------------------</br></div>';
+						$i=0;
+						$msg .= '<table cellspacing=0 cellpadding=5>';
+						$msg .= '<tr>';
+						$i=0;
+						foreach($s_val as $_sKey=>$_sVal){
+							if($i==0){
+								$msg .= '<th style="border-left:1px solid; border-top:1px solid;border-right:1px solid">'.$_sKey.'</th>';
+							}else{
+								$msg .= '<th style="border-top:1px solid;border-right:1px solid">'.$_sKey.'</th>';
+							}
+							$i++;
+						}
+						$msg .= '</tr>';
+						$msg .= '<tr>';
+						$i=0;
+						foreach($s_val as $_sKey=>$_sVal){
+							if($i==0){
+								$msg .= '<td style="border-left:1px solid;border-bottom:1px solid;border-top:1px solid;border-right:1px solid">'.$_sVal.'</td>';
+							}else{
+								$msg .= '<td style="border-bottom:1px solid;border-top:1px solid;border-right:1px solid">'.$_sVal.'</td>';
+							}
+							$i++;
+						}
+						$msg .= '</tr>';
+						$msg .= '</table>';
+						
+						//Mr Loi Nguyen
+					/*	$msg .= '<br><br><b>Sincerely,<b><br><br>';
+						$msg .= '<b>Loi Nguyen</b><br>';
+						$msg .= 'BUS101 Instructor<br>';*/
+						
+						//print_r($msg);
+						//print_r($s_val['Email']);
+						$message->addPart($msg, 'text/html');
+						
+						$message->setTo($s_val['Email']);
+						
+						//$result = $mailer->send($message);
+						//print_r($result);
+						
+						//echo $s_val['Email'];
+						//echo "<br>";
+						try {
+							$mailer->send($message);
+							$data1['isSend'] = 1;
+						}catch (Exception $e) {
+							$data1['msg'] = $e->getMessage();
+							$data1['isSend'] = 2; // loi password wrong
+						}
+					}
+				}
+			}
+		}
+		$_SESSION['ajaxImportExcelFile'] = true;
+	}
+
+	if($data1['isSend']==1 && !empty($data1['msg'])){
+		$data1['title'] = 'Suspended email!';
+	}else if($data1['isSend']==0){
+		$data1['title'] = 'Can not send email!';
+		$data1['msg'] = 'Please check file upload or access the internet';
+	}else if($data1['isSend']==1){
+		$data1['title'] = 'Sent email!';
+		$data1['msg'] = "";
+		
+		//Copy file to folder sent to save
+		foreach ($_FILES["pic"]["error"] as $key => $error) {
+			$msg = '';
+			if ($error == UPLOAD_ERR_OK) {
+				$today = date("Y-m-d-H-i-s");
+				$tmp_name = $_FILES["pic"]["tmp_name"][$key];
+				$name = $_FILES["pic"]["name"][$key];
+				$name1 = $userID."-".$today."-".$_FILES["pic"]["name"][$key];
+				//echo $name;
+				//echo "$name1";
+				rename("$uploads_dir/$name", "$uploads_dir/$name1");
+			}
+		}
+	}else if($data1['isSend']==2){
+		$data1['title'] = 'Can not send email!';
+	}
+	
+	$view = new View();
+	$view->showTmpl("resultSendEmailEnglishClass.tmpl","n",$data1);
+?>

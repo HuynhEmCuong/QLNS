@@ -1,0 +1,38 @@
+<?php
+	session_start();
+	
+	//print_r($_POST);
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'PermissionClass.htm');
+
+	//print_r($_POST);exit();
+	
+	if(isset($_POST['department']) && !empty($_POST['department'])){
+		$q = "SELECT `Email`,`DepartmentID` FROM `email_tbl` WHERE `DepartmentID`=".$_POST['department'];
+	}else{
+		if(checkIsAdmin($_SESSION['userID'])==1 || $_POST['permisstion']>2){
+			$q = "SELECT `Email`,`DepartmentID` FROM `email_tbl`";
+		}
+	}
+	
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+	
+	$rs = $oDB->stl_db_select($q, $conn);
+	if(is_array($rs)){
+		$i=0;
+		foreach($rs as $key=>$value){
+			$arr['Result'][$i]['Email'] = $rs[$key]->Email;
+			$arr['Result'][$i]['DepartmentID'] = $rs[$key]->DepartmentID;
+			$i++;
+		}
+		echo json_encode($arr);
+	}else{
+		echo 'NG';
+	}
+
+	$oDB->stl_closeConn($conn);
+
+?>

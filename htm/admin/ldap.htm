@@ -1,0 +1,14 @@
+<?php
+	header('Content-Type: text/html; charset=utf-8');
+	session_start();
+	
+	// LDAP variables
+	$ldaphost = "ldap.mail.edu.edu.vn";  // your ldap servers
+	$ldapport = 389;                 // your ldap server's port number
+
+	// Connecting to LDAP
+	$ldapconn = ldap_connect($ldaphost, $ldapport)
+			  or die("Could not connect to $ldaphost");
+			  
+	print_r($ldapconn);
+?>

@@ -1,0 +1,99 @@
+<?php
+	session_start();
+	
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	require_once (EIU_CLASS.'EmailClass.htm');
+	require_once (EIU_CLASS.'MessageClass.htm');
+	
+	
+	if(isset($_POST['info']) && !empty($_POST['info'])){
+		
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		$arrFileCsv = '';
+		$num = 0;
+		$today = date("Y-m-d h:i:s");
+		
+		$_POST['info'] = str_replace('\"', '"',$_POST['info']);
+		$customer = json_decode($_POST['info'],true);
+		//print_r($customer);exit();
+		if(is_array($customer)){
+			$arrStaffID = '';
+			foreach($customer as $key=>$value){
+				foreach($customer[$key] as $s_key=>$s_val){
+					if($key=='card'){
+						$field = "CreatedStaffCard";
+					}else{
+						$field = "CreatedAccountSystem";
+					}
+					$rs_update = updateValueByField($field, "StaffID", "staff_tbl", $s_val['isChecked'], "'".$s_val['StaffID']."'");
+					
+					if($rs_update=='OK' && $key=='card'){
+						$arrStaffID .= "\n".$s_val['StaffID'];
+						/*START SEND EMAIL -------------------------------------------------------*/
+						// Lấy thông tin staff
+						$arrInfo = selectALlTable('`FirstName`,`LastName`,`MiddleName`,`DepartmentID`', '`staff_tbl`', '`StaffID`='.$s_val['StaffID']);
+						$customer['FirstName'] = $arrInfo[0]->FirstName;
+						$customer['LastName'] = $arrInfo[0]->LastName;
+						$customer['MiddleName'] = $arrInfo[0]->MiddleName;
+						$customer['DepartmentID'] = $arrInfo[0]->DepartmentID;
+						$customer['StaffID'] = $s_val['StaffID'];
+						
+						//Lấy department name khi biết department ID
+						$arrDepartment = getValue("department_tbl","`FullName`","`RecordID`=".$customer['DepartmentID']);
+						$customer['departmentName'] = $arrDepartment->FullName;
+						
+						if(!empty($customer['MiddleName'])){
+							$middleName = " ".$customer['MiddleName']." ";
+						}else{
+							$middleName = "";
+						}									
+
+						//Get type id to send email
+						$screen = basename($_SERVER["HTTP_REFERER"]).PHP_EOL;					
+						$arrTypeEmail = getTypeByScreenName(RTRIM($screen));
+						$customer['TypeDesc'] = $arrTypeEmail[0]->Description;
+						$customer['TypeID'] = $arrTypeEmail[0]->RecordID;
+						
+						$subject = '';
+						$subject .= "Status Notification - ".$customer['TypeDesc'];					
+						$subject .= " StaffID: ".$customer['StaffID']." - ".$customer['LastName'].$middleName.$customer['FirstName'];
+								
+						$msg = '';					
+						$msg .= '<div><b>Staff ID:	'.$customer['StaffID'].'</div>';
+						$msg .= '<div><b>Full Name:	'.$customer['LastName'].$middleName.$customer['FirstName'].'</div>';
+						$msg .= '<div><b>Department: '.$customer['departmentName'].'</b></div>';
+						$msg .= '<br><div style="color: red"><b>'.MSG_RECEIVE_CARD_PLACE.'</b></div>';
+						
+						if(isset($customer['TypeDesc']) && !empty($customer['TypeDesc'])){
+							//print_r("hien");
+							$send = sendEmail($customer,$subject,$msg);
+							if($send == 1){
+								$result .= "\n".SUCCESSFUL_EMAIL_SENT;
+							}else{
+								$result .= "\n".FAIL_EMAIL_SENT;
+								$result .= "\n".$send;
+							}
+						}
+						
+						/*END SEND EMAIL ---------------------------------------------------------*/
+						
+					}
+				}
+			}
+			if(!empty($arrStaffID)){
+				echo MSG_SUCCESSFUL_UPDATE_CARD.":".$arrStaffID;
+			}else{
+				echo MSG_NO_CARD_CREATED;
+			}			
+		}else{
+			echo MSG_UNSUCCESSFUL_UPDATE_CARD;
+		}
+	}else{
+		echo FAIL_TRANSPORT_INFO;
+	}
+?>

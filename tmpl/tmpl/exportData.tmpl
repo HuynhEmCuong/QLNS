@@ -1,0 +1,418 @@
+<html>
+<head>
+	<title>EXPORT DATA SCREEN</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<script type="text/javascript" src="../../htm/js/indecator.js"></script>
+	<script type="text/javascript" src="../../htm/js/base.js"></script>
+	
+	<style type="text/css">
+		body{
+			font-size: 12px;
+		}
+		
+		#outter{
+			width:900px;
+			margin: 0 auto;
+			margin-top:20px;
+		}
+		
+		#header{
+			width:450px;	
+			padding-top:15px;
+		}
+		
+		#content{
+			display:table;
+			width:410px;
+		}
+		
+		#footer{
+			width:416px;			
+			text-align:center;
+			margin-top:15px;
+			margin-left:83px;
+		}
+		
+		.row{			
+			width:100%;	
+			float:left;
+			margin-top:5px;
+		}
+		
+		.telCont, .position, .mobileCont,.contractAmount, .contractUnit, .address, .prpoNo, .prpoNoDate, .costCode, .mcboq, .description, .supplier, .issued, .contract,.shortNameDt,.fullNameDt{
+			display: table-cell;
+			vertical-align:middle;			
+			padding-left:4px;			
+		}
+
+		.prpoNo{
+			font-weight:bold;
+			text-align:right;
+			width:75px;
+			background-color:#DCE6F2;
+			border: 1px solid #8EB4E3;
+			padding-right:5px;
+			height:20px;
+		}
+		
+		.prpoNoDate{
+			width:320px;
+			text-align:left;
+		}
+		.title{
+			height:34px;
+		}
+		
+		.inputHeight{
+			height:25px;
+		}
+		
+		.txt-center{
+			text-align:center;
+		}
+		
+		
+		#titleSResul{
+			width:100%; 
+			display:table;			
+			background-color: #17375E;
+			color: #FFFFFF;
+			font-weight:bold;
+		}
+		
+			
+		.txt-center{
+			text-align:center;
+		}
+		
+		#indecator{
+			margin-left: 298px;
+		}
+		/*header*/
+	.bg-titlemp{
+		color:#c00000;
+	}
+	.mp-title{
+		font-size: 16pt;
+		font-weight: bold;
+		margin: 5px;
+	}
+	.bg-line{
+		color:#4a7ebb;
+		margin-bottom: 10px;
+	}
+	.bo-bottom{
+		border-bottom: 1px solid;
+	}
+	a#logout{
+		float: right;
+		font-size: 10px;
+		margin-top: 15px;
+	}
+	.login{
+		color: blue;
+		float: right;
+		font-size: 15px;
+		font-style: italic;
+		font-weight: normal;
+		margin-right: 10px;
+		margin-top: 13px;
+	}
+	.text-center{
+		text-align:center;
+	}
+	
+	.text-left{
+		text-align:left;
+	}
+	
+	.color-title{
+		color:#17375e;
+	}
+	
+	a{
+		color:#000000;
+	}
+	
+	a:hover{
+		color:blue;
+	}
+	
+	a.choose{
+		color: blue;
+		font-weight: bold;
+		text-decoration: underline;
+	}
+	
+	#saveInfo{
+		width:100%;
+		float:left;
+		margin: 0 auto;
+		margin-top:25px;
+		
+	}
+	
+	.chooseNext{
+		width: 21px !important;
+		margin-left: 5px;
+		margin-right: 5px;
+		position: absolute;
+		left: 614px;
+		top: 220px;
+		border: 1px solid;
+		border-radius: 5px;
+		font-weight: bold;
+		color: blue;
+	}
+	
+	</style>
+	
+	<script type="text/javascript">
+		var empId = '{val userId}';
+		function process()
+		{
+			/*var dat = "";
+			if(empId != ''){
+				loadAjax();
+			}else{
+				enableFields();
+				document.getElementById("row-id").setAttribute('style','display:none');
+				document.getElementById("editBut").setAttribute('style','display:none');
+				document.getElementById("deleteBut").setAttribute('style','display:none');
+			}*/
+		}
+
+		//hàm dùng d? set d? li?u cho các input
+		function setValue(dat)
+		{
+			disableFields();
+			document.getElementById("id").value = dat.id;
+			document.getElementById("name").value = dat.name;
+		//	document.getElementById("position").value = dat.position;
+		//	document.getElementById("department").value = dat.department;
+			
+			//Disable save button len
+			document.getElementById("saveBut").disabled = true;
+		}
+		
+		//Hàm dùng d? enable các inut field 
+		function enableFields(){
+			//document.getElementById("id").disabled = false;
+			document.getElementById("currPass").disabled = false;
+			document.getElementById("newPass").disabled = false;
+			document.getElementById("reNewPass").disabled = false;
+			
+			
+			//Enable save button len
+			document.getElementById("saveBut").disabled = false;
+		}
+		
+		//Hàm dùng d? các input field invisible
+		function disableFields(){
+			document.getElementById("currPass").disabled = true;
+			document.getElementById("newPass").disabled = true;
+			document.getElementById("reNewPass").disabled = true;
+		}
+		
+		function ajaxFunction(){
+			var ajaxRequest;
+
+			try{
+				// Opera 8.0+, Firefox, Safari
+				ajaxRequest = new XMLHttpRequest();
+			} catch (e){
+				// Internet Explorer Browsers
+				try{
+					ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
+				} catch (e) {
+					try{
+						ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+					} catch (e){
+						//browsers all not support, rare case
+						alert("Your browser broke!");
+						return false;
+					}
+				}
+
+			}
+			return ajaxRequest;
+		}
+		
+		function loadAjax() {
+			var url = "ajaxLoadEmpDetail.htm";
+			queryString = "";
+			queryString += "empId="+empId;
+			
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			htmlRequest.onreadystatechange = function(){
+				if(htmlRequest.readyState == 4){
+					//alert(htmlRequest.responseText);
+					dat = htmlRequest.responseText;
+					var dat = eval('(' + dat + ')');
+					setValue(dat);
+				}
+			}
+			
+			htmlRequest.open("POST", url,true);
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				
+		//	htmlRequest.setRequestHeader("Content-length", queryString.length);
+		//	htmlRequest.setRequestHeader("Connection", "close");
+			htmlRequest.send(queryString);
+			//htmlRequest.send(null);
+			
+		}
+		
+		var isUser=true;
+		function checkPassword(obj){
+			var queryString = "";
+			queryString += "empId="+empId+"&pass="+obj.value;
+			
+			var url = "ajaxCheckPass.htm";
+			
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			} 
+			
+			htmlRequest.onreadystatechange = function(){
+				if(htmlRequest.readyState == 4){
+					if(trim(htmlRequest.responseText)!='OK'){
+						isUser=false;
+						alert("Wrong password!");
+						obj.focus();
+					}else{
+						isUser=true;
+					}
+				}
+			}
+			
+			htmlRequest.open("POST", url,true);
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				
+		//	htmlRequest.setRequestHeader("Content-length", queryString.length);
+		//	htmlRequest.setRequestHeader("Connection", "close");
+			htmlRequest.send(queryString);
+		}
+		
+		function changePass(){
+			var currPass = document.getElementById('currPass').value;
+			var newPass = document.getElementById('newPass').value;
+			var reNewPass = document.getElementById('reNewPass').value;
+			
+			if(newPass!=reNewPass){
+				alert('The passwords you typed do not match. Please retype the new password in both boxes.');
+			}else{
+			//	alert(isUser);
+				if(isUser==true){
+					var queryString = "";
+					queryString += "empId="+empId+"&pass="+currPass+"&newPass="+newPass;
+				//	alert(queryString);
+					var url = "ajaxUpdatePass.htm";
+					
+					htmlRequest = ajaxFunction();
+					if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+						alert ("Browser does not support HTTP Request");
+						return;
+					} 
+					
+					htmlRequest.onreadystatechange = function(){
+						if(htmlRequest.readyState == 4){
+						//	alert(htmlRequest.responseText);exit();
+							if(trim(htmlRequest.responseText)=='OK'){
+								alert("Password changed.");
+								setTimeout(back, 200);
+							}else{
+								alert("Not change password.");
+							}
+						}
+					}
+					
+					htmlRequest.open("POST", url,true);
+					htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+						
+				//	htmlRequest.setRequestHeader("Content-length", queryString.length);
+				//	htmlRequest.setRequestHeader("Connection", "close");
+					htmlRequest.send(queryString);
+				}
+			}
+		}
+		
+		function back(){
+			window.close();
+		}
+		
+	/*	function back(){
+		//	location.href = "employeeList.htm";
+		}*/
+	</script>
+</head>
+
+<!--<body onload="getCookiesUser();process();">-->
+<body>
+	<!--use for cookie-->
+	<!-- <input id="UserID" hidden value={val userId} />
+	<input id="StartTime" hidden value={val userLoginTime} /> -->
+
+<div id="outter">
+		<div><a href="logout.htm" id="logout">Logout</a><div class="login"><b>{val userName}</b> {val userLoginTime}</div>
+		<div style="float: left;margin-right: 20px;"><img style="width:100px;" src="../../img/logo.PNG"/></div>
+		<div class="bo-bottom bg-line" style="float: right;width: 780px;">
+			<div class="bg-titlemp mp-title">TRƯỜNG ĐẠI HỌC QUỐC TẾ MIỀN ĐÔNG<br><span style="font-size: 13pt;color: #1C1757;padding-left: 46px;">EASTERN INTERNATIONAL UNIVERSITY</span></div>
+			<div><!-- <img src="../../img/restore-icon.png" title="Xem hồ sơ sinh viên" width=50px onClick="back('restoreTemplate');" style="float: right;padding-top: 10px;" /> --><img src="../../img/report-icon.png" title="Thống kê" onClick="window.location.href='listStaff.htm'" style="cursor:pointer;float: right;margin-top:-45px" /></div>
+		</div>
+		<div class="text-center color-title" style="clear:both;"><h1>EXPORT DATA SCREEN</h1></div>
+		
+		<div id="indecator" style="display:none">
+			<form name="clkform" action="javascript:void(0);">
+				<input name="clk" size="25" style="color: #C00000;background-color:transparent;border:none; font-size:10px; font-weight:bold" type="text" value="Loading ----"/>
+			</form>
+		</div>
+		<div id="content" style="margin: 0 auto;">
+			<select id="combobox"  multiple=true style="height:200px;width:180px;margin-right:29px">
+				<option value="ActionScript">ActionScript</option>
+				<option value="AppleScript">AppleScript</option>
+				<option value="Asp">Asp</option>
+				<option value="BASIC">BASIC</option>
+				<option value="C">C</option>
+				<option value="C++">C++</option>
+				<option value="Clojure">Clojure</option>
+				<option value="COBOL">COBOL</option>
+				<option value="ColdFusion">ColdFusion</option>
+				<option value="Erlang">Erlang</option>
+				<option value="Fortran">Fortran</option>
+				<option value="Groovy">Groovy</option>
+				<option value="Haskell">Haskell</option>
+				<option value="Java">Java</option>
+				<option value="JavaScript">JavaScript</option>
+				<option value="Lisp">Lisp</option>
+				<option value="Perl">Perl</option>
+				<option value="PHP">PHP</option>
+				<option value="Python">Python</option>
+				<option value="Ruby">Ruby</option>
+				<option value="Scala">Scala</option>
+				<option value="Scheme">Scheme</option>
+			</select>
+			<input class="chooseNext" value=">>" />
+			<select id="combobox"  multiple=true style="height:200px;width:180px">
+			</select>
+		</div>
+		<div id="footer">
+			<!-- <input id="deleteBut" value="Delete" type="button" onclick="confirm_entry('employee');"/> -->
+			<button id="cancelBut" style="float:right" onClick="window.location.href='listStaff.htm'">Cancel</button>
+			<!-- <input id="saveBut" type="button" value="Save" onclick="changePass();" style="float:right"/> -->
+			<button id="editBut" style="float:right" onclick="enableFields();">Export</button>
+		</div>
+		<!-- Ch?a thông tin c?a save info -->
+		<!-- <div id="saveInfo"></div> -->
+		
+</div>
+<!--<body onload="loadAjax();">
+	<input type="button" value="Submit" onclick="updateAjax();"/>
+</body>-->
+</html>

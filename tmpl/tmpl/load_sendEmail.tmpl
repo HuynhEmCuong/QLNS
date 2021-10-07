@@ -1,0 +1,1279 @@
+<html>
+<head>
+	<title>SEND EMAIL SCREEN</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link type="text/css" href="../../tmpl/css/popup.css" rel="stylesheet" />
+	<script type="text/javascript" src="../../htm/js/indecator.js"></script>
+	<script type="text/javascript" src="../../htm/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../../htm/js/jquery-ui-1.8.9.custom.min.js"></script>
+	<script type="text/javascript" src="../../htm/js/jquery.crypt.js"></script>
+	<script type="text/javascript" src="../../htm/js/base.js"></script>
+	
+	<style type="text/css">
+		body{
+			font-size: 12px;
+		}
+		
+		#outter{
+			width:900px;
+			margin: 0 auto;
+			margin-top:20px;
+		}
+		
+		#header{
+			width:450px;	
+			padding-top:15px;
+		}
+		
+		#content{
+			/*width: 300px;
+			background-color: #DCE6F2;
+			border: 1px solid #8EB4E3;
+			padding: 25px;*/
+		}
+		
+		#footer{
+			text-align:center;
+			margin-top:300px;
+			color: #827EB1;
+		}
+		
+		.row{			
+			width:100%;	
+			//float:left;
+			margin-top:30px;
+			margin-left:283px;
+		}
+		.staff{
+			width:100%;	
+			//float:left;
+			margin-top:30px;
+			margin-left:50px;
+		}
+		.student{
+			width:100%;	
+			//float:left;
+			margin-top:100px;
+			margin-left:50px;
+		}
+		.prpoNo,.prpoNoDate{
+			display: table-cell;
+			vertical-align:middle;			
+			padding-left:4px;			
+		}
+		.prpoNo{
+			font-weight:bold;
+			text-align:left;
+			width:200px;
+			//background-color:#DCE6F2;
+			//border: 1px solid #8EB4E3;
+			padding-right:5px;
+			height:20px;
+		}
+		
+		.prpoNoDate{
+			width:400px;
+			text-align:left;
+		}
+		.title{
+			height:34px;
+		}
+		
+		.inputHeight{
+			height:25px;
+		}
+		
+		.txt-center{
+			text-align:center;
+		}	
+			
+		.txt-center{
+			text-align:center;
+		}
+		
+		#indecator{
+			margin-left: 298px;
+		}
+		/*header*/
+	.bg-titlemp{
+		color:#c00000;
+	}
+	.mp-title{
+		font-size: 16pt;
+		font-weight: bold;
+		margin: 5px;
+		float: left;
+	}
+	.bg-line{
+		color:#4a7ebb;
+		margin-bottom: 10px;
+	}
+	.bo-bottom{
+		border-bottom: 1px solid;
+	}
+	a#logout{
+		float: right;
+		font-size: 10px;
+		margin-top: 15px;
+	}
+	.login{
+		color: blue;
+		float: right;
+		font-size: 15px;
+		font-style: italic;
+		font-weight: normal;
+		margin-right: 10px;
+		margin-top: 13px;
+	}
+	
+	
+	
+	.text-center{
+		text-align:center;
+	}
+	
+	.color-title{
+		color:#17375e;
+	}
+	
+	.text-left{
+		text-align:left;
+	}	
+	a{
+		color:#000000;
+	}
+	
+	a:hover{
+		color:blue;
+	}
+	
+	a.choose{
+		color: blue;
+		font-weight: bold;
+		text-decoration: underline;
+	}
+	
+	.display{
+		display:block;
+	}
+	.display-none{
+		display:none;
+	}		
+	.inputHeight{
+		height:25px;
+	}
+	#emailList{
+		position: absolute;
+		visibility: hidden;
+		width: 300px;
+		//height: 100%;		
+		background-color: #FFFFFF;
+		border-top: 1px solid #8EB4E3;
+		border-left: 1px solid #8EB4E3;
+		border-right: 1px solid #8EB4E3;
+		border-bottom: 1px solid #8EB4E3;
+		padding: 10px 10px 4px 10px;	
+	}
+	.ENMeanPopup{
+		width:150px;
+		display:table-cell;
+		//margin-left:5px;
+		//vertical-align:middle;
+	}
+	.CostCodePopup
+	{
+		width:150px;	
+		display:table-cell;
+		margin-left:5px;
+		//vertical-align:middle;
+	}
+	
+	#titleSResul{
+		width:700px; 
+		display:table;			
+		background-color: #17375E;
+		color: #FFFFFF;
+		font-weight:bold;		
+	}
+	.row_list{				
+		margin-left:100px;
+	}
+	.No,.No1,.Code,.Code1,.Name,.Name1{
+		display: table-cell;
+		vertical-align:middle;			
+	}
+	.No{
+		width:26px;
+		height:32px;
+		//border-bottom: 1px solid #8EB4E3;
+	}
+	.No1{
+		width:24px;
+		height:32px;
+		border-left: 1px solid #8EB4E3;	
+		border-bottom: 1px solid #8EB4E3;
+	}
+	.Code{
+		width:300px;
+		height:32px;
+		//border-bottom: 1px solid #8EB4E3;
+	}
+	.Code1{
+		width:330px;
+		height:32px;
+		border-left: 1px solid #8EB4E3;
+		//text-align:center;
+		//border-top: 1px solid #8EB4E3;
+		border-bottom: 1px solid #8EB4E3;
+		padding-left:5px;
+	}
+	.Name{
+		width:300px;
+		height:32px;
+		//border-bottom: 1px solid #8EB4E3;
+	}
+	.Name1{
+		width:331px;
+		height:32px;
+		border-left: 1px solid #8EB4E3;
+		border-right: 1px solid #8EB4E3;
+		padding-left:5px;
+		//border-top: 1px solid #8EB4E3;
+		border-bottom: 1px solid #8EB4E3;
+	}
+	</style>
+	
+	<script type="text/javascript">
+		var data="";
+		var type="";
+		var info="";
+		
+		function openPopup(idClicked,idOpen)
+		{
+			//Gi? gi� tr? id c?a � ch? k� v?a du?c click v�o
+			signClicked = idClicked;
+			var layer = document.getElementById(idOpen);			
+			bodyWidth = window.innerWidth;
+			bodyHeight = window.innerHeight;
+			//alert(idClicked);
+			var but = document.getElementById(idClicked);
+			//alert(but.offsetTop);
+			if((bodyHeight - but.offsetTop)<50){
+				layer.style.top = (but.offsetTop-200)+'px';
+			}else{
+				layer.style.top = (but.offsetTop+23)+'px';
+			}
+				
+			//alert(bodyWidth-but.offsetLeft);
+				
+			if((bodyWidth-but.offsetLeft)<400)
+			{
+				layer.style.left = (but.offsetLeft-300)+'px';
+			}else layer.style.left = (but.offsetLeft)+'px';
+				
+			//layer.style.visibility = (layer.style.visibility == 'visible') ? 'hidden' : 'visible';
+			layer.style.visibility='visible';
+			ajaxloadEmail();
+			//delete(but);
+			//Gi? gi� tr? id c?a � ch? k� v?a du?c click v�o			
+		}
+		//Dong pop up lai
+		function closePopup(id)
+		{
+			var layer = document.getElementById(id);
+			layer.style.visibility = (layer.style.visibility == 'visible') ? 'hidden' : 'visible';			
+		}
+		
+		//Hien thi danh sach email can tim len pop up
+		function ajaxloadEmail()
+		{
+			var url = "ajaxLoadSchoolEmail.htm";
+			var email=document.getElementById("emailID").value;
+			//alert(email);
+			var queryString = '&email='+email;
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			htmlRequest.onreadystatechange = function(){
+				if(htmlRequest.readyState == 4){
+					//alert(htmlRequest.responseText);
+					dat = htmlRequest.responseText;
+					//alert(dat);
+					dat = eval('(' + dat + ')');
+					loadEmail(dat);					
+				}
+			}
+			
+			htmlRequest.open("POST", url,true);
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			htmlRequest.send(queryString);
+		}
+		function loadEmail(dat)
+		{
+			var contentPopup=document.getElementById("contentEmail");
+			contentPopup.innerHTML="";
+			if(dat!="")
+			{
+				var count=dat.Result.length;
+				//alert(count);
+				for(var j=0;j<count;j++)
+				{
+					var rowPopup = document.createElement('div');
+					rowPopup.setAttribute('class','rowPopup');
+					rowPopup.setAttribute('id','rPopup');
+					
+						var name = document.createElement("div");
+						name.setAttribute('class','CostCodePopup');
+						name.setAttribute('id','NamePopup'+j);
+						name.setAttribute('onclick','getEmail('+j+');');
+						name.innerHTML = dat.Result[j].FullName;
+					
+						var email = document.createElement("div");
+						email.setAttribute('class','ENMeanPopup');
+						email.setAttribute('id','EmailPopup'+j);
+						email.setAttribute('onclick','getEmail('+j+');');
+						email.innerHTML = dat.Result[j].SchoolEmail;
+						
+						var staffID = document.createElement("div");						
+						staffID.setAttribute('id','staffIDPopup'+j);
+						staffID.setAttribute('hidden','true');
+						staffID.innerHTML = dat.Result[j].StaffID;
+						
+					rowPopup.appendChild(name);
+					rowPopup.appendChild(email);
+					rowPopup.appendChild(staffID);
+					contentPopup.appendChild(rowPopup);
+				}
+			}
+			
+		}
+		function getEmail(j)
+		{				
+			var email=document.getElementById('EmailPopup'+j).innerHTML;
+			var name=document.getElementById('NamePopup'+j).innerHTML;
+			var staffID=document.getElementById('staffIDPopup'+j).innerHTML;
+			//alert(staffID);
+			document.getElementById("emailID").value=email;
+			document.getElementById("Name").innerHTML=name;
+			document.getElementById("staffID").innerHTML=staffID;			
+			closePopup('emailList');
+			//for (var i=0; i < document.form_id.chk.length; i++) 			
+			ajaxLoadChBx(email);
+			var report = document.getElementById("content_list");
+			if(report.hasChildNodes()){
+				for(i=0; i<report.childNodes.length;i++){
+					var divid = new String(report.childNodes[i].id);
+					if(divid.indexOf('r-') ==0)
+					{
+						if(report.childNodes[i].childNodes[3].innerHTML==email)
+						{
+							document.getElementById("updateBut").disabled = false;
+							document.getElementById("saveBut").disabled = true;
+							return;							
+						}
+						else 
+						{							
+							document.getElementById("updateBut").disabled = true;
+							document.getElementById("saveBut").disabled = false;
+						}
+					}
+				}
+			}
+						
+		}
+		function ajaxLoadChBx(email)
+		{			
+			var url = "ajaxLoadEmailType_Email.htm";			
+			//alert(email);
+			var queryString = '&email='+email;
+			//alert(queryString);
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			htmlRequest.onreadystatechange = function(){
+				if(htmlRequest.readyState == 4){
+					//alert(htmlRequest.responseText);
+					dat = htmlRequest.responseText;
+					//alert(dat);
+					info = eval('(' + dat + ')');		
+					
+					setvalueChBx(info);	
+				}
+			}
+			
+			htmlRequest.open("POST", url,true);
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			htmlRequest.send(queryString);
+		}
+		function setvalueChBx(info)
+		{
+			var dataArr=info.Info;			
+			var strdataArr=new String(dataArr);
+			dataArr=strdataArr.substr(1,strdataArr.length-2);
+
+			if(dataArr!="")
+			{
+				//alert(1);
+				var dataArrDept=info.DepartmentID;
+				var strdataDept=new String(dataArrDept);
+				dataArrDept=strdataDept.substr(1,strdataDept.length-2);
+				//alert(dataArrDept);
+				
+				var dataArrRoom=info.Room;
+				var strdataRoom=new String(dataArrRoom);
+				dataArrRoom=strdataRoom.substr(1,strdataRoom.length-2);	
+				//alert(dataArrRoom);
+				
+				var checkStaff=document.frmStaff.typeStaff;				
+				var j=0;
+				while(dataArr[j])
+				{
+					var checkStaff=document.frmStaff.typeStaff;
+					for (var i = 0; i < checkStaff.length; i++)
+					{
+						var checked=checkStaff[i].value;
+						if(checked==dataArr[j])
+						{
+							checkStaff[i].checked=true;
+							if((checked=='2'||checked=='1'||checked=='3')&&(checkStaff[i].checked==true))
+							{								
+								showRoom();
+							}	
+						}
+					}
+					
+					var student=document.frmStudent.typeStudent;
+					student.checked=true;
+					if(student.checked==true&&student.value=='4'&&student.value==dataArr[j])
+					{
+						//alert(1);
+						showDepartment();
+					}
+					
+					j++;
+				}
+			}
+			else
+			{
+				var checkStaff=document.frmStaff.typeStaff;	
+				//alert(checkStaff.length);
+				for (var i = 0; i < checkStaff.length; i++)
+				{
+					checkStaff[i].checked=false;
+				}
+				var content1=document.getElementById("roomChk1");
+				content1.innerHTML="";	
+				var content2=document.getElementById("roomChk2");
+				content2.innerHTML="";
+				
+				var student=document.frmStudent.typeStudent;
+				student.checked=false;
+				var depart=document.getElementById("chkStudent");
+				depart.innerHTML="";
+			}
+			
+		}
+		function loadAjax()
+		{
+			var url = "ajaxLoadEmailSendToList.htm";
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			} 
+
+			htmlRequest.onreadystatechange = function(){
+				if(htmlRequest.readyState == 4){
+					//alert(htmlRequest.responseText);
+					if(trim(htmlRequest.responseText)!='NG'){
+						EMAIL = htmlRequest.responseText;						
+						data = eval('(' + EMAIL + ')');
+						showCheckBox();						
+						loadEmailList();
+					}					
+				}
+			}
+			
+			htmlRequest.open("POST", url,true);
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");		
+			htmlRequest.send(null);
+		}
+		function showCheckBox()
+		{
+			var contentStaff=document.getElementById("showCheckStaff");
+			var contentStudent=document.getElementById("showCheckStudent");
+			dataArr=data.EmailStyle;
+			
+			//tao form cua Staff
+			var rowStaff = document.createElement('form');			
+			rowStaff.setAttribute('style','width:200px;');
+			rowStaff.setAttribute('id','frmStaff');	
+			rowStaff.setAttribute('name','frmStaff');
+			
+			//tao form cua Student
+			var rowStudent = document.createElement('form');			
+			rowStudent.setAttribute('style','width:200px;');
+			rowStudent.setAttribute('id','frmStudent');	
+			rowStudent.setAttribute('name','frmStudent');
+			
+			for (i=0;i<dataArr.length;i++)
+			{
+				if(dataArr[i]["ID"]=='4')
+				{
+					var name=document.createElement('div');				
+					name.innerHTML=dataArr[i]["Description"];	
+					name.setAttribute('style','float:right;width:170px;font-size:12pt;');
+					rowStudent.appendChild(name);
+					
+					var chkbox=document.createElement('input');
+					chkbox.setAttribute('type','checkbox');
+					chkbox.setAttribute('name','typeStudent');
+					chkbox.setAttribute('style','width:14px');
+					chkbox.value=dataArr[i]["ID"];
+					chkbox.setAttribute('onclick','clickCheckStudent('+dataArr[i]["ID"]+');');
+					rowStudent.appendChild(chkbox);
+				}
+				else
+				{
+					var name=document.createElement('div');				
+					name.innerHTML=dataArr[i]["Description"];	
+					name.setAttribute('style','float:right;width:170px;font-size:12pt;');
+					rowStaff.appendChild(name);
+					
+					var chkbox=document.createElement('input');
+					chkbox.setAttribute('type','checkbox');
+					chkbox.setAttribute('name','typeStaff');
+					chkbox.setAttribute('style','width:14px');
+					chkbox.value=dataArr[i]["ID"];
+					chkbox.setAttribute('onclick','clickCheckStaff('+dataArr[i]["ID"]+');');
+					rowStaff.appendChild(chkbox);
+				}				
+				
+			}
+			contentStaff.appendChild(rowStaff);
+			contentStudent.appendChild(rowStudent);
+		}
+		//load su kien khi click vao checkbox cua Staff
+		function clickCheckStudent(typeStudent)
+		{			
+			//alert(typeStudent);
+			var student=document.frmStudent.typeStudent;
+			if(student.checked==true&&student.value==typeStudent)
+			{
+				//alert(1);
+				var email=document.getElementById("emailID").value;
+				ajaxShowType(email,typeStudent);
+			}
+			else if(student.checked==false)
+			{
+				var depart=document.getElementById("chkStudent");
+				depart.innerHTML="";
+			}
+		}
+		//load su kien khi click vao checkbox cua Staff
+		function clickCheckStaff(typeStaff)
+		{
+			var email=document.getElementById("emailID").value;
+			var checkbox=document.frmStaff.typeStaff;
+			var number=checkbox.length;
+			//alert(number);
+			for (var i = 0; i < checkbox.length; i++)
+			{					
+				for(var j=i+1;j<number;j++)
+				{
+					//var tmp2=checkbox[j].value;
+					for(var k=i+2;k<number;k++)
+					{
+						for(var z=i+3;z<number;z++)
+						{
+							if(checkbox[i].checked==false&&checkbox[j].checked==false&&checkbox[k].checked==false&&checkbox[z].checked==false)
+							{
+								var content=document.getElementById("roomChk1");
+								content.innerHTML="";
+								var content=document.getElementById("roomChk2");
+								content.innerHTML="";	
+							}
+							else
+							{
+								ajaxShowType(email,typeStaff);
+							}
+						}						
+					}
+					
+				}
+			}
+			
+		}
+		function ajaxShowType(email,typeID)
+		{
+			var url = "ajaxLoadEmailType_Email.htm";
+			
+			var queryString = '&email='+email;
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			htmlRequest.onreadystatechange = function(){
+				if(htmlRequest.readyState == 4){
+					alert(htmlRequest.responseText);
+					dat = htmlRequest.responseText;					
+					type = eval('(' + dat + ')');		
+					setValue(email,typeID);
+				}
+			}
+			
+			htmlRequest.open("POST", url,true);
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			htmlRequest.send(queryString);
+		}
+		function setValue(email,typeID)
+		{
+			var dataArr=type.Info;
+			if(dataArr!="")
+			{
+				//alert(1);
+				ajaxLoadChBx(email);
+			}
+			else
+			{
+				//alert(typeID);
+				if(typeID=='1'&&typeID=='2'&&typeID=='3'&&typeID=='5')
+				{					
+					showRoom();
+				}
+				else if(typeID=='4')
+				{					
+					showDepartment();
+				}
+				/*var checkbox=document.frmStaff.typeStaff;
+				var number=checkbox.length;
+				//alert(number);
+				for (var i = 0; i < checkbox.length; i++)
+				{
+					showRoom();
+				}
+				var student=document.frmStudent.typeStudent;
+				if(student.checked==true&&student.value=='4')
+				{
+					showDepartment();
+				}*/
+			}
+		}
+		function showDepartment()
+		{
+			var content=document.getElementById("chkStudent");
+			content.innerHTML="";
+			//content.setAttribute("style","padding-left:306px;");
+			//content.setAttribute("class","prpoNo");
+			var dar=data.DepartmentList;			
+			var row = document.createElement('form');
+			row.setAttribute('id','frmDept');	
+			row.setAttribute('name','frmDept');
+			row.setAttribute('style','width:240px;');
+			//alert(dataArr.length);
+			for (i=0;i<dar.length;i++)
+			{				
+				var name=document.createElement('div');				
+				name.innerHTML=dar[i]["FullName"];	
+				name.setAttribute('style','float:right;width:200px;font-size:12pt;');
+				row.appendChild(name);
+				
+				var chkbox=document.createElement('input');
+				chkbox.setAttribute('type','checkbox');
+				chkbox.setAttribute('name','depID');
+				chkbox.setAttribute('style','width:14px');
+				chkbox.value=dar[i]["RecordID"];				
+				row.appendChild(chkbox);				
+			}
+			content.appendChild(row);		
+			setValueDepartmentType();
+			
+		}
+		function setValueDepartmentType()
+		{
+			//alert(info.Info.length);
+			var dataArrDept=info.DepartmentID;
+			var strdataDept=new String(dataArrDept);
+			dataArrDept=strdataDept.substr(1,strdataDept.length-2);
+			
+			//alert(dataArrDept);
+			var checkbox=document.frmDept.depID;
+			//alert(checkbox.length);
+			for (var z = 0; z < checkbox.length; z++)
+			{
+				//alert(checkbox[z].value);
+				var checked=checkbox[z].value;
+				var j=0;
+				while(dataArrDept[j])
+				{
+					if(checked==dataArrDept[j])
+					{
+						//alert('a');
+						checkbox[z].checked=true;	
+					}
+					j++;
+				}
+			}
+		}
+		function showRoom()
+		{
+			//alert(typeID);
+			var content1=document.getElementById("roomChk1");
+			content1.innerHTML="";		
+			content1.setAttribute("style","float:left;");
+			
+			var content2=document.getElementById("roomChk2");
+			content2.innerHTML="";		
+			content2.setAttribute("style","margin-left:306px;");
+			
+			
+			dataArr=data.RoomList;
+
+			var allname=document.createElement('div');				
+			allname.innerHTML="All";	
+			allname.setAttribute('style','float:right;width:200px;font-size:12pt;');
+			content1.appendChild(allname);
+			
+			var all=document.createElement('input');
+			all.setAttribute('type','checkbox');
+			all.setAttribute('name','all');
+			all.setAttribute('id','all');
+			all.setAttribute('style','width:14px');
+			all.setAttribute('onclick','selectAllRoom();');
+			all.value='all';				
+			content1.appendChild(all);
+			
+			
+			var row1 = document.createElement('form');
+			row1.setAttribute('id','frmRoom1');	
+			row1.setAttribute('name','frmRoom1');
+			row1.setAttribute('style','width:240px;height:100px;');
+			
+			
+			var row2 = document.createElement('form');
+			row2.setAttribute('id','frmRoom2');	
+			row2.setAttribute('name','frmRoom2');
+			row2.setAttribute('style','width:240px;height:100px;');
+			//alert(dataArr.length/2);
+			for (i=0;i<dataArr.length;i++)
+			{	
+				var j=dataArr.length/2;
+				if(i<=j)
+				{
+					var name=document.createElement('div');				
+					name.innerHTML=dataArr[i]["FullName"];	
+					name.setAttribute('style','float:right;width:200px;font-size:12pt;');
+					row1.appendChild(name);
+					
+					var chkbox=document.createElement('input');
+					chkbox.setAttribute('type','checkbox');
+					chkbox.setAttribute('name','roomID1');
+					chkbox.setAttribute('style','width:14px');
+					chkbox.value=dataArr[i]["RecordID"];				
+					row1.appendChild(chkbox);
+				}
+				else
+				{
+					var name=document.createElement('div');				
+					name.innerHTML=dataArr[i]["FullName"];	
+					name.setAttribute('style','float:right;width:200px;font-size:12pt;');
+					row2.appendChild(name);
+					
+					var chkbox=document.createElement('input');
+					chkbox.setAttribute('type','checkbox');
+					chkbox.setAttribute('name','roomID2');
+					chkbox.setAttribute('style','width:14px');
+					chkbox.value=dataArr[i]["RecordID"];				
+					row2.appendChild(chkbox);
+				}
+			}
+			content1.appendChild(row1);	
+			content2.appendChild(row2);	
+			var dataArrRoom=info.Room;
+			setValueRoom();
+		}
+		function setValueRoom()
+		{
+			//alert("a");
+			var dataArrRoom=info.Room;
+			//var strdataRoom=new String(dataArrRoom);
+			//dataArrRoom=strdataRoom.substr(1,strdataRoom.length-1);			
+			
+			var checkbox1=document.frmRoom1.roomID1;
+			var checkbox2=document.frmRoom2.roomID2;
+			
+				//alert(1);
+				//for(var j=1;j<dataArrRoom.length;j++)				
+				var j=1;
+				while(dataArrRoom[j])
+				{
+					for (var z = 0; z < checkbox1.length; z++)
+					{
+						var checked1=checkbox1[z].value;
+						if(checked1==dataArrRoom[j])
+						{
+							checkbox1[z].checked=true;	
+						}
+					}
+					for (var i = 0; i < checkbox2.length; i++)
+					{
+						var tmp=checkbox2[i].value;
+						if(tmp==dataArrRoom[j])
+						{
+							checkbox2[i].checked=true;
+						}
+					}
+					j++;
+				}			
+			
+		}
+		function selectAllRoom()
+		{
+			var checkbox1=document.frmRoom1.roomID1;			
+			var checkbox2=document.frmRoom2.roomID2;
+			
+			var slAll = document.getElementById ("all");
+			if(slAll.checked==true)
+			{
+				for (var i = 0; i < checkbox1.length; i++)
+				{
+					checkbox1[i].checked=true;
+				}
+				for (var j = 0; j < checkbox2.length; j++)
+				{
+					checkbox2[j].checked=true;
+				}
+			}
+			else if(slAll.checked==false)
+			{
+				for (var i = 0; i < checkbox1.length; i++)
+				{
+					checkbox1[i].checked=false;
+				}
+				for (var j = 0; j < checkbox2.length; j++)
+				{
+					checkbox2[j].checked=false;
+				}
+			}
+		
+		}
+		function loadEmailList()
+		{
+			dataArr=data.StaffList;
+			var content=document.getElementById("content_list");
+			for (i=0;i<dataArr.length;i++) 
+			{
+				var row = document.createElement('div');
+				row.setAttribute('id','r-'+i);
+				if(i%2)
+				{
+					row.setAttribute('class','row_list even rowheight');
+				}
+				else
+				{
+					row.setAttribute('class','row_list rowheight');
+				}
+				var id=dataArr[i].ID;
+				
+				var divdel=document.createElement('div');
+				divdel.setAttribute('class','No1 text-center');
+						
+				var del=document.createElement('input');
+				del.setAttribute('id','delete'+i);
+				del.setAttribute('type','image');
+				del.setAttribute('src','../../img/icon-delete.png');
+				del.setAttribute('name','img'+i);				
+				del.setAttribute('onclick','deleteAjax('+id+');');
+				divdel.appendChild(del);
+				row.appendChild(divdel);
+				
+				var ID=document.createElement('div');
+				ID.setAttribute('id','ID'+i);
+				ID.innerHTML=dataArr[i].ID;
+				ID.setAttribute('hidden',true);
+				row.appendChild(ID);
+				
+				var name=document.createElement('div');
+				name.setAttribute('id','name'+i);
+				name.innerHTML=dataArr[i].Name;	
+				name.setAttribute('class','Code1 text-left');				
+				row.appendChild(name);
+				
+				var email=document.createElement('div');
+				email.setAttribute('id','email'+i);
+				email.setAttribute('class','Name1');					
+				email.innerHTML=dataArr[i].Email;				
+				row.appendChild(email);
+				
+				content.appendChild(row);		
+				
+			}			
+		}
+		function getCheckBoxType()
+		{
+			var str="";
+			var checkStaff=document.frmStaff.typeStaff;			
+			for (var i = 0; i < checkStaff.length; i++)
+			{				
+				if(checkStaff[i].checked==true)
+				{
+					str+=","+checkStaff[i].value;						
+				}				
+			}
+			var student=document.frmStudent.typeStudent;
+			if(student.checked==true)
+			{
+				str+=","+student.value;
+			}
+			
+			str+=",";
+			return str;
+		}
+		function getCheckBoxDepart()
+		{
+			var str="";
+			
+			var student=document.frmStudent.typeStudent;							
+			if((student.value=='4')&&(student.checked==true))
+			{					
+				var departCheck=document.frmDept.depID;
+				for (var j = 0; j < departCheck.length; j++)
+				{
+					if(departCheck[j].checked==true)
+					{
+						str+=","+departCheck[j].value;
+					}
+				}
+				str+=",";
+			}				
+			
+			return str;
+		}
+		function getRoomType()
+		{
+			var str="";
+			var checkbox1=document.frmRoom1.roomID1;
+			var checkbox2=document.frmRoom2.roomID2;
+			for (var i = 0; i < checkbox1.length; i++)
+			{				
+				if(checkbox1[i].checked==true)
+				{
+					str+=","+checkbox1[i].value;						
+				}
+				
+			}
+			for (var j = 0; j < checkbox2.length; j++)
+			{				
+				if(checkbox2[j].checked==true)
+				{
+					str+=","+checkbox2[j].value;						
+				}
+				
+			}
+			str+=",";
+			return str;
+		}
+		function save()
+		{
+			//alert(i);
+			
+			var typeID=getCheckBoxType();
+			
+			var departID=getCheckBoxDepart();
+			
+			var roomID=getRoomType();
+			
+			/*var strdepartID = new String(departID);
+			departID = strdepartID.substr(0,strdepartID.length-1);*/
+			
+			/*var strtype=new String(typeID);
+			typeID=strtype.substr(0,strtype.length-1);*/
+			
+			var strJson = "";
+			strJson = '{';
+			strJson += '"emailList":[{';
+						
+			if(document.getElementById("emailID").value!="")
+			{
+				
+				strJson += '"staffID":"' +document.getElementById("staffID").innerHTML + '",';
+				strJson += '"name":"' +document.getElementById("Name").innerHTML + '",';	
+				strJson += '"email":"' +document.getElementById("emailID").value + '",';
+				strJson += '"typeID":"' +typeID+ '",';
+				strJson += '"departID":"' +departID+ '",';	
+				strJson += '"roomID":"' +roomID+ '",';	
+				strJson += '"modified":"{val userName}"}';
+				strJson += "}";
+			}
+			else
+			{
+				strJson += "}";		
+			}
+			//strJson += "}";					
+			var str = new String(strJson);
+			strJson = str.substr(0,str.length-1) + ']}';
+			strJson = strJson.replace(/&/g, "%26");
+			strJson = strJson.replace(/\+/g, "%2B");
+			alert(strJson);
+			
+			addAjax(strJson);
+		}
+		function addAjax(saveInfo) 
+		{
+			document.getElementById("saveBut").disabled = true;
+			var content=document.getElementById("content_list");
+			//document.getElementById("roomChk1").innerHTML="";
+			//document.getElementById("roomChk2").innerHTML="";
+			//document.getElementById("chkStudent").innerHTML="";
+			var url = "ajaxUpdateSend_email_to.htm";
+			var queryString = "";
+			queryString += "info="+saveInfo;
+			//alert(queryString);
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			htmlRequest.open("POST", url,true);
+			htmlRequest.onreadystatechange = function()
+			{
+				if(htmlRequest.readyState == 4)
+				{
+					if(htmlRequest.responseText = 'OK')
+					{
+						alert("Successful");
+						//alert(htmlRequest.responseText);
+						content.innerHTML="";
+						loadAjax();
+						document.getElementById("emailID").value="";
+						document.getElementById("Name").innerHTML="";
+						document.getElementById("showCheckStaff").innerHTML="";
+						document.getElementById("roomChk1").innerHTML="";
+						document.getElementById("roomChk2").innerHTML="";
+						document.getElementById("showCheckStudent").innerHTML="";
+						document.getElementById("chkStudent").innerHTML="";
+						//document.getElementById("saveBut").disabled = true;
+					}
+					else
+					{
+						alert("Not successful");
+						return;
+					}
+					//document.getElementById("saveBut").disabled =true;
+					//document.getElementById("addInfo").disabled =false;
+					//document.getElementById("Edit").disabled =false;
+				}
+			}
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			htmlRequest.send(queryString);
+		}
+		function deleteAjax(id)
+		{
+			//alert(id);
+			//document.getElementById("saveBut").disabled = true;
+			var content=document.getElementById("content_list");
+			//document.getElementById("showCheck").innerHTML="";
+			//document.getElementById("departmentChk").innerHTML="";
+			var url = "ajaxUpdateSend_email_to.htm";
+			var queryString = "";
+			queryString += "isDeleted="+'1'+"&ID="+id;
+			//alert(queryString);
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			htmlRequest.onreadystatechange = function(){
+				if(htmlRequest.readyState == 4){
+					//alert(htmlRequest.responseText);
+					
+					if(htmlRequest.responseText != 'NG')
+					{
+						alert('Delete email successful!');
+						content.innerHTML="";
+						document.getElementById("showCheckStaff").innerHTML="";
+						document.getElementById("roomChk1").innerHTML="";
+						document.getElementById("roomChk2").innerHTML="";
+						document.getElementById("showCheckStudent").innerHTML="";
+						document.getElementById("chkStudent").innerHTML="";
+						loadAjax();						
+					}
+				}
+			}
+			
+			htmlRequest.open("POST", url,true);
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				
+			//htmlRequest.setRequestHeader("Content-length", queryString.length);
+			//htmlRequest.setRequestHeader("Connection", "close");
+			htmlRequest.send(queryString);
+		}
+		function update()
+		{
+			var typeID=getCheckBoxType();
+			
+			var departID=getCheckBoxDepart();
+			
+			var roomID=getRoomType();
+			
+			/*var strdepartID = new String(departID);
+			departID = strdepartID.substr(0,strdepartID.length-1);*/
+			
+			/*var strtype=new String(typeID);
+			typeID=strtype.substr(0,strtype.length-1);*/
+			
+			var strJson = "";
+			strJson = '{';
+			strJson += '"emailList":[{';
+						
+			if(document.getElementById("emailID").value!="")
+			{
+				
+				strJson += '"staffID":"' +document.getElementById("staffID").innerHTML + '",';
+				strJson += '"name":"' +document.getElementById("Name").innerHTML + '",';	
+				strJson += '"email":"' +document.getElementById("emailID").value + '",';
+				strJson += '"typeID":"' +typeID+ '",';
+				strJson += '"departID":"' +departID+ '",';	
+				strJson += '"roomID":"' +roomID+ '",';	
+				strJson += '"modified":"{val userName}"}';
+				strJson += "}";
+			}
+			else
+			{
+				strJson += "}";		
+			}
+			//strJson += "}";					
+			var str = new String(strJson);
+			strJson = str.substr(0,str.length-1) + ']}';
+			strJson = strJson.replace(/&/g, "%26");
+			strJson = strJson.replace(/\+/g, "%2B");
+			//alert(strJson);
+			
+			updateAjax(strJson);
+		}
+		function updateAjax(saveInfo)
+		{
+			document.getElementById("updateBut").disabled = true;
+			var content=document.getElementById("content_list");			
+			var url = "ajaxUpdateSendEmail_email.htm";
+			var queryString = "";
+			queryString += "info="+saveInfo;
+			//alert(queryString);
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			htmlRequest.open("POST", url,true);
+			htmlRequest.onreadystatechange = function()
+			{
+				if(htmlRequest.readyState == 4)
+				{
+					if(htmlRequest.responseText = 'OK')
+					{
+						alert("Successful");
+						//alert(htmlRequest.responseText);
+						content.innerHTML="";
+						loadAjax();
+						document.getElementById("emailID").value="";
+						document.getElementById("Name").innerHTML="";
+						document.getElementById("showCheckStaff").innerHTML="";
+						document.getElementById("roomChk1").innerHTML="";
+						document.getElementById("roomChk2").innerHTML="";
+						document.getElementById("showCheckStudent").innerHTML="";
+						document.getElementById("chkStudent").innerHTML="";
+						//document.getElementById("saveBut").disabled = true;
+					}
+					else
+					{
+						alert("Not successful");
+						return;
+					}
+					//document.getElementById("saveBut").disabled =true;
+					//document.getElementById("addInfo").disabled =false;
+					//document.getElementById("Edit").disabled =false;
+				}
+			}
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			htmlRequest.send(queryString);
+		}
+	</script>
+</head>
+
+<body scroll="no" style="overflow-y:hidden;" onload="getCookiesUser();loadAjax();" >
+	<!--use for cookie-->
+	<input id="UserID" hidden value={val userId} />
+	<input id="StartTime" hidden value={val userLoginTime} />
+	<input id="email" hidden value={val email} />
+	<input id="userName" hidden value={val userName} />
+	<!-- pop up-->
+	<div id="emailList" >		
+		<div style="height:151px; overflow-y:auto;">
+			<div id="contentEmail"></div>
+		</div>
+		<div style="margin-top:4px;">
+			<button style="float:right" onclick="closePopup('emailList')">Cancel</button>					
+		</div>
+	</div>
+	<!-- content web-->
+	<div id="outter">
+		<div><a href="logout.htm" id="logout">Logout</a><div class="login"><b>{val userName}</b> {val userLoginTime}</div></div>
+		<div style="float: left;margin-right: 20px;"><img style="width:100px;" src="../../img/logo.PNG"/></div>
+		<div class="bo-bottom bg-line" style="float: right;width: 779px;">
+			<div class="bg-titlemp mp-title">TRƯỜNG ĐẠI HỌC QUỐC TẾ MIỀN ĐÔNG<br><span style="font-size: 13pt;color: #1C1757;padding-left: 46px;">EASTERN INTERNATIONAL UNIVERSITY</span></div>
+		</div>		
+		<div id="content" style="margin: 10px auto;clear:both;width:900px;">
+			<div class="color-title text-center "><h1>SEND EMAIL TO</h1></div>				
+			<div class="row" id="row">				
+				<div class="prpoNoDate">
+					<input id="emailID" onclick="this.value='';" onkeyup="openPopup('emailID','emailList');" class="inputHeight" type="text"  placeholder="Email" size="30">
+					<div id="Name" hidden></div>
+					<div id="staffID" hidden></div>
+					<input id="saveBut"  type="button" disabled onclick="save();" value="Add"/>
+					<input id="updateBut"  type="button" disabled onclick="update();" value="Update"/>
+					<!--<button name="del_im" onclick="revPer(this)">Delete row</button>	-->			
+				</div>
+				
+				<div id="departShow" style="margin-left:420px;">				
+					
+				</div>
+			</div>
+			<div >
+				<div class="staff" id="staff">
+					<div style="font-size:14pt"><strong>Staff</strong></div>
+					<div style="float:left;margin-left:70px;" class="prpoNo" id="showCheckStaff"></div>
+					<div style="margin-left:70px;" class="prpoNo">
+					
+						<!--<div style="float:left;margin-left:70px;" id="SelectStaff">
+							<input type="checkbox" name="SlStaff" style="float:left;width:200px;font-size:12pt;"  value="staff"/>
+						</div>-->
+						<div style="float:left;margin-left:70px;" id="roomChk1"></div>						
+						<div style="float:left;margin-left:70px;" id="roomChk2"></div>
+					</div>
+					
+				</div>
+				<div id="student" class="student">
+					<div style="font-size:14pt"><strong>Student</strong></div>
+					<div style="float:left;margin-left:70px;"class="prpoNo" id="showCheckStudent"></div>
+					<div style="margin-left:70px;"class="prpoNo" id="chkStudent"></div>
+				</div>
+			</div>
+			
+			
+		</div>
+		<div style="height:10px;"></div>
+		<div id="titleSResul" style="margin-top:80px;margin-left:100px;">
+			<div class="row_list txt-center">
+				<div class="No"></div>
+				<div class="Code">FullName</div>
+				<div class="Name">Email To</div>
+			</div>
+		</div>
+		<div id="content_list"></div>		
+	</div>
+</html>

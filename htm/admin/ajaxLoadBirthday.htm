@@ -1,0 +1,30 @@
+<?php
+	session_unset();
+	session_start();
+	
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+
+	//print_r($_POST);
+	$oDB 	= 	new DBCommon();
+	$conn 	= 	$oDB->stl_openConn();
+	
+	$month 	= 	date(n);
+	$date 	= 	date(j);
+
+	//$q_empList = "SELECT `StaffID`,`FullName` FROM `staff_tbl` WHERE `isDeleted` = 0 AND `isStaff`=1 OR `isStaff`=0 ORDER BY `StaffID`";
+	$q_empList 	=	"SELECT CONCAT(`LastName`,' ',`MiddleName`) AS HoLot,`FirstName` as Ten, CONCAT(`BirthDate`,'-',`BirthMonth`,'-',`BirthYear`) AS NgaySinh FROM `staff_tbl` WHERE `isDeleted`=0 AND (`BirthMonth`=$month) AND `BirthDate`>=$date ORDER BY `BirthDate`,`BirthMonth`";
+	//print_r($q_empList);
+	$rs_empList =	$oDB->stl_db_select($q_empList, $conn);
+
+	if(is_array($rs_empList)){
+		foreach($rs_empList as $key=>$value){
+			$data1["Result"]	.=	trim($rs_empList[$key]->HoLot)." ".$rs_empList[$key]->Ten.": ";
+			$data1["Result"]	.=	$rs_empList[$key]->NgaySinh."&nbsp;&nbsp;&nbsp;";
+		}
+	}
+	
+	echo json_encode($data1);
+	$oDB->stl_closeConn($conn);
+?>

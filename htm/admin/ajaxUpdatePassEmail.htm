@@ -1,0 +1,32 @@
+<?php
+	session_start();
+	
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	
+	$today = date("Y-m-d h:i:s");
+	$modifiedby = "";
+	if(isset($_SESSION['userName']) && $_SESSION['userName']!=""){
+		$modifiedby = $_SESSION['userName'];
+	}
+	
+	if(isset($_POST['email']) && isset($_POST['pass']) && isset($_POST['newPass']) && !empty($_POST['email']) && !empty($_POST['departmentID']) && !empty($_POST['departmentID'])){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		//$passnew = $_POST['newPass'];
+		//$passold = $_POST['pass'];
+		$passold = generatePassEmailConfig($_POST['pass'],1,$_POST['departmentID']);
+		$passnew = generatePassEmailConfig($_POST['newPass'],1,$_POST['departmentID']);
+
+		$q_update_employee = "UPDATE `email_tbl` SET `Password` = '".$passnew."',`LastUpdate` = '".$today."',`ModifyBy` = '".$modifiedby."'
+							WHERE `email_tbl`.`DepartmentID` = '".$_POST['departmentID']."' AND `email_tbl`.`Email` = '".$_POST['email']."' AND `email_tbl`.`Password` = '".$passold."'";
+							
+		$rs_update = $oDB->stl_db_change($q_update_employee, $conn);
+		echo $rs_update;
+		
+		$oDB->stl_closeConn($conn);
+	}
+?>

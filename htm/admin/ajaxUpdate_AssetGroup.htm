@@ -1,0 +1,15 @@
+<?php
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+	$reDate=changeDateFormat($_POST['rptDate'],"words2num");
+	$exp=changeDateFormat($_POST['exp'],"words2num");
+	$q_update="Update `group_asset_tbl` set `Descript`='".$_POST['descpt']."',`QuantityReceipt`='".$_POST['Rept']."',`QuantityStore`='".$_POST['store']."',`Manufacture`='".$_POST['manu']."',`PONo`='".$_POST['PO']."',`Amount`=".$_POST['amount'].",`ReceiptDate`='".$reDate."',`Exp`='".$exp."' where `GroupCode`='".$_POST['groupCode']."'";
+	//$q_update="Update a71 set `SheetNumber`='".$_POST['sheet']."',`AmountUSD`=".$_POST['amount']." where `PJCode`='".$_POST['pjcode']."' and `CostCode`='".$_POST['costcode']."' and `Number`=".$_POST['number'];
+	$rs=$oDB->stl_db_change($q_update, $conn);
+	echo $rs;
+	$oDB->stl_closeConn($conn);
+?>

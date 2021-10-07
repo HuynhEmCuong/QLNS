@@ -1,0 +1,916 @@
+	<?php
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once(EIU_LIB.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'SwiftMail/lib/swift_required.php');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	
+	/*
+		@author: 	Hien Huynh
+		@des:		Hàm dùng để insert dữ liệu vào table staff_tbl
+		@date:		06/12/2011
+		@param: 	$email
+		@return:	true|false
+	*/
+	
+	function insertStaffInfo($arrUser){
+		//print_r($arrUser);
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		$today = date("Y-m-d h:i:s");
+		$modifyBy = $_SESSION['userName'];
+		
+		$q_user = "INSERT INTO `staff_tbl` (
+		`StaffID`,`FirstName`, `MiddleName`, `LastName`,`FullName`,`Password`,
+		`BirthDate`, `BirthMonth`, `BirthYear`, `DepartmentID`, 
+		`Type`, `SchoolEmail`, `Address`, `Phone`, `Mobile`,
+		`Passport`,`PrivateEmail`,`City`,`CityCode`,`isDeleted`,
+		`CreateContractDate`,`ExpireContractDate`,`ImagePath`,
+		`CreateDate`, `LastUpdate`, `ModifyBy`,`Nationality`,`isStaff`,`Gender`) 
+		VALUES (
+		'".$arrUser['code']."','".$arrUser['firstName']."', '".$arrUser['middleName']."', '".$arrUser['lastName']."', '".$arrUser['fullname']."','pwd".$arrUser['code']."',
+		'".$arrUser['dateBirth']."', '".$arrUser['monthBirth']."', '".$arrUser['yearBirth']."', '".$arrUser['departmentID']."', 
+		'".$arrUser['type']."', '".$arrUser['email']."', '".$arrUser['address']."', '".$arrUser['phone']."', '".$arrUser['mobile']."', 
+		'".$arrUser['passport']."','".$arrUser['privateEmail']."','".$arrUser['city']."','".$arrUser['cityCode']."','".$arrUser['isDeleted']."',
+		'".$arrUser['createContractDate']."','".$arrUser['expireContractDate']."','".$arrUser['imagePath']."',
+		'$today', CURRENT_TIMESTAMP,'$modifyBy','".$arrUser['nationality']."',".$arrUser['isStaff'].",".$arrUser['gender'].");";
+		
+		//print_r($q_user);exit();
+		$rs_insert = $oDB->stl_db_change($q_user, $conn);
+		return $rs_insert;
+		$oDB->stl_closeConn($conn);
+	}
+	
+	/*
+		@author: 	Hien Huynh
+		@des:		Hàm dùng để update dữ liệu vào table staff_tbl
+		@date:		06/12/2011
+		@param: 	$email
+		@return:	true|false
+	*/
+	
+	function updateStaffInfo($arrUser){
+		//print_r($arrUser);exit();
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		$today = date("Y-m-d h:i:s");
+		$modifyBy = $_SESSION['userName'];
+		
+		if(isset($arrUser['FirstName'])&&!empty($arrUser['FirstName'])){
+			$arrUser['FullName'] = $arrUser['FirstName'];
+		}
+		if(isset($arrUser['MiddleName'])&&!empty($arrUser['MiddleName'])){
+			$arrUser['FullName'] .= " ".$arrUser['MiddleName'];
+		}
+		
+		if(isset($arrUser['LastName'])&&!empty($arrUser['LastName'])){
+			$arrUser['FullName'] .= " ".$arrUser['LastName'];
+		}
+		
+		$q_user = "UPDATE `staff_tbl` 
+				SET `Passport` = '".$arrUser['Passport']."', `FirstName` = '".$arrUser['FirstName']."', `MiddleName` = '".$arrUser['MiddleName']."', 
+				`LastName` = '".$arrUser['LastName']."', `FullName` = '".$arrUser['FullName']."', `Gender` = '".$arrUser['Gender']."', 
+				`BirthDate` = '".$arrUser['BirthDate']."', `BirthMonth` = '".$arrUser['BirthMonth']."', `BirthYear` = '".$arrUser['BirthYear']."', 
+				`PrivateEmail` = '".$arrUser['PrivateEmail']."', `Nationality` = '".$arrUser['Nationality']."', 
+				`DepartmentID` = '".$arrUser['DepartmentID']."', `Type` = '".$arrUser['Type']."', `Phone` = '".$arrUser['Phone']."', 
+				`Mobile` = '".$arrUser['Mobile']."', `Address` = '".$arrUser['Address']."', 
+				`City` = '".$arrUser['City']."',`CreateContractDate` = '".$arrUser['CreateContractDate']."',`ExpireContractDate` = '".$arrUser['ExpireContractDate']."', `CityCode` = '".$arrUser['CityCode']."'";
+		if(!empty($arrUser['ImageName'])){
+			$q_user .= ",`ImagePath` = '".$arrUser['ImageName']."'";
+		}
+		$q_user .= ",`isDeleted` = '".$arrUser['isDeleted']."', `ModifyBy` = '".$modifyby."' 
+				WHERE `staff_tbl`.`StaffID` = '".$arrUser['StaffID']."' LIMIT 1;";
+
+				
+		//print_r($q_user);exit();
+		$rs_update = $oDB->stl_db_change($q_user, $conn);
+		return $rs_update;
+		$oDB->stl_closeConn($conn);
+	}
+	
+	
+	/*
+		@author: 	Hien Huynh
+		@des:		Hàm dùng để kiểm tra email và staffID đã tồn tại chưa
+		@date:		02/12/2011
+		@param: 	$email,$staffID
+		@return:	true|false
+	*/
+	
+	function checkExistStaff($email,$code){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		$q_select = "SELECT count(*) as count FROM `staff_tbl` WHERE `SchoolEmail` LIKE '$email' AND `StaffID`='$code' AND `isDeleted`=0";
+	
+		$rs_select = $oDB->stl_db_select($q_select, $conn);
+
+		if($rs_select[0]->count<1){
+			return false;
+		}else{
+			return true;
+		}
+		
+		$oDB->stl_closeConn($conn);
+	}
+	
+	/*
+		@author: 	Hien Huynh
+		@des:		Hàm dùng để kiểm tra email đã tồn tại chưa
+		@date:		02/12/2011
+		@param: 	$email
+		@return:	true|false
+	*/
+	
+	function checkExistEmail($s_value,$email){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		//Tạo mới email
+		if(is_array($s_value)){
+			$email1 = $email."@eiu.edu.vn";
+		}else{//kiểm tra email tồn tại
+			$email1 = $s_value;
+			$email = $email1;
+		}
+		
+		$q_select = "SELECT `SchoolEmail` FROM `staff_tbl` WHERE `SchoolEmail` LIKE '%$email%'";
+	//	print_r($q_select);
+		$rs_select = $oDB->stl_db_select($q_select, $conn);
+		//print_r($rs_select);
+		if(count($rs_select) < 1){
+			return $email1;
+		}else{
+			if(is_array($s_value) && is_array($rs_select)){
+				foreach($rs_select as $key=>$value){
+					$arrEmail[$key] = $rs_select[$key]->SchoolEmail;
+				}
+				
+				if(array_search($email1, $arrEmail) !== false){
+					$middleName = strtolower(changeTVToEnglish($s_value['middleName']));
+					$middleName = str_replace(" ", "", $middleName);
+					$email2 = $email.$middleName."@eiu.edu.vn";
+					
+					if(array_search($email2, $arrEmail) !== false){
+						$yearBirth = $s_value['yearBirth'];
+						$monthBirth = $s_value['monthBirth'];
+						$dateBirth = $s_value['dateBirth'];
+						if($s_value['monthBirth']<10){
+							$monthBirth = '0'.$s_value['monthBirth'];
+						}
+						
+						if($s_value['dateBirth']<10){
+							$dateBirth = '0'.$s_value['dateBirth'];
+						}
+						
+						$email3 = $email.$middleName.$yearBirth."@eiu.edu.vn";
+						if(array_search($email3, $arrEmail) !== false){
+							$email4 = $email.$middleName.$yearBirth.$monthBirth."@eiu.edu.vn";
+							if(array_search($email4, $arrEmail) !== false){
+								$email5 = $email.$middleName.$yearBirth.$monthBirth.$dateBirth."@eiu.edu.vn";
+								if(array_search($email5, $arrEmail) !== false){
+									return 'NG';
+								}else{
+									return $email5;
+								}
+							}else{
+								return $email4;
+							}
+						}else{
+							return $email3;
+						}
+					}else{
+						return $email2;
+					}
+				}else{
+					return $email1;
+				}
+			}else{
+				return 'NG';
+			}
+		}
+		
+		$oDB->stl_closeConn($conn);
+	}
+	
+	
+	/*
+		@author: 	Hien Huynh
+		@des:		Hàm dùng để kiểm tra dạng email là public hay private
+		@date:		26/04/2012
+		@param: 	$email: SchoolEmail, $code: StaffID
+		@return:	true: email chung; false: email cá nhân
+	*/
+	function checkTypeEmail($email){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		$q_select = "SELECT `isStaff` FROM `staff_tbl` WHERE `SchoolEmail`='$email' AND `isDeleted`=0";
+	//	print_r($q_select);
+		$rs_select = $oDB->stl_db_select($q_select, $conn);
+	//	print_r($rs_select);exit();
+		if($rs_select[0]->isStaff==2){
+			return true;
+		}else{
+			return false;
+		}
+		
+		$oDB->stl_closeConn($conn);
+	}
+	
+	/*
+		@author: 	Hien Huynh
+		@des:		Hàm dùng để lưu thông tin đọc từ file Excel xuống database, không trả về 
+					các row có đơn vị rỗng
+		@date:		02/12/2011
+		@param: 	$data: dữ liệu đọc từ file Excel user uploaded
+		@return:	OK|NG
+	*/
+	function importDataToDB($data,$columnUnit){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+	
+		$arrData='';
+	//	print_r($data);
+		//Duyệt số file import vào
+		foreach($data as $key=>$value){
+			$arrCreateEmail = '';
+			$arrResetEmail = '';
+			//Duyệt số dòng trong file import vào
+			foreach($value as $s_key=>$s_value){
+				//$s_value['fullname'] = '';
+				//Check department not null
+				if(isset($s_value[$columnUnit]) && !empty($s_value[$columnUnit])){
+					//Check create a new email or reset email
+					$code = $s_value[1];//mã nhân viên
+					$email = $s_value[9];//email trường
+					//case 1: code and email are not null->reset email for private user
+					if(!empty($email)&&empty($code)){
+						$email = checkExistEmail($s_value[9]);
+						// case: email not exist-> create a new public email
+						$s_value['isPublicEmail'] = 1;
+						if($email!='NG'){
+							$arrCreateEmail[$s_key] = $s_value;
+						}else{//case: email existed -> reset email public
+							if(checkTypeEmail($s_value[9])==true){
+								$arrResetEmail[$s_key] = $s_value;
+							}
+						}
+					}else if(!empty($email)&&!empty($code)){
+						if(checkExistStaff($email,$code)==true){
+							$arrResetEmail[$s_key] = $s_value;//reset email staff
+						}
+					}else if(empty($code)&&empty($email)){//case: code is null and email is null->create a new email staff
+						$arrCreateEmail[$s_key] = $s_value;
+					}
+				}
+			}
+		//	print_r($arrResetEmail);exit();
+			$arrData[$key]['createEmail'] = $arrCreateEmail;
+			$arrData[$key]['resetEmail'] = $arrResetEmail;
+		}
+
+		return $arrData;
+		$oDB->stl_closeConn($conn);
+	}
+	
+	
+	function createNewEmail($s_value){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		//Kiểm tra tạo email chung hay email cá nhân: check column email
+		if(isset($s_value['isPublicEmail']) && $s_value['isPublicEmail']==1){
+			$email = checkExistEmail($s_value['email']);
+		//	print_r("1");
+			if($email != 'NG'){
+				//Tạo mã
+				$q_select = "SELECT SUBSTRING(MAX(`StaffID`),3,4) as code FROM `staff_tbl` WHERE `isStaff`=2 AND `StaffID` LIKE '".$s_value['departmentCode']."_%'";
+				$rs_select = $oDB->stl_db_select($q_select, $conn);
+				$code = (float)($rs_select[0]->code);
+				if($code >= 0 && $code < 9){
+					$code = "_00".($code+1);
+				}else if($code >= 9 && $code < 99){
+					$code = "_0".($code+1);
+				}else{
+					$code = $code+1;
+				}
+				
+				$s_value['code'] = $s_value['departmentCode'].$code;
+				$s_value['isStaff'] = 2;
+				if(insertStaffInfo($s_value)=='OK'){
+					return $s_value;
+				}
+			}else{
+				//$arrRowNotImport[$key][$s_key] = $s_key;
+			}
+		}else{
+			// Xoa khoang trang dau va cuoi chuoi
+			$s_value['firstName'] = trim($s_value['firstName']," ");
+			$s_value['lastName'] = trim($s_value['lastName']," ");
+			$s_value['middleName'] = trim($s_value['middleName']," ");
+
+			// Chuyen sang chu thuong va loai bo dau
+			$firstName = strtolower(changeTVToEnglish($s_value['firstName']));
+			$lastName = strtolower(changeTVToEnglish($s_value['lastName']));
+			
+			// Lay full name cua staff
+			$s_value['fullname'] = $s_value['lastName'];
+			if(!empty($s_value['middleName'])){
+				$s_value['fullname'] .= " ".$s_value['middleName'];
+			}
+			$s_value['fullname'] .= " ".$s_value['firstName'];
+			
+			if($s_value['isCreateNewEmail']=='true'){
+				$name = $firstName.".".$lastName;
+				//validate FirstName, LastName, YearBirth, DepartmentID
+				if(isset($s_value['firstName']) && !empty($s_value['firstName']) && isset($s_value['lastName']) && !empty($s_value['lastName']) && isset($s_value['yearBirth']) && !empty($s_value['yearBirth']) && isset($s_value['department']) && !empty($s_value['department'])){
+					//Kiem tra email da ton tai chua
+					$email = checkExistEmail($s_value, $name);
+					$s_value['email'] = $email;
+				//	print_r($email);
+					if(!empty($email) && $email != 'NG'){
+						//Tạo mã
+						$q_select = "SELECT SUBSTRING(MAX(`StaffID`),3,4) as code FROM  `staff_tbl` WHERE `isStaff`<>2 AND `StaffID` LIKE '".$s_value['departmentCode']."_%'";
+						$rs_select = $oDB->stl_db_select($q_select, $conn);
+					//	print_r($q_select);
+					//	print_r($rs_select);
+						$code = (float)($rs_select[0]->code);
+						if($code >= 0 && $code < 9){
+							$code = "000".($code+1);
+						}else if($code >= 9 && $code < 99){
+							$code = "00".($code+1);
+						}else if($code >= 99 && $code < 999){
+							$code = "0".($code+1);
+						}else{
+							$code = $code+1;
+						}
+						//print_r($code);exit();
+						$s_value['code'] = $s_value['departmentCode'].$code;
+						$s_value['isStaff'] = 0;
+					//	print_r($s_value);exit();
+						if(insertStaffInfo($s_value)=='OK'){
+							return $s_value;
+						}
+					}else if($email == 'NG'){
+						//$arrRowNotImport[$key][$s_key] = $s_key;
+					}
+				}
+			}else{
+				//Tạo mã
+				$q_select = "SELECT SUBSTRING(MAX(`StaffID`),3,4) as code FROM  `staff_tbl` WHERE `isStaff`<>2 AND `StaffID` LIKE '".$s_value['departmentCode']."_%'";
+				$rs_select = $oDB->stl_db_select($q_select, $conn);
+			//	print_r($q_select);
+			//	print_r($rs_select);
+				$code = (float)($rs_select[0]->code);
+				if($code >= 0 && $code < 9){
+					$code = "000".($code+1);
+				}else if($code >= 9 && $code < 99){
+					$code = "00".($code+1);
+				}else if($code >= 99 && $code < 999){
+					$code = "0".($code+1);
+				}else{
+					$code = $code+1;
+				}
+			//	print_r($code);exit();
+				$s_value['code'] = $s_value['departmentCode'].$code;
+				$s_value['isStaff'] = 0;
+				$s_value['email'] = NULL;
+				if(insertStaffInfo($s_value)=='OK'){
+					return $s_value;
+				}
+			}
+		}
+		
+		return 'NG';
+	}
+	
+	function insertResetPwdEmail($arrUser){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		$today = date("Y-m-d h:i:s");
+		$modifyBy = $_SESSION['userName'];
+		
+		$q_user = "INSERT INTO `resetpwdemail_tbl` (`StaffID`, `FileName`, `CreateDate`, `isDeleted`,`ModifyBy`) VALUES ('".$arrUser['StaffID']."', NULL, CURRENT_TIMESTAMP, '','$modifyBy')";
+		
+		//print_r($q_user);
+		$rs_insert = $oDB->stl_db_change($q_user, $conn);
+		return $rs_insert;
+		$oDB->stl_closeConn($conn);
+	}
+	
+	function loadListImportedRows($data){
+		//Load data import database
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		$conditions = "";
+		if(isset($data['userID']) && !empty($data['userID'])){
+			$conditions .= " AND s.`Code` LIKE '%".$data['userID']."%'";
+		}
+		
+		if(isset($data['userName']) && !empty($data['userName'])){
+			$conditions .= " AND s.`FullName` LIKE '%".$data['userName']."%'";
+		}
+		
+		if(isset($data['fromdate']) && !empty($data['fromdate'])){
+			$fromdate = convertDate($data['fromdate'], "/");
+			$conditions .= " AND DATE(s.`CreateDate`) >= '".$fromdate."'";
+		}
+		
+		if(isset($data['todate']) && !empty($data['todate'])){
+			$todate = convertDate($data['todate'], "/");
+			$conditions .= " AND DATE(s.`CreateDate`) <= '".$todate."'";
+		}
+		
+		if(isset($data['department']) && !empty($data['department'])){
+			$conditions .= " AND s.`DepartmentID` = ".$data['department'];
+		}
+		
+		$q_sel = "SELECT s.`RecordID`,s.`Code`,d.`FullName`,s.`FirstName`,s.`MiddleName`,s.`LastName`,s.`DateBirth`,s.`MonthBirth`,s.`YearBirth`,s.`EmailSchool`,s.`DepartmentID` FROM `staffinfo` as s LEFT JOIN `department` as d ON(s.DepartmentID=d.RecordID) WHERE s.`isDeleted`=0".$conditions;
+	//	print_r($q_sel);
+		$rs_sel = $oDB->stl_db_select($q_sel, $conn);
+	//	print_r($rs_sel);
+		$data2 = "";
+		foreach($rs_sel as $key=>$val){
+			$data2[$key]['HoLotVN'] = $rs_sel[$key]->LastName;
+			if(!empty($rs_sel[$key]->MiddleName)){
+				$data2[$key]['HoLotVN'] .= " ".$rs_sel[$key]->MiddleName;
+			}
+			$data2[$key]['TenVN'] .= " ".$rs_sel[$key]->FirstName;
+			
+			$data2[$key]['Birthday'] = $rs_sel[$key]->DateBirth."/".$rs_sel[$key]->MonthBirth."/".$rs_sel[$key]->YearBirth;
+			if($rs_sel[$key]->YearBirth==0){
+				$data2[$key]['Birthday']='';
+			}
+			
+			$data2[$key]['Email'] = $rs_sel[$key]->EmailSchool;
+			$data2[$key]['DepartmentID'] = $rs_sel[$key]->DepartmentID;
+			$data2[$key]['Department'] = $rs_sel[$key]->FullName;
+			$data2[$key]['Code'] = $rs_sel[$key]->Code;
+			$data2[$key]['RecordID'] = $rs_sel[$key]->RecordID;
+		}
+		
+		return $data2;
+		
+		$oDB->stl_closeConn($conn);
+	}
+	
+	function getValue($table,$field,$condition){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		$q_select = "SELECT $field FROM `$table` WHERE $condition";
+		$rs_select = $oDB->stl_db_select($q_select, $conn);
+		
+		return $rs_select[0];
+		$oDB->stl_closeConn($conn);
+	}
+	
+	function insertFileUpload($arrUser){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		$today = date("Y-m-d h:i:s");
+		$modifyBy = $_SESSION['userName'];
+		
+		$q_user = "INSERT INTO `upload_tbl` (`StaffID`,`FileName`, `Description`, `CreateDate`, `isDeleted`, `LastUpdate`, `ModifyBy`) VALUES ('".$arrUser['StaffID']."','".$arrUser['FileName']."', '".$arrUser['Description']."','$today',0, CURRENT_TIMESTAMP,'$modifyBy');";
+		//print_r($q_user);
+		$rs_insert = $oDB->stl_db_change($q_user, $conn);
+		//print_r($rs_insert);exit();
+		return $rs_insert;
+	//	print_r($rs_insert);exit();
+		$oDB->stl_closeConn($conn);
+	}
+	
+	function insertEmergencyContact($arrUser){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		$today = date("Y-m-d h:i:s");
+		$modifyBy = $_SESSION['userName'];
+		
+		$q_user = "INSERT INTO `emergency_contact_tbl` (`StaffID`, `Name`, `Relationship`, `HomePhone`, `MobilePhone`, `Career`, `CreateDate`, `isDeleted`, `LastUpdate`, `ModifyBy`) VALUES ('".$arrUser['StaffID']."', '".$arrUser['Name']."', '".$arrUser['Relationship']."', '".$arrUser['HomePhone']."', '".$arrUser['MobilePhone']."', '".$arrUser['Career']."','$today',0, CURRENT_TIMESTAMP,'$modifyBy');";
+		//print_r($q_user);
+		$rs_insert = $oDB->stl_db_change($q_user, $conn);
+		//print_r($rs_insert);exit();
+		return $rs_insert;
+	//	print_r($rs_insert);exit();
+		$oDB->stl_closeConn($conn);
+	}
+	
+	function updateFileUpload($arrUser){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		$today = date("Y-m-d h:i:s");
+		$modifyBy = $_SESSION['userName'];
+		
+		$q_user = "UPDATE `upload_tbl` 
+				SET `LastUpdate`=CURRENT_TIMESTAMP,`ModifyBy`='$modifyBy',`Description`='".$arrUser['Description']."'
+				WHERE `StaffID`='".$arrUser['StaffID']."' AND `FileName`='".$arrUser['FileName']."'";
+		//print_r($q_user);
+		$rs_update = $oDB->stl_db_change($q_user, $conn);
+		
+		return $rs_update;
+
+		$oDB->stl_closeConn($conn);
+	}
+	
+	function updateEmergencyContact($arrUser){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		$today = date("Y-m-d h:i:s");
+		$modifyBy = $_SESSION['userName'];
+		
+		$q_user = "UPDATE `emergency_contact_tbl` SET `Name` =  '".$arrUser['Name']."',
+					`Relationship` =  '".$arrUser['Relationship']."',`LastUpdate`=CURRENT_TIMESTAMP,
+					`HomePhone` =  '".$arrUser['HomePhone']."',`ModifyBy`='$modifyBy',
+					`MobilePhone` =  '".$arrUser['MobilePhone']."',
+					`Career` =  '".$arrUser['Career']."' WHERE  `emergency_contact_tbl`.`RecordID` =".$arrUser['RecordID']."";
+		//print_r($q_user);
+		$rs_update = $oDB->stl_db_change($q_user, $conn);
+		
+		return $rs_update;
+
+		$oDB->stl_closeConn($conn);
+	}
+	
+	function checkExistFile($FileName,$StaffID){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		$q_select = "SELECT count(*) as count FROM `upload_tbl` WHERE `FileName`='$FileName' AND `StaffID`='$StaffID' AND `isDeleted`=0";
+	
+		$rs_select = $oDB->stl_db_select($q_select, $conn);
+
+		if($rs_select[0]->count<1){
+			return false;
+		}else{
+			return true;
+		}
+		
+		$oDB->stl_closeConn($conn);
+	}
+	
+	/* 
+		@Date:  	0847AM 08012013
+		@Author: 	HienHuynh
+		@param:		$deCode (department code)
+		@Dec:		Get email and pwd by department code in staffID
+	*/
+	function getEmailPwd($deCode){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		$q_select = "SELECT e.`Email` , e.`Password`, e.`DepartmentID`
+					FROM  `email_tbl` AS e
+					LEFT JOIN  `department_tbl` AS d ON ( e.`DepartmentID` = d.RecordID ) 
+					WHERE d.`Code` =  '".$deCode."'
+					AND e.`isDeleted` =0
+					LIMIT 0 , 1";
+		//print_r($q_select);
+		$rs_select = $oDB->stl_db_select($q_select, $conn);
+		
+		return $rs_select[0];
+		$oDB->stl_closeConn($conn);
+	}
+	
+	/* 
+		@Date:  	1412PM 13112013
+		@Author: 	HienHuynh
+		@param:		
+		@Dec:		Get array user set up send email 
+	*/
+	
+	function getListEmailSentTo($typeID, $departmentID, $isStudent){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		$q_select = "SELECT `Name`,`Email_to` FROM `send_email_tbl` WHERE `isDelete`=0 AND `TypeID` LIKE '%$typeID%'";
+		
+		if($isStudent == 1){
+			$q_select .= " AND `DepartmentID` LIKE '%$departmentID%'";
+		}else{
+			$q_select .= " AND `RoomID` LIKE '%,$departmentID,%'";
+		}
+		//print_r($q_select);exit();
+		$rs_select = $oDB->stl_db_select($q_select, $conn);
+		$data = array();
+		foreach($rs_select as $key){
+			$data[$key->Email_to] = $key->Name;
+		}
+		
+		$oDB->stl_closeConn($conn);
+		return $data;
+	}
+	
+	/*--------------------------------------------------------------------------
+		@author: 	Hien Huynh
+		@des:		Hàm dùng để lấy title of email send
+		@date:		1400PM 21/10/2014
+		@param: 	$screen - tên màn hình hiện tại									
+		@return:	$type - TypeID của màn hình tên $screen
+	--------------------------------------------------------------------------*/
+	function getTypeByScreenName($screen){	
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		$q_select = "SELECT e.`RecordID`,e.`Description` 
+					FROM `screen_tbl` as s LEFT JOIN send_email_type_tbl as e 
+					ON (s.`RecordID`=e.`ScreenID`) 
+					WHERE `Screen`='$screen'";
+
+		$rs_select = $oDB->stl_db_select($q_select, $conn);		
+		$oDB->stl_closeConn($conn);
+		
+		return $rs_select;
+	}
+	
+	/*--------------------------------------------------------------------------
+		@author: 	Hien Huynh
+		@des:		Hàm dùng để tự động gửi email thông báo tình trạng đến những user được config
+		@date:		1422AM 04/11/2013
+		@Edited:	21/10/2014
+		@param: 	$customer: mảng chứa thông tin user
+					$type: loại email cần gửi: xem table send_email_type_tbl
+					$contentEmail: nội dung email cần gửi										
+		@return:	true|false
+	--------------------------------------------------------------------------*/
+	function sendEmail($customer,$subject,$contentEmail){
+	//	print_r($customer);
+	//	print_r($subject);
+	//	print_r($contentEmail);
+		/* Start Send Email ------------------------------------------------*/
+		// Tạo đối tượng transport
+		$transport 		=	Swift_SmtpTransport::newInstance('smtp.gmail.com',465,'ssl');
+		
+		// Lấy thông tin account email
+		$fromEmail 		=	GUSER_IT;
+		$pwdEmail 		= 	GPWD_IT;
+		
+		//print_r($customer);exit();
+		$typeMsg = $customer['TypeDesc'];
+		
+	/*	$subject 		= 	"Status Notification - ".$typeMsg;
+		$subject 		.= 	" StaffID: ".$customer['StaffID']." - ".$customer['LastName']." ".$customer['MiddleName']." ".$customer['FirstName'];
+	*/	
+		$transport->setUsername($fromEmail);
+		$transport->setPassword($pwdEmail);
+		
+		// Tạo đối tượng mailer sẽ đảm nhận nhiệm vụ gởi mail đi
+		$mailer = Swift_Mailer::newInstance($transport);
+		
+		// Tạo content email
+		$msg 				= '';
+		$validateEmail 		= email("hien.huynh@eiu.edu.vn");
+
+		if($validateEmail==0){	
+					
+		}else{			
+			//Tạo message để gởi đi
+			$message = Swift_Message::newInstance($subject, $typeMsg);
+
+			$message->setFrom('sender@gmail.com');
+			
+			//$msg = getContentEmailByType($customer);
+			
+			$msg  = '<div style="font-size:14pt;font-weight:bold">'.$customer['TypeDesc'].'</div><br>';
+		//	$msg .= '<div style="font-style: italic;">From:	'.$_SESSION['userName'].' - Email: '.$_SESSION['email'].'</div>';
+			//$msg .= '<div>===================================================================</div>';
+		
+			if(isset($contentEmail) && !empty($contentEmail)){
+				$msg .= $contentEmail;
+				
+				$msg .= '<br><div><font color="red">'.MSG_NO_REPLY.'</font></div>';
+				$msg .= '<div><font color="red">'.MSG_REPLY.'<b>'.$_SESSION['email'].'</b></font></div>';
+				//print_r($msg);
+				$message->addPart($msg, 'text/html');
+				//print_r($msg);exit();
+				$isStudent = 0;
+				if(isset($customer['IRN_Old']) && !empty($customer['IRN_Old'])){
+					$isStudent = 1;
+				}
+				$listSentTo = getListEmailSentTo($customer['TypeID'],$customer['DepartmentID'],$isStudent);
+				//print_r($listSentTo);
+				
+				// Chi gui email cho nguoi duoc tao email khi da tao email tren server gmail
+				if($customer['TypeID']==5){
+					$listSentTo[$customer['Email']] = $customer['FullName'];
+					//print_r($listSentTo);
+				}
+				$message->setTo($listSentTo);
+				
+				try {
+					$mailer->send($message);
+					return 1;
+				}catch (Exception $e) {
+					return $e;
+				}				
+			}			
+		}
+		/* End Send Email --------------------------------------------------*/
+	}
+	
+	
+	/*--------------------------------------------------------------------------
+		@author: 	Hien Huynh
+		@des:		Hàm dùng để tự tạo email cho Sinh Viên khi biết IRN
+		@date:		06/10/2014
+		@param: 	$email
+					type email: [ten].[xxx].[mã khoa][YY]@eiu.edu.vn					
+		@return:	true|false
+	--------------------------------------------------------------------------*/	
+	function createNewEmailStudent(&$arrInfo){
+		
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		if(is_array($arrInfo)){			
+			//Lấy mã khoa của sinh viên
+			$subjectCode = substr($arrInfo['IRN'], -6, 2);
+			
+			$arrInfo['ShortName'] = getFieldOfTable($subjectCode, "ShortName", "department_student_tbl");
+			
+			//Lấy năm nhập học của SV			
+			$arrInfo['Year'] = substr($arrInfo['IRN'], 0, 2);
+			
+			//Find xxx
+			$typexxx = getTypeEmailStudent($arrInfo);
+			
+			//-- Lấy RecordID của ngành học------------------------
+			$arrSubject = selectALlTable("`RecordID`", "`major_tbl`", "`Code` = '$subjectCode'");
+			
+			if(is_array($arrSubject)){
+				$arrInfo['MajorID'] = $arrSubject[0]->RecordID;
+			}
+			
+			$arrInfo['DepartmentID'] = getFieldOfTable($subjectCode, "RecordID", "department_student_tbl");
+			
+			$arrInfo['Email'] = $typexxx.DOMAIN;
+				
+			return $arrInfo['Email'];
+		}
+		
+		$oDB->stl_closeConn($conn);
+	}	
+	
+	function changeImageIRN($oldImage, $newImage){
+	//	print_r($oldImage);
+	//	print_r($newImage);
+	
+		$path = $_SERVER['DOCUMENT_ROOT'];
+		//$root1 = $_SERVER['PHP_SELF'];
+		$dir = $path.dirname(dirname(dirname($_SERVER['PHP_SELF'])))."/img/ImageStudent/";
+		
+		//$dir = "E:\\TEST\\";
+		$dh  = opendir($dir);
+		while (false !== ($filename = readdir($dh))) {
+			$files[] = $filename;
+			
+			if($filename == $oldImage){				
+				rename($dir."/".$oldImage,$dir."/".$newImage);
+			//	print_r($result);
+				//return $result;
+			}
+		}
+	}
+	
+	/*--------------------------------------------------------------------------
+		@author: 	Hien Huynh
+		@des:		Hàm dùng để chuyển ngành cho SV khi biết IRN cũ và IRN mới
+		@date:		06/10/2014
+		@param: 	$email
+					type email: [ten].[xxx].[mã khoa][YY]@eiu.edu.vn					
+		@return:	true|false
+	--------------------------------------------------------------------------*/
+	function changeIRN(&$arrInfo){
+		// Get image path
+		$arrImage = selectALlTable("`ImagePath`,`SchoolEmail`", "`student_tbl`", "`IRN` = '".$arrInfo['IRN_Old']."'");
+		$arrInfo['image'] = $arrImage[0]->ImagePath;
+		$arrInfo['Email_Old'] = $arrImage[0]->SchoolEmail;
+		//print_r($arrInfo['image']);
+
+		$arrInfo['image'] = str_replace($arrInfo['IRN_Old'], $arrInfo['IRN'], $arrInfo['image']);
+		
+		//$path = EIU_IMAGE_STUDENT;
+		//$path = "/usr/local/www/apache22/data/pcntt/img/ImageStudent";		
+		
+		
+		
+		//rename($path.$arrImage[0]->ImagePath,$path.$arrInfo['image']);
+		//$arr['image'] = $path.trim($rs[$key]->ImagePath);
+		//print_r($arrInfo);exit();	
+		// Get Modify by
+		
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		$q_update = "UPDATE `student_tbl` SET  `IRN` =  '".$arrInfo['IRN']."',
+				`Password` =  '".$arrInfo['IRN']."',";
+		
+		if($arrInfo['oldDepartmentID'] != $arrInfo['DepartmentID']){
+			$q_update .= "`SchoolEmail` =  '".$arrInfo['Email']."',
+						`DepartmentID` =  '".$arrInfo['DepartmentID']."',";
+		}
+		$q_update .= "`MajorID` =  '".$arrInfo['MajorID']."',				
+				`ImagePath` =  '".$arrInfo['image']."',
+				`LastUpdate` = CURRENT_TIMESTAMP,
+				`ModifyBy` =  '".$arrInfo['ModifyBy'].": SVCN ".$arrInfo['IRN_Old']."->".$arrInfo['IRN']."' WHERE  `student_tbl`.`IRN` ='".$arrInfo['IRN_Old']."'";
+	//	print_r($q_update);exit();
+		$rs_update = $oDB->stl_db_change($q_update, $conn);
+		$result['Update'] = $rs_update; 
+		if($rs_update=='OK'){
+			$today = date("Y-m-d h:i:s");			
+			changeImageIRN($arrImage[0]->ImagePath, $arrInfo['image']);
+			$q_insert = "INSERT INTO `changeIRN_tbl` (`IRNOld`, `IRNNew`, `EmailOld`, `EmailNew`, `isDeleted`, `CreateDate`, `LastUpdate`, `ModifyBy`) 
+						VALUES ('".$arrInfo['IRN_Old']."', '".$arrInfo['IRN']."', '".$arrInfo['Email_Old']."', '".$arrInfo['Email']."', '0', '$today', CURRENT_TIMESTAMP, '".$arrInfo['ModifyBy']."');";
+		
+			$rs_insert = $oDB->stl_db_change($q_insert, $conn);
+			$result['Insert'] = $rs_insert;
+		}
+		
+		return $result;
+	//	print_r($rs_update);
+		
+		$oDB->stl_closeConn($conn);
+		
+		//return 0;
+	}
+	
+	/*--------------------------------------------------------------------------
+		@author: 	Hien Huynh
+		@des:		Hàm dùng để kiểm tra và lấy định dạng email
+		@date:		21/07/2014
+		@param: 	$email
+					Define xxx:
+						Type 0: [lastname]
+						Type 1: [lastname][middlename]: middlename 1,2,3,...
+						Type 2: [first letter lastname][first letter middlename]: : middlename 1,2,3,...
+						Type 3: [lastname][first letter middlename]: middlename 1,2,3,...
+						Type 4: [first letter lastname][middle name]: middlename 1,2,3,...
+
+		@return:	$email
+	--------------------------------------------------------------------------*/
+
+	function getTypeEmailStudent($arrInfo){
+		$firstName = strtolower(changeTVToEnglish($arrInfo['FirstName']));
+		$lastName = strtolower(changeTVToEnglish($arrInfo['LastName']));
+		
+		$arrEmail = array();
+		$arrEmail[0] = $firstName.".".$lastName;
+
+		$email = $firstName.".";
+		if(isset($arrInfo['MiddleName']) && !empty($arrInfo['MiddleName'])){
+			$middleName = strtolower(changeTVToEnglish($arrInfo['MiddleName']));			
+			$arrInfo['arrMiddleName'] = explode(" ", $middleName);
+			$wordNumberInMiddleName = count($arrInfo['arrMiddleName']);
+			
+			$middleName_1 = "";
+			$middleName_2 = "";
+			$middleName_3 = "";
+			$middleName_4 = "";
+			
+			$j = $wordNumberInMiddleName;
+			$k = $j+$wordNumberInMiddleName;
+			$l = $k+$wordNumberInMiddleName;
+			
+			for($i=1;$i <= $wordNumberInMiddleName;$i++){
+				//Type 1
+				$middleName_1 .= $arrInfo['arrMiddleName'][$i-1];	
+				$typeXXX_1 = $lastName.$middleName_1;
+				$arrEmail[$i] = $email.$typeXXX_1;		
+				//Type 2
+				$j++;
+				$middleName_2 .= $arrInfo['arrMiddleName'][$i-1][0];			
+				$typeXXX_2 = $lastName[0].$middleName_2;
+				$arrEmail[$j] = $email.$typeXXX_2;
+				//Type 3
+				$k++;
+				$middleName_3 .= $arrInfo['arrMiddleName'][$i-1][0];			
+				$typeXXX_3 = $lastName.$middleName_3;
+				$arrEmail[$k] = $email.$typeXXX_3;
+				//Type 4
+				$l++;
+				$middleName_4 .= $arrInfo['arrMiddleName'][$i-1];			
+				$typeXXX_4 = $lastName[0].$middleName_4;
+				$arrEmail[$l] = $email.$typeXXX_4;
+			}
+				
+		}else{
+			$arrEmail[1] = $email.$lastName[0];
+		}
+		
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+
+		for($s = 0;$s < count($arrEmail);$s++){
+			$q_select_stt = "SELECT COUNT(1) as count FROM `student_tbl` WHERE `SchoolEmail` LIKE '".$arrEmail[$s].".".$arrInfo['ShortName'].$arrInfo['Year']."%'";
+			
+			$rs_select_stt = $oDB->stl_db_select($q_select_stt, $conn);
+			
+			if($rs_select_stt[0]->count == 0){
+				return $arrEmail[$s].".".$arrInfo['ShortName'].$arrInfo['Year'];
+			}
+		}
+		
+		$oDB->stl_closeConn($conn);
+		return 0;
+	}	
+?>

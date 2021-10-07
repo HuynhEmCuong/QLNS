@@ -1,0 +1,27 @@
+<?php
+	session_start();
+	
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+//	echo "hoa";
+	if(!empty($_POST['empId'])){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		$q = "SELECT * FROM staff_tbl WHERE StaffID=".$_POST['empId'];
+				
+		$rs = $oDB->stl_db_select($q, $conn);
+		
+		if(is_array($rs)){
+			foreach($rs as $key=>$value){
+				if($rs[$key]->isDeleted=='0'){
+					$data1['id'] = $rs[$key]->StaffID;
+					$data1['name'] = $rs[$key]->FullName;
+					echo json_encode($data1);
+				}
+			}
+		}
+		$oDB->stl_closeConn($conn);
+	}
+?>

@@ -1,0 +1,21 @@
+<?php
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+	// Count costcode
+	$count = "SELECT count(`GroupCode`) as count FROM `group_asset_tbl` WHERE `CATCode`='".$_POST['CATCode']."'";
+	$rs_count = $oDB->stl_db_select($count, $conn);
+	//print_r($rs_count);
+	if(!empty($rs_count[0]->count)){
+		$arr["Count"] =(int)$rs_count[0]->count;
+	}
+	else
+	{
+		$arr["Count"]=0;
+	}
+	echo json_encode($arr);
+	$oDB->stl_closeConn($conn);
+?>

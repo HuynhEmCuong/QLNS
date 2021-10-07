@@ -1,0 +1,51 @@
+<?php
+	session_start();
+	
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	
+	$condition = "r.isDeleted=1";
+	//print_r($_POST);
+	if(isset($_POST['FileName']) && !empty($_POST['FileName'])){
+		$condition .= " AND r.FileName LIKE '%".$_POST['FileName']."%'";
+	}
+	
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+
+	$rs_select_list_file = selectAllTable("DISTINCT `FileName`","`resetpwdemail_tbl`","isDeleted=1");
+	
+	$j=0;
+	foreach($rs_select_list_file as $key=>$value){
+		$data1['listFileName'][$j]['FileName'] = $rs_select_list_file[$key]->FileName;
+		$j++;
+	}
+	
+	$rs_select_hososinhvien = selectALlTable("*","`resetpwdemail_tbl` AS r LEFT JOIN  `staff_tbl` AS h ON ( r.StaffID = h.StaffID )",$condition);
+	
+	if(is_array($rs_select_hososinhvien)){
+		$i=0;
+		foreach($rs_select_hososinhvien as $key=>$value){
+			$data1['Result'][$i]['RecordID']	=	$rs_select_hososinhvien[$key]->RecordID;
+			$data1['Result'][$i]['StaffID']		=	$rs_select_hososinhvien[$key]->StaffID;
+			$data1['Result'][$i]['FullName']	=	$rs_select_hososinhvien[$key]->FullName;
+			$data1['Result'][$i]['SchoolEmail']	=	$rs_select_hososinhvien[$key]->SchoolEmail;
+			$data1['Result'][$i]['FirstName'] = $rs_select_hososinhvien[$key]->FirstName;
+			$data1['Result'][$i]['LastName'] = $rs_select_hososinhvien[$key]->LastName;
+			if(!empty($rs_select_hososinhvien[$key]->MiddleName)){
+				$data1['Result'][$i]['LastName'] = " ".$rs_select_hososinhvien[$key]->MiddleName;
+			}
+			$i++;
+		}
+	}
+	if($data1==''){
+		echo 'NG';
+	}else{
+		echo json_encode($data1);
+	}
+	
+	$oDB->stl_closeConn($conn);
+	
+?>

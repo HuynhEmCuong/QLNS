@@ -1,0 +1,97 @@
+<?php
+	session_start();
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+
+	
+	require_once (EIU_CLASS.'EmailClass.htm');
+	require_once (EIU_CLASS.'MessageClass.htm');
+
+	
+
+	// if(isset($_POST['info']) && !empty($_POST['info'])){
+	// 	$oDB = new DBCommon();
+	// 	$conn =  $oDB->stl_openConn();
+		
+	// 	$today = date("Y-m-d h:i:s");
+	// 	$_POST['info'] = str_replace('\"', '"',$_POST['info']);
+	// 	$customer = json_decode($_POST['info'],true);
+	// 	print_r($customer);exit();
+	// //	print_r($_SESSION);
+	// 	if(is_array($customer)){
+	// 		$rs_update = updateStaffInfo($customer);
+			
+	// 		if($rs_update=='OK'||!empty($customer['ImageName'])){
+	// 			$result = MSG_SUCCESSFUL_UPDATE_STAFF_INFO;
+	// 			//save image
+	// 			if(!empty($customer['ImageName'])){
+	// 				$old = $customer['ImagePath'];
+	// 				$new = '../../img/ImageStaff/'.$customer['ImageName'];
+					
+	// 				if(!safe_copy($old,$new,$customer['ImageName'])){
+	// 					echo ERR_UPLOAD_IMG;
+	// 				}
+	// 				//copy($old, $new) or die(ERR_UPLOAD_IMG);
+	// 			}
+				
+	// 			if($customer['isDeleted'] != $customer['isDeleted_old']){
+	// 				/*START SEND EMAIL -------------------------------------------------------*/
+	// 				//Lấy department name khi biết department ID
+	// 				$arrDepartment = getValue("department_tbl","`FullName`","`RecordID`=".$customer['DepartmentID']);
+	// 				$customer['departmentName'] = $arrDepartment->FullName;
+					
+	// 				if(!empty($customer['MiddleName'])){
+	// 					$middleName = " ".$customer['MiddleName']." ";
+	// 				}else{
+	// 					$middleName = "";
+	// 				}	
+
+	// 				if($customer['isDeleted']==0){
+	// 					$status = 'Active';
+	// 				}else{
+	// 					$status = 'Inactive';
+	// 				}
+	// 				//print_r($status);exit();
+
+	// 				//Get type id to send email
+	// 				$screen = basename($_SERVER["HTTP_REFERER"]).PHP_EOL;					
+	// 				$arrTypeEmail = getTypeByScreenName(RTRIM($screen));
+	// 				$customer['TypeDesc'] = $status." Staff";
+	// 				$customer['TypeID'] = $arrTypeEmail[0]->RecordID;
+					
+					
+	// 				$subject = '';
+	// 				$subject .= "Status Notification - ".$status;					
+	// 				$subject .= " StaffID: ".$customer['StaffID']." - ".$customer['LastName'].$middleName.$customer['FirstName'];
+							
+	// 				$msg = '';					
+	// 				$msg .= '<div><b>Staff ID:	'.$customer['StaffID'].'</div>';
+	// 				$msg .= '<div><b>Full Name:	'.$customer['LastName'].$middleName.$customer['FirstName'].'</div>';					
+	// 				$msg .= '<div><b>Email:	'.$customer['Email'].'</div>';					
+	// 				$msg .= '<div><b>Department: '.$customer['departmentName'].'</b></div>';
+					
+	// 				if(isset($customer['TypeDesc']) && !empty($customer['TypeDesc'])){
+	// 					//print_r("hien");
+	// 					$send = sendEmail($customer,$subject,$msg);
+	// 					if($send == 1){
+	// 						$result .= "\n".SUCCESSFUL_EMAIL_SENT;
+	// 					}else{
+	// 						$result .= "\n".FAIL_EMAIL_SENT;
+	// 						$result .= "\n".$send;
+	// 					}
+	// 				}
+					
+	// 				/*END SEND EMAIL ---------------------------------------------------------*/
+					
+	// 			}				
+	// 			echo $result."\n";
+	// 		}else{
+	// 			echo MSG_UNSUCCESSFUL_UDATE_STAFF_INFO;
+	// 		}
+	// 	}
+	// }else{
+	// 	echo FAIL_TRANSPORT_INFO;
+	// }
+?>

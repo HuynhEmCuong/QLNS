@@ -1,0 +1,38 @@
+<?php
+	session_unset();
+	session_start();
+	
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+
+	//print_r($_POST);
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+	$q_empList = "SELECT DISTINCT(u.`StaffID`), s.FullName FROM `upload_tbl` as u LEFT JOIN `staff_tbl` as s ON(u.StaffID=s.StaffID) WHERE u.`isDeleted` = 0 ORDER BY u.`StaffID`";
+	$q_fileNameList = "SELECT DISTINCT(`FileName`) FROM `upload_tbl` WHERE `isDeleted` = 0 ORDER BY `FileName`";
+	
+	$rs_empList = $oDB->stl_db_select($q_empList, $conn);
+
+	if(is_array($rs_empList)){
+		$i=0;
+		foreach($rs_empList as $key=>$value){
+			$data1['empList'][$i]['StaffID']=$rs_empList[$key]->StaffID;
+			$data1['empList'][$i]['FullName']=$rs_empList[$key]->FullName;
+			$i++;
+		}
+	}
+	
+	$rs_fileNameList = $oDB->stl_db_select($q_fileNameList, $conn);
+
+	if(is_array($rs_fileNameList)){
+		$i=0;
+		foreach($rs_fileNameList as $key=>$value){
+			$data1['fileNameList'][$i]['FileName']=$rs_fileNameList[$key]->FileName;
+			$i++;
+		}
+	}
+
+	echo json_encode($data1);
+	$oDB->stl_closeConn($conn);
+?>

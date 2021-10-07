@@ -1,0 +1,783 @@
+﻿<html>
+<head>
+	<title>REPORT SCREEN</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<!--<script type="text/javascript" src="../../htm/js/indecator.js"></script>-->
+	<script type="text/javascript" src="../../htm/js/base.js"></script>
+	<link type="text/css" href="../../tmpl/css/redmond/jquery-ui-1.8.9.custom.css" rel="stylesheet" />
+	<link type="text/css" href="../../tmpl/css/popup.css" rel="stylesheet" />
+	<script type="text/javascript" src="../../htm/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../../htm/js/jquery-ui-1.8.9.custom.min.js"></script>
+	<script type="text/javascript" src="../../htm/js/jquery.crypt.js"></script>
+	
+	<style type="text/css">
+		body{
+			font-size: 12px;
+		}
+		
+		#outter{
+			width: 1120px;
+			margin: 0 auto;
+			margin-top: 20px;
+		}
+		
+		#header{
+		//	width:450px;	
+			padding-top:15px;
+		}
+		
+		#content1{
+			width: 100%;
+		}
+		
+		#content{
+			width: 100%;
+			display: table;
+		}
+		
+		#content1{
+			width: 100%;
+			display: table;
+			clear:both;
+		}
+		
+		#footer{
+			text-align:center;
+			margin-top:300px;
+			color: #827EB1;
+		}
+		
+		select{
+			height: 22px;
+			margin-top: 2px;
+		}
+		
+		.row{
+			display:table-row;
+			width:100%;
+		}
+		
+		.row:nth-child(even){
+			background-color: rgb(220, 230, 242);
+		}
+		
+		.row:nth-child(odd){
+			background-color:#FFF;
+		}
+		
+		.choose{
+			background-color:pink !important;
+		}
+		
+		/*.even{
+			background-color: #DCE6F2;
+		}*/
+		
+		.row-title{
+			display:table-row;
+			background-color: #17375E;
+			color: #FFFFFF;
+			font-weight:bold;
+		}
+		
+		.mssv, .name,.fromdate,.stt, .address, .ten, .birthday, .email, .cmnd{
+			display: table-cell;
+			vertical-align:middle;
+			border-right: 1px solid #8EB4E3;
+			border-top: 1px solid #8EB4E3;
+			padding-left:4px;
+			padding-top:2px;
+			padding-bottom:2px;
+		}
+		
+		.stt{
+			text-align:center;
+			width:30px;
+			border-left: 1px solid #8EB4E3;
+		}
+		
+		.mssv{
+			text-align: center;
+			width: 400px;
+			padding: 0;
+			margin: 0;
+		}
+		
+		.name{
+			width: 120px;
+		}
+		
+		.email{
+			width: 160px;
+		}
+		
+		.ten{
+			width:50px;
+		}
+		
+		.birthday{
+			width: 60px;
+		}
+		
+		.fromdate{
+			text-align: center;
+			width: 90px;
+		}
+		
+		.cmnd{
+			text-align: center;
+			width: 60px;
+		}
+		
+		.address{
+			width: 160px;
+		}
+		
+		.title{
+			height:34px;
+		}
+		
+		#select{
+			width: 245px;
+			margin-left: 2px;
+			height: 26px;
+		}
+		
+		.inputHeight{
+			height:25px;
+		}
+		
+		.text-center{
+			text-align:center;
+		}
+		
+		.text-left{
+			text-align:left;
+		}
+		
+		.text-right{
+			text-align:right;
+		}
+		
+		.color-title{
+			color:#17375e;
+		}
+			
+		.txt-center{
+			text-align:center;
+		}
+		
+		#indecator{
+			margin-left: 298px;
+		}
+		/*header*/
+	.bg-titlemp{
+		color:#c00000;
+	}
+	.mp-title{
+		font-size: 16pt;
+		font-weight: bold;
+		margin: 5px;
+		float:left;
+	}
+	.bg-line{
+		color:#4a7ebb;
+		margin-bottom: 10px;
+	}
+	.bo-bottom{
+		border-bottom: 1px solid #8EB4E3;
+	}
+	a#logout{
+		float: right;
+		font-size: 10px;
+		margin-top: 15px;
+	}
+	.login{
+		color: blue;
+		float: right;
+		font-size: 15px;
+		font-style: italic;
+		font-weight: normal;
+		margin-right: 10px;
+		margin-top: 13px;
+	}
+	
+	
+	
+	.text-center{
+		text-align:center;
+	}
+	
+	.color-title{
+		color:#17375e;
+	}
+	
+	.text-left{
+		text-align:left;
+	}
+	
+	
+	
+	a{
+		color:#000000;
+	}
+	
+	a:hover{
+		color:blue;
+	}
+	
+	a.choose{
+		color: blue;
+		font-weight: bold;
+		text-decoration: underline;
+	}
+	
+	.display{
+		display:block;
+	}
+	.display-none{
+		display:none;
+	}
+	
+	.iconLogin {
+		background: url("../../img/ajax-loader.gif") no-repeat scroll left center transparent;
+		width: 33px;
+		height: 31px;
+		margin-left: 1021px;;
+		margin-top: -4px;
+	}
+	
+	.icon-search{
+		float:left;
+		padding-top: 3px;
+	}
+	
+	.iconArrow {
+		background: url("../../img/arrow.jpg") no-repeat scroll left center transparent;
+		width: 33px;
+		height: 31px;
+		margin: auto;
+		margin-top: -4px;
+	}
+	
+	.iconRed {
+		background: url("../../img/red.PNG") no-repeat scroll left center transparent;
+		width: 33px;
+		height: 31px;
+		margin: auto;
+		margin-top: -4px;
+	}
+	
+	.iconBlue {
+		background: url("../../img/blue.PNG") no-repeat scroll left center transparent;
+		width: 33px;
+		height: 31px;
+		margin: auto;
+		margin-top: -4px;
+	}
+	
+		#password{
+			position: absolute;
+			visibility: hidden;
+			width: 290px;
+			background-color: #DCE6F2;
+			border: 1px solid #8EB4E3;
+			padding: 25px;
+			top: 0;
+			left: 188px;
+		}
+		
+		.overflow{
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			left: 0px;
+			top: 0;
+			background: black;
+			opacity: 0.05;
+		}
+		
+		#pwd{
+			margin-left: 10px;
+			width: 173px;
+			float: left;
+			height: 25px;
+		}
+		
+		#scroll{
+			overflow-y: scroll;
+			max-height: 358px;
+			overflow-x: hidden;
+		}
+		
+		.iconDelete{
+			background: url("../../img/icon-delete.png") no-repeat scroll left center transparent;
+			width: 16px;
+			height: 16px;
+			margin: auto;
+		}
+	</style>
+	
+	<script type="text/javascript">
+		var dat = '';
+		var dataSearch = '';
+		var subjectID = '';
+		var departmentID = '';
+		
+		function addClick(rowID, fileName){
+			var lag = document.getElementById('check-'+rowID).value;
+			if(lag==0){
+				addClass(document.getElementById('r'+rowID),'choose');
+				document.getElementById('check-'+rowID).value=1;
+			}else{
+				removeClass(document.getElementById('r'+rowID),'choose');
+				document.getElementById('check-'+rowID).value=0;
+			}
+		}
+		
+		function deleteRow(rowID){
+		//	alert(rowID);
+			//msg=confirm('Are you sure you want to delete this record?');
+			var rowDelete = document.getElementById('r'+rowID);
+			document.getElementById('content').removeChild(rowDelete);
+			resetStt();
+		}
+		
+		/*function ajaxDeleteEmailResetPwd(rowID) {
+			var url = "ajaxDeleteEmailResetPwd.htm";
+			var queryString = "";
+			
+			queryString += "RowID="+rowID;
+		
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			htmlRequest.onreadystatechange = function(){
+				if(htmlRequest.readyState == 4){
+					if(trim(htmlRequest.responseText)!= 'NG'){
+						var rowDelete = document.getElementById('r-'+rowID);
+						document.getElementById('dsemail').removeChild(rowDelete);
+						resetStt();
+					}else{
+					}
+				}
+			}
+			
+			htmlRequest.open("POST", url,true);
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				
+			htmlRequest.send(queryString);
+		}*/
+		
+		function getRowSelected(){
+			var strJson = "";
+			strJson = '{';
+			
+			var rowList = document.getElementsByClassName('choose');
+			strJson += '"Result":[';
+			for(var j=0;j<rowList.length;j++){
+				var divid = new String(rowList[j].id);
+				
+				if(divid.indexOf('r')==0){
+					var numberID = divid.replace(/r/g, "");
+					//alert(numberID);
+					//alert(dataSearch[numberID].isCreate);
+					var report = document.getElementById(divid);
+					strJson += '{';
+					strJson += '"StaffID":"' + '{val StaffID}' + '",';
+					strJson += '"FileName":"' + report.childNodes[1].innerHTML  + '",';
+					strJson += '"Description":"' + report.childNodes[2].innerHTML  + '"';
+				}
+				if(j==rowList.length-1){
+					strJson += '}';
+				}else{
+					strJson += '},';
+				}
+			}
+
+			var str = new String(strJson);
+			strJson = str.substr(0,str.length-1) + '}]}';
+			strJson = strJson.replace(/&/g, "%26");
+			strJson = strJson.replace(/\+/g, "%2B");
+			
+			return strJson;
+		}
+		
+		function resetStt(){
+			var temp1 = document.getElementsByClassName('row');
+			
+			for(i=0;i<temp1.length; i++){
+				var divid = new String(temp1[i].id);
+				if(divid.indexOf('r')==0){
+					document.getElementById(divid)[0].innerHTML = (i+1);
+					if(temp1.length==i){
+					
+					}
+				}
+			}
+			
+		}
+		
+		function deleteRowChoose(){
+			var table = document.getElementById('content');
+			var rowList = document.getElementsByClassName('choose');
+			for(j=rowList.length-1;j>=0;j--){
+				table.removeChild(rowList[j]);
+			}
+			var content = document.getElementsByClassName('row');
+		//	alert(content.length);
+			if(content.length>0){
+				var children = document.getElementById(content[content.length-1].id).childNodes;
+			
+				for(var k = 0;k<children.length-1;k++){
+					addClass(children[k],'bo-bottom');
+				}
+				delete(content);
+			}
+			
+			delete(table);
+			delete(rowList);
+			delete(children);
+		}
+		
+		function ajaxSaveFile() {
+			var url = "ajaxSaveFileUpload.htm";
+			
+			var queryString = "info="+getRowSelected();
+			//alert(queryString);exit();
+			
+			if(document.getElementById('checkAll').value==1 || queryString!=''){
+				queryString += "&checkAll="+document.getElementById('checkAll').value;
+		
+				htmlRequest = ajaxFunction();
+				if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+					alert ("Browser does not support HTTP Request");
+					return;
+				}
+				htmlRequest.onreadystatechange = function(){
+					if(htmlRequest.readyState == 4){
+					//	alert(htmlRequest.responseText);
+						if(trim(htmlRequest.responseText)!= ''){
+							deleteRowChoose();
+							alert(htmlRequest.responseText);
+						}
+					}
+				}
+				
+				htmlRequest.open("POST", url,true);
+				htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+					
+				htmlRequest.send(queryString);
+			}else{
+				alert("Please choose the export record.");
+			}
+			delete(url);
+			delete(queryString);
+		}
+		
+		function getDataSearch(){
+			var strDataSearch = "";
+		
+			if(document.getElementById('userName').value){
+				strDataSearch = '&userName='+document.getElementById('userName').value;
+			}
+			if(document.getElementById('userID').value){
+				strDataSearch += '&userID='+document.getElementById('userID').value;
+			}
+			if(document.getElementById('fromdate').value){
+				strDataSearch += '&fromdate='+document.getElementById('fromdate').value;
+			}
+			if(document.getElementById('todate').value){
+				strDataSearch += '&todate='+document.getElementById('todate').value;
+			}
+		/*	if(subjectID!='' && subjectID!=0){
+				strDataSearch += '&subject='+subjectID;
+			}*/
+			if(departmentID!='' && departmentID!=0){
+				strDataSearch += '&department='+departmentID;
+			}
+			
+			return strDataSearch;
+		}
+		
+		function ajaxLoadListSV() {
+			var content = document.getElementById('content');
+			removeContent(content);
+			
+			document.getElementById('searchBut').disabled = true;
+
+			addClass(document.getElementById('iconSearch'),'display-none');
+			removeClass(document.getElementById('iconLogin'),'display-none');
+			
+			var url = "ajaxLoadListImportedRows.htm";
+			
+			var data = getDataSearch();
+		//	alert(data);
+			var queryString = "";
+			queryString += data;
+		//	alert(queryString);
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			htmlRequest.onreadystatechange = function(){
+				if(htmlRequest.readyState == 4){
+				//	alert(htmlRequest.responseText);
+					if(trim(htmlRequest.responseText)!= 'NG'){
+						dataSearch = trim(htmlRequest.responseText);
+				
+						dataSearch = eval('(' + dataSearch + ')');
+						dataSearch = dataSearch.Result;
+						search();
+					}else{
+						dataSearch.Result = '';
+						search();
+					}
+					document.getElementById('searchBut').disabled = false;
+					addClass(document.getElementById('iconLogin'),'display-none');
+					removeClass(document.getElementById('iconSearch'),'display-none');
+				}
+			}
+			
+			htmlRequest.open("POST", url,true);
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				
+		//	htmlRequest.setRequestHeader("Content-length", queryString.length);
+		//	htmlRequest.setRequestHeader("Connection", "close");
+			htmlRequest.send(queryString);
+		//	htmlRequest.send(null);
+			delete(content);
+		}
+		
+		function changeOption(f,type){
+			/*if(type==1){
+				subjectID = f.subject.options[f.subject.selectedIndex].value;
+				
+				subNameList=dat.subList;
+				for(var i=0; i< subNameList.length; i++){
+					if(subNameList[i].RecordID == subjectID){
+						departmentID = subNameList[i].DepartmentID;
+					}
+				}
+				
+				var frm_dep = document.getElementById('department');
+				frm_dep.value = departmentID;
+			}else */if(type==2){
+				departmentID = f.department.options[f.department.selectedIndex].value;
+				//loadSubject(departmentID);
+			}
+		}
+		
+		function search(){
+			var content = document.getElementById('content');
+		//	removeContent(content);
+			
+			var ResNum = dataSearch.length;
+			var id = 0;
+			
+			for(var i=0;i<ResNum;i++)
+			{
+				var row = document.createElement('div');
+				row.setAttribute('id','r'+i);
+				row.setAttribute('class','row');
+					
+					//STT
+					var STT = document.createElement('div');
+					STT.setAttribute('class','stt'	);
+					STT.setAttribute('onclick',"addClick("+i+",'"+dataSearch[i]+"')");
+					if((i+1)==ResNum){
+						STT.setAttribute('class','stt bo-bottom');
+					}
+					if(dataSearch[i].isCreate==1){
+						STT.setAttribute('title','Create a new email');
+						STT.setAttribute('style','color:red');
+					}else{
+						STT.setAttribute('title','Reset password email');
+					}
+					STT.innerHTML = (i+1);
+					
+					//FileName
+					var FileName = document.createElement('div');
+					FileName.setAttribute('class','mssv');
+					FileName.setAttribute('onclick',"addClick("+i+",'"+dataSearch[i]+"')");
+					if((i+1)==ResNum){
+						FileName.setAttribute('class','mssv bo-bottom');
+					}
+					FileName.innerHTML = dataSearch[i];
+
+					//Description
+					var Description = document.createElement('div');
+					Description.setAttribute('class','name text-left');
+					Description.setAttribute('style','width:600px;border-right:none');
+					Description.setAttribute('contenteditable','true');
+					Description.setAttribute('onclick',"addClick("+i+",'"+dataSearch[i]+"')");
+					if((i+1)==ResNum){
+						Description.setAttribute('class','name text-left bo-bottom');
+					}
+					
+					/*var contentDes = document.createElement('input');
+					contentDes.setAttribute('style','height: 20px;width: 625px;border: none;');
+					Description.appendChild(contentDes);*/
+					
+					var deleteImg = document.createElement('div');
+					deleteImg.setAttribute('id','del-'+i);
+					deleteImg.setAttribute('class','iconDelete name');
+					if((i+1)==ResNum){
+						deleteImg.setAttribute('class','iconDelete name bo-bottom');
+					}
+					deleteImg.setAttribute('onClick',"deleteRow('"+i+"')");
+					
+					//check button
+					var checkbtn = document.createElement('input');
+					checkbtn.setAttribute('id','check-'+i);
+					checkbtn.setAttribute('hidden','');
+					checkbtn.value=0;
+					
+				row.appendChild(STT);
+				row.appendChild(FileName);
+				row.appendChild(Description);
+				row.appendChild(checkbtn);
+				row.appendChild(deleteImg);
+				
+				content.appendChild(row);
+			}
+		}
+		
+		function loadAjax() {
+			/*if('{val msg}' !== ''){
+				alert('{val msg}');
+			}*/
+			
+			dataSearch = '{val listFileImport}';
+			dataSearch = eval('(' + dataSearch + ')');
+			
+			//dat = '{val listFileImport}';
+			//dat = eval('('+ dat +')');
+		//	loadDepartment(dat);
+			search();
+		}
+		
+		$(document).ready(function(){
+			$("#checkAll").click(function(){
+				var report = document.getElementById("content");
+				//alert(report);
+				if(report.hasChildNodes()){
+					for(i=0; i<report.childNodes.length;i++){
+						var divid = new String(report.childNodes[i].id);
+						if(divid.indexOf('r') ==0){
+							var numberID = divid.replace(/r/g,"");
+							addClick(numberID);
+							delete(numberID);
+						}
+						delete(divid);
+					}
+				}
+			});
+			/*$("#fromdate").datepicker({
+				changeMonth: true,
+				changeYear: true,
+				currentText: 'Now',
+				dateFormat: 'dd/mm/yy',
+				yearRange : ('-70:+10'),
+				dayNamesShort:['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+			});
+			$("#todate").datepicker({
+				changeMonth: true,
+				changeYear: true,
+				currentText: 'Now',
+				dateFormat: 'dd/mm/yy',
+				yearRange : ('-70:+10'),
+				dayNamesShort:['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+			});	
+			
+			$('#pwd').click(function(){
+				$('#pwd').val('');
+			});
+			
+			$('#cancelPopup').click(function(){
+				$('#pwd').val('');
+			});
+			
+			
+			$('#submit1').click(function() {
+				var pwEncrypt;
+				 
+				if( $('input#pwd').val() != '' ) {
+		            pwEncrypt = $().crypt( {
+		                method: 'md5',
+		                source: $('input#pwd').val()
+		            });
+		            $('input#pwd').val(pwEncrypt);
+					checkPwd();
+		            return;
+		        } else {
+		        //    alert('You must enter a password!');
+		            alert('Vui lòng nhập vào mật khẩu!');
+		            return false;
+		        } 		 
+			});*/
+		});
+	</script>
+</head>
+
+<body scroll="no" style="overflow-y:hidden;" onload="loadAjax();">
+<div id="outter">
+		<div style="float: left;"><img style="width:100px;" src="../../img/logo.PNG"/></div>
+		<div class="bo-bottom bg-line" style="float: right;width:1000px;margin-top: 16px;">
+			<div class="bg-titlemp mp-title">TRƯỜNG ĐẠI HỌC QUỐC TẾ MIỀN ĐÔNG<br><span style="font-size: 13pt;color: #1C1757;padding-left: 46px;">EASTERN INTERNATIONAL UNIVERSITY</span></div>
+			<div><img src="../../img/icon-upload.png" title="Upload File Staff" width=50px onClick="back('importFileStaff');" style="float: right;padding-top: 10px;cursor:pointer;" /><img src="../../img/report-icon.png" title="Thống kê" onClick="back('listStaff');" style="cursor:pointer;float: right;padding-top: 10px;" /></div>
+		</div>
+		
+		<div id="content1" style="margin: 0 auto;clear:both">
+			<div class="text-center color-title"><h1>LIST IMPORTED STAFF INFORMATION</h1></div>
+			<!-- <div style="margin:10px 0">
+				<div>
+					<a href="mainpage.htm">MAIN PAGE</a>
+					>>
+					<a href="importFileStaff.htm">UPLOAD FILES</a>
+				</div>
+			</div> -->
+			<div id="header">
+				<!-- <div style="float:left">
+					<input style="width:100px;" type="text" onclick="this.value=''" placeholder="Staff ID" value='' name='userID' id='userID'/>
+					<input style="width:100px;" type="text" onclick="this.value=''" placeholder="User Name" value='' name='userName' id='userName'/>
+					<input type="text" id="fromdate" class="month" value="" placeholder="From Date"/>
+					<input type="text" id="todate" class="month" value="" placeholder="To Date"/>
+				</div> -->
+				<div>
+					<!--<div style="float:left;">
+						<form action="no_value">
+							<select name="subject" id="subject" onchange="changeOption(this.form,1)"></select>
+						</form>
+					</div>-->
+					<!-- <div style="float:left;">
+						<form action="no_value">
+							<select name="department" id="department" onchange="changeOption(this.form,2)"></select>
+						</form>
+					</div> -->
+					<!-- <div style="float:left;">
+						<input type="submit" value='Search' id='searchBut' onclick="ajaxLoadListSV();"/>
+					</div>
+					<div id="iconSearch" class="iconSearch"><img style="width: 20px;margin-top: 3px;" src="../../img/icon_search.png" /></div>
+					<div style="" id="iconLogin" class="iconLogin display-none"></div> -->				
+			</div>
+		</div>
+		<div id="content1">
+			<div id="titleContent" class="row-title">
+				<div style="width:20px; border-right:none;" class="stt title txt-center">No.</div>
+				<div style="width:460px; border-right:none;" class="mssv txt-center">File Name</div>
+				<div style="width:650px; border-right:none;" class="name txt-center">Description</div>
+				<div style="width:50px;" class="email txt-center"><input id="checkAll" type=checkbox /></div>
+			</div>
+		</div>
+		<div id="scroll">
+			<div id="content"></div>
+		</div>
+		<div><button id="submit" style="float:right;" onClick="window.location.href='listFileStaffImported.htm'">List Files Uploaded</button><button id="submit" style="float:right;" onClick="ajaxSaveFile()">Save</button></div>
+		<div id="footer">@Copyright Office of Information Technology<br>it@eiu.edu.vn</div>
+</div>
+<div id="overflow" class="overflow display-none"></div>
+</html>

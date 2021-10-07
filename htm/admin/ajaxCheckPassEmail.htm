@@ -1,0 +1,30 @@
+<?php
+	@session_start();
+	
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'LoginClass.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	
+	//print_r($_POST);
+	if(isset($_POST['departmentID']) && !empty($_POST['departmentID']) && isset($_POST['email']) && !empty($_POST['email']) && isset($_POST['pass'])){
+		// open connect to database
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		$pass = generatePassEmailConfig($_POST['pass'],1,$_POST['departmentID']);
+		
+		$q_select = "SELECT count(*) as count FROM `email_tbl` WHERE `Email`='".$_POST['email']."' AND `Password`='".$pass."' AND `DepartmentID`=".$_POST['departmentID'];
+		//print_r($q_select);exit();
+		
+		$rs_select = $oDB->stl_db_select($q_select, $conn);
+		if($rs_select[0]->count>0){
+			echo 'OK';
+		}else{
+			echo 'NG';
+		}
+		
+		$oDB->stl_closeConn($conn);
+	}
+?>

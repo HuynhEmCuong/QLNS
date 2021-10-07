@@ -1,0 +1,24 @@
+.rowPopup{
+	display:table-row;
+	height:30px;
+	
+}
+
+.titlePopup{
+	font-weight:bold;
+	color:white;
+	background-color: #17375E;
+	text-align:center;
+}
+
+#password{
+	position: absolute;
+	visibility: hidden;
+	width: 290px;
+	background-color: #DCE6F2;
+	border: 1px solid #8EB4E3;
+	padding: 20px 30px;
+	margin-left: 274px;
+	margin-top: 182px;
+	z-index: 1;
+}

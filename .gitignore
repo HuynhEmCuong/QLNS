@@ -1,0 +1,18 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+
+/.vs
+/Document
+/img
+/Database
+/ExportTmp
+/Files
+/Files/exports
+/Files/uploads
+/img
+/img/ImageStaff
+/img/ImageStudent
+/img/tam
+.project

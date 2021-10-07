@@ -1,0 +1,29 @@
+<?php
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+	
+	$q_select="SELECT `RoomCode`,`RoomName` FROM `roomblock_tbl` WHERE `isDeleted`=0 and `BlockCode`='".$_POST['bcode']."'";
+	$rs_select = $oDB->stl_db_select($q_select, $conn);
+
+	if(is_array($rs_select))
+	{
+		$i=0;
+		foreach($rs_select as $key=>$value)
+		{
+			$data[$i]['rcode']=$rs_select[$key]->RoomCode;
+			$data[$i]['rname']=$rs_select[$key]->RoomName;
+			$i++;
+		}
+	}
+	else
+	{
+		echo 'NG';
+	}	
+	$arr['RoomList'] = $data;
+	echo json_encode($arr);
+	$oDB->stl_closeConn($conn);
+?>

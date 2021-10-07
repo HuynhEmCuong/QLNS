@@ -1,0 +1,28 @@
+<?php
+	//@session_start();
+
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'LoginClass.htm');
+	
+	/*if(checkSession('A71.htm')==true)
+	{
+		$data = setSession();
+	}**/
+	
+	$data="";
+	$view = new View();
+	$view->showTmpl("detailAssetUpdate.tmpl","n",$data);
+	//echo $_GET['record'];
+	
+	if(isset($_GET['record']) && !empty($_GET['record'])){
+		echo '<script type="text/javascript">';
+		echo "var record ='".$_GET['record']."';";
+		echo '</script>';
+	}else{
+		echo '<script type="text/javascript">';
+		echo "var record = ''";
+		echo '</script>';
+	}
+?>

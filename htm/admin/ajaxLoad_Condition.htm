@@ -1,0 +1,30 @@
+<?php
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+	
+	$q_select="SELECT `ConID`,`ConName`,`Descrpt` FROM `condition_tbl` WHERE `isDeleted`=0";
+	$rs_select = $oDB->stl_db_select($q_select, $conn);
+
+	if(is_array($rs_select))
+	{
+		$i=0;
+		foreach($rs_select as $key=>$value)
+		{
+			$data[$i]['conID']=$rs_select[$key]->ConID;
+			$data[$i]['conName']=$rs_select[$key]->ConName;
+			$data[$i]['descpt']=$rs_select[$key]->Descrpt;
+			$i++;
+		}
+	}
+	else
+	{
+		echo 'NG';
+	}	
+	$arr['ConList'] = $data;
+	echo json_encode($arr);
+	$oDB->stl_closeConn($conn);
+?>

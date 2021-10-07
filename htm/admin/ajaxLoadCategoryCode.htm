@@ -1,0 +1,40 @@
+<?php
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+	$path = "/";
+	$sub_count = count_chars("/",$path);
+	$q_select="SELECT `CATCode`,`CATShortName` FROM `category_tbl` WHERE `isDeleted`=0";
+	$rs_select = $oDB->stl_db_select($q_select, $conn);
+	if(is_array($rs_select))
+	{
+		$i=0;
+		foreach($rs_select as $key=>$value)
+		{
+			$data[$i]['catCode']=$rs_select[$key]->CATCode;
+			$data[$i]['catShortName']=$rs_select[$key]->CATShortName;
+			$i++;
+		}
+		/*foreach($rs_select as $key=>$value)
+		{
+			$catID='';
+			$catID=$rs_select[$key]->CATID;
+			$count_char=$rs_select[$key]->CATPath;
+			$sub_count = substr_count($count_char,"/");
+			if($sub_count==1)
+			{
+				$data['CATList'][$catID]['catID']=$rs_select[$key]->CATID;
+				$data['CATList'][$catID]['catCode']=$rs_select[$key]->CATCode;
+				$data['CATList'][$catID]['catShortName']=$rs_select[$key]->CATShortName;
+				$data['CATList'][$catID]['catPath']=$rs_select[$key]->CATPath;
+				$data['CATList'][$catID]['ChildNum']='1';
+			}
+		}*/
+	}
+	$arr['CATList'] = $data;
+	echo json_encode($arr);
+	$oDB->stl_closeConn($conn);
+?>

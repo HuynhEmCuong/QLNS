@@ -1,0 +1,36 @@
+<?php
+	session_start();
+	
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	
+	$today = date("Y-m-d h:i:s");
+	$modifiedby = "";
+	if(isset($_SESSION['userName']) && $_SESSION['userName']!=""){
+		$modifiedby = $_SESSION['userName'];
+	}
+	
+	if(isset($_POST['empId']) && isset($_POST['pass']) && isset($_POST['newPass']) && !empty($_POST['empId'])){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		$passnew = $_POST['newPass'];
+	//	$passnew = $_POST['newPass'].$_POST['empId'];
+		$passnew = md5($passnew);
+		
+		$passold = $_POST['pass'];
+	//	$passold = $_POST['pass'].$_POST['empId'];;
+		$passold = md5($passold);
+		//print_r($pass);exit();
+		//update password of employee
+		$q_update_employee = "UPDATE `staff_tbl` SET `Password` = '".$passnew."',`LastUpdate` = '".$today."',`ModifyBy` = '".$modifiedby."'
+							WHERE `staff_tbl`.`StaffID` = '".$_POST['empId']."' AND `staff_tbl`.`Password` = '".$passold."'";
+							
+	//	print_r($q_update_employee);exit();
+		$rs_update = $oDB->stl_db_change($q_update_employee, $conn);
+		echo $rs_update;
+		
+		$oDB->stl_closeConn($conn);
+	}
+?>

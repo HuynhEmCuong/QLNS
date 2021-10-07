@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="../../htm/js/indecator.js"></script>
+	<script type="text/javascript" src="../../htm/js/base.js"></script>
+	<link type="text/css" href="../../tmpl/css/redmond/jquery-ui-1.8.9.custom.css" rel="stylesheet" />
+	<script type="text/javascript" src="../../htm/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../../htm/js/jquery-ui-1.8.9.custom.min.js"></script>
+	<script type="text/javascript" src="../../htm/js/jquery.crypt.js"></script>
+	<script type="text/javascript">
+		function ajaxLogin(){
+
+			var strQuery = "";											
+			strQuery += 'staffId='+document.getElementById('staffID').value;
+			strQuery += '&password='+document.getElementById('password').value;
+			var url = "ajaxLoginLocal.htm";
+
+			htmlRequest = ajaxFunction();
+
+			if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+		
+			htmlRequest.onreadystatechange = function()
+			{
+				if(htmlRequest.readyState == 4)
+				{//alert(trim(htmlRequest.responseText));
+					if(trim(htmlRequest.responseText)=='OK')
+					{		
+																	
+						alert("Đăng nhập thành công!");								
+						window.location.href = "listStaff.htm";		
+					}
+					else
+					{
+						alert("Đăng nhập không thành công!");
+						return;
+					}
+				}
+			}		
+			htmlRequest.open("POST", url,true);
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			htmlRequest.send(strQuery);
+			
+			
+		}
+	</script>
+</head>
+<body>
+    <div id="outter">
+		<div class="bo-bottom bg-line">
+			<div class="bg-titlemp mp-title">LOGIN SCREEN</div>
+		</div>
+		<div id="iconLogin" class="iconLogin display-none"></div>
+		<div id="content" style="margin: 10px auto;">
+			<div class="text-center color-title"><h1>LOGIN</h1></div>
+			<div class="row">
+				<!-- <div id="t-username" class="display-none" style="color:red;margin-left: 72px;">Please choose username!</div> -->
+				<div class="prpoNo ">UserName</div>
+				<div class="prpoNoDate">
+					<input id="staffID"  type="text"/>
+				</div>
+			</div>
+			<div class="row">
+				<!-- <div id="t-password" class="display-none" style="color:red;margin-left: 72px;">Invalid password!</div> -->
+				<div class="prpoNo ">Password</div>
+				<div class="prpoNoDate"><input  id="password" type="password" class="inputHeight" type="text" size="30" placeholder="Enter your text here"></div>							
+			</div>
+			<input id="userid" hidden />
+			<button id="submit" style="margin-bottom: 10px;margin-left: 77px;" onclick="ajaxLogin();">Submit</button>
+		</div>
+	
+		<div id="saveInfo"></div>
+		
+</div>
+</body>
+</html>

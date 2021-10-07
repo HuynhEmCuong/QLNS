@@ -1,0 +1,37 @@
+<?php
+	@session_start();
+	$_SESSION['ajaxImportExcelFile'] = false;
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'LoginClass.htm');
+	require_once (EIU_CLASS.'PermissionClass.htm');
+	
+	if(checkSession('importEnglishClass.htm')==true){
+		$data1 = setSession();
+	}
+	
+	$screen = basename($_SERVER["REQUEST_URI"]).PHP_EOL;
+	$data1['screen'] = RTRIM($screen);
+	
+	$data1 = checkPermission($data1);
+	//print_r($data1);
+	//Process SubPermission
+	if(checkIsAdmin($data1['userId'])==1){
+		$data1['list'] = 4;
+		$data1['permission'] = 4;
+	}else if(is_array($data1['subPermission'])){
+		$data1['list'] = $data1['subPermission'][1];
+		/*$data1['update'] = $data1['subPermission'][3];
+		$data1['reset'] = $data1['subPermission'][4];
+		$data1['upload'] = $data1['subPermission'][6];
+		$data1['account'] = $data1['subPermission'][8];*/
+	}
+	
+	if($data1['permission']>0){
+		$view = new View();
+		$view->showTmpl("importEnglishClass.tmpl","n",$data1);
+	}else{
+		echo "Can not access to this page";
+	}
+?>

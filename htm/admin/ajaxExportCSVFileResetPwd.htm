@@ -1,0 +1,106 @@
+<?php
+	header('Content-Type: text/html; charset=utf-8');
+	session_start();
+	
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+
+	//print_r($_POST);
+	
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+	
+	$today = date("Ymd-hisa");
+	$filename = $today."-ResetEmail.csv";
+	$condition = "r.`isDeleted` = 0 AND length(r.StaffID)=6";
+	$condition1 = "r.`isDeleted` = 0 AND length(r.StaffID)=10";
+	
+	if(isset($_POST['isExported'])){
+		$condition = "r.`isDeleted`=1";
+		$condition1 = "r.`isDeleted`=1";
+		if(isset($_POST['FileName']) && !empty($_POST['FileName'])){
+			$filename = $_POST['FileName'];
+			$condition .= " AND r.FileName LIKE '%".$_POST['FileName']."%'";
+			$condition1 .= " AND r.FileName LIKE '%".$_POST['FileName']."%'";
+		}
+	}
+	
+	if(isset($_POST['RecordID']) && !empty($_POST['RecordID'])){
+		$condition .= " AND `RecordID` IN (".$_POST['RecordID'].")";
+		$condition1 .= " AND `RecordID` IN (".$_POST['RecordID'].")";
+	}
+	
+	$q_select = "SELECT DISTINCT h.SchoolEmail,h.FirstName, h.LastName, h.StaffID FROM `resetpwdemail_tbl` as r LEFT JOIN `staff_tbl` as h ON(r.StaffID=h.StaffID) WHERE $condition";
+	$q_select1 = "SELECT DISTINCT h.SchoolEmail,h.FirstName, h.LastName, h.IRN as StaffID FROM `resetpwdemail_tbl` as r LEFT JOIN `student_tbl` as h ON(r.StaffID=h.IRN) WHERE $condition1";
+	
+	//print_r($q_select);
+	$rs_select = $oDB->stl_db_select($q_select, $conn);	
+	$rs_select1 = $oDB->stl_db_select($q_select1, $conn);
+	
+	//print_r($rs_select);
+	//print_r($rs_select1);exit();
+	
+	//$filepath = "D:\\ResetEmail\\";
+	$filepath = RESET_PWD_EMAIL_PATH;
+	
+	//$filepath = "/usr/local/www/apache22/data/pcntt/Files/exports";
+
+	
+	$fp = fopen($filepath.$filename, 'w');
+
+	$line .="email address,first name,last name,password\n";
+	if(is_array($rs_select)){
+		foreach($rs_select as $key => $row) {			
+			$rs_select[$key]->FirstName = changeTVToEnglish($rs_select[$key]->FirstName);
+			$rs_select[$key]->LastName = changeTVToEnglish($rs_select[$key]->LastName);			
+			$rs_select[$key]->StaffID = "pwd".$rs_select[$key]->StaffID;
+			$comma = "";
+			foreach($row as $value) {
+				//$line .= $comma . '"' . str_replace('"', '""', $value) . '"';
+				$line .= $comma. str_replace('"', '""', $value);
+				$comma = ",";
+			}
+			$line .= "\n";
+		}
+	}
+	
+	if(is_array($rs_select1)){
+		foreach($rs_select1 as $key => $row) {
+			$rs_select1[$key]->StaffID = "pwd".$rs_select1[$key]->StaffID;
+			$comma = "";
+			foreach($row as $value) {
+				//$line .= $comma . '"' . str_replace('"', '""', $value) . '"';
+				$line .= $comma. str_replace('"', '""', $value);
+				$comma = ",";
+			}
+			$line .= "\n";
+		}
+	}
+	
+	//print_r($line);
+	fwrite($fp, $line);
+	fclose($fp);
+	
+	if(!empty($fp)){
+		if(isset($_POST['isExported']) && $_POST['isExported']==1){
+			echo "File created with path: $filepath$filename.";
+		}else{
+			//Update file name
+			if(isset($_POST['checkAll']) && !empty($_POST['checkAll']) && $_POST['checkAll']==1){
+				$q_update = "UPDATE `resetpwdemail_tbl` SET `FileName`='$filename',`isDeleted`=1";
+			}else{
+				$q_update = "UPDATE `resetpwdemail_tbl` SET `FileName`='$filename',`isDeleted`=1 WHERE `RecordID` IN (".$_POST['RecordID'].")";
+			}
+			$rs_update = $oDB->stl_db_change($q_update, $conn);
+			if($rs_update=='OK'){
+				echo "File created with path: $filepath$filename.";
+			}else{
+				echo "Create a file unsuccessful.";
+			}
+		}
+	}
+	
+	$oDB->stl_closeConn($conn);
+?>

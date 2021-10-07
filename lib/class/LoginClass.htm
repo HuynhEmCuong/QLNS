@@ -1,0 +1,184 @@
+<?php
+	@session_start(); 
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once(EIU_LIB.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	//require_once (EIU_CLASS.'openidClass.htm');
+	
+	function setSessionLogin($email){
+		date_default_timezone_set('Asia/Ho_Chi_Minh');
+		$arr = selectALlTable('`StaffID`,`FullName`','`staff_tbl`',"`SchoolEmail`='$email' AND `isDeleted` =0");
+
+		if(!empty($arr)){
+			$empId = $arr[0]->StaffID;
+			$empFullName = $arr[0]->FullName;
+			
+			//Lưu vô session
+			if(isset($_SESSION['userID']))
+				unset($_SESSION['userID']);
+			
+			if(isset($_SESSION['userName']))
+				unset($_SESSION['userName']);
+				
+			if(isset($_SESSION['email']))
+				unset($_SESSION['email']);
+			
+			if(isset($_SESSION['userLoginTime']))
+				unset($_SESSION['userLoginTime']);
+			
+			setCookie('UserID',$empId,time()+(3600*24));
+			setCookie('isLogin',1,time()+(3600*24));
+
+			$_SESSION['userID'] =  $empId;
+			$_SESSION['userName'] =  $empFullName;
+			$_SESSION['email'] =  $email;
+			$_SESSION['userLoginTime'] = date("Y-M-d  g:i a");
+			$_SESSION['isLogin'] = 1;
+		}
+	}
+	
+	function unsetSessionLogin(){
+		if(isset($_SESSION['userID']))
+			unset($_SESSION['userID']);
+		
+		if(isset($_SESSION['userName']))
+			unset($_SESSION['userName']);
+			
+		if(isset($_SESSION['email']))
+			unset($_SESSION['email']);
+		
+		if(isset($_SESSION['userLoginTime']))
+			unset($_SESSION['userLoginTime']);
+		if(isset($_SESSION['isLogin']))
+			unset($_SESSION['isLogin']);
+		if(isset($_SESSION['screen']))
+			unset($_SESSION['screen']);
+		if(isset($_SESSION['token']))
+			unset($_SESSION['token']);
+	}
+	
+	function setSession(){
+		//print_r($_SESSION);
+	
+		if(isset($_SESSION['userName']) && isset($_SESSION['isLogin']) && $_SESSION['isLogin']==1)
+		{	
+			$userName 					= $_SESSION['userName'];
+			$userLogin_startTime 		= $_SESSION['userLoginTime'];
+			$userId 					= $_SESSION['userID'];
+			$email 					    = $_SESSION['email'];
+			$isLogin					= $_SESSION['isLogin'];
+			$data1['userName']			= $userName;
+			$data1['userLoginTime'] 	= $userLogin_startTime;
+			$data1['userId'] 			= $userId;
+			$data1['email'] 			= $email;
+			$data1['isLogin']			= $isLogin;
+
+			return $data1;
+		}
+		else
+		{	
+			$strLocation = "login.htm";
+			echo '<script type="text/javascript">';
+			echo " location.href='".$strLocation."';";
+			echo "</script>";
+		}
+	}
+	
+	function checkSession($screen){
+		date_default_timezone_set('Asia/Ho_Chi_Minh');
+		$inactive = EXPIRE_SESSION;//test
+	
+		echo $inactive;
+	
+		if(isset($_SESSION['userLoginTime']) && isset($_SESSION['isLogin']) && $_SESSION['isLogin']==1) {
+			$curr_date = date("Y-M-d  g:i a");
+			var_dump(curr_date);
+			die;
+			$session_life = strtotime($curr_date) - strtotime($_SESSION['userLoginTime']);
+			echo $session_life;
+		//	echo $session_life."<br>";
+		//	echo $curr_date;
+			if($session_life > $inactive){
+				session_destroy();
+				@session_start();
+				$_SESSION['screen'] =  $screen;
+				$_SESSION['isLogin'] = 0;
+				$strLocation = "login.htm";
+				echo '<script type="text/javascript">';
+				echo " location.href='".$strLocation."';";
+				echo "</script>";
+			}
+		}
+		$_SESSION['userLoginTime'] = $curr_date;
+		
+		return true;
+	}
+
+	function checkLogin(){
+		date_default_timezone_set('Asia/Ho_Chi_Minh');
+		$inactive = EXPIRE_SESSION;
+		$timeLogin  = $_SESSION['userLoginTime'];
+		$curr_date = date("Y-M-d  g:i a");
+		$session_life = strtotime($curr_date) - strtotime($timeLogin);
+		if($session_life > $inactive){
+			session_destroy();
+			@session_start();
+			$_SESSION['isLogin'] = 0;
+			$strLocation = "loginLocal.htm";
+			echo '<script type="text/javascript">';
+			echo " location.href='".$strLocation."';";
+			echo "</script>";
+		}
+		$_SESSION['userLoginTime'] = $curr_date;
+		return true;
+	}
+
+	function login($staffID , $pw){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+	
+		$condi = "StaffID='$staffID' AND PasswordLocal='$pw'";
+		$sql = selectALlTable('*','staff_tbl',$condi);
+			
+		return $sql[0];
+
+	}
+
+
+	function logout(){
+		session_destroy();
+		unsetSessionLogin();
+		echo '<script type="text/javascript">';
+		echo "location.href=loginLocal.htm";
+		echo '</script>';
+	}
+
+	
+	/*function checkSession($screen){
+	//	session_cache_expire(1440);
+		
+		$inactive = EXPIRE_SESSION;//test
+
+		$curr_date = date("Y-M-d  g:i a"); 
+		if(isset($_SESSION['userID'])) 
+		{			
+			$session_life = strtotime($curr_date) - strtotime($_SESSION['time']);
+		//	echo $session_life."<br>";
+		//	echo $curr_date;
+			if($session_life > $inactive){
+				session_destroy();
+				@session_start();
+				$_SESSION['screen'] =  $screen;
+				$strLocation = "login_google.htm";
+				echo '<script type="text/javascript">';
+				echo " location.href='".$strLocation."';";
+				echo "</script>";
+			}
+		}
+		$_SESSION['time'] = $curr_date;
+		return true;
+	}*/
+
+	
+	
+?>

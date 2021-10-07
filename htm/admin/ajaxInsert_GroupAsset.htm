@@ -1,0 +1,29 @@
+<?php
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+	
+	$groupCode=$_POST['groupCode'];
+	$repDate=changeDateFormat($_POST['rptDate'],"words2num");
+	$exp=changeDateFormat($_POST['exp'],"words2num");
+	$isDeleted=0;
+	//Kiem tra cac thong tin dua vao
+	$q_select="SELECT * FROM `group_asset_tbl` WHERE `isDeleted`=0";
+	$rs_select = $oDB->stl_db_select($q_select, $conn);
+	if(is_array($rs_select))
+	{
+		foreach($rs_select as $key=>$value)
+		{
+			if($rs_select[$key]->GroupCode!=$groupCode)
+			{
+				$q="Insert into `group_asset_tbl`(`GroupCode`,`CATCode`,`Descript`,`QuantityReceipt`,`QuantityStore`,`Manufacture`,`ReceiptDate`,`PONo`,`Exp`,`Amount`,`isDeleted`,`CreateDate`)values('".$groupCode."','".$_POST['CATCode']."','".$_POST['desrpt']."',".$_POST['Rept'].",".$_POST['store'].",'".$_POST['manu']."','".$repDate."','".$_POST['PO']."','".$exp."',".$_POST['amount'].",".$isDeleted.",'".$_POST['create']."')";
+			}
+		}
+	}
+	$rs=$oDB->stl_db_change($q, $conn);
+	echo $rs;
+	$oDB->stl_closeConn($conn);
+?>

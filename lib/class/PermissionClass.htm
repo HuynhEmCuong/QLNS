@@ -1,0 +1,66 @@
+<?php
+	@session_start(); 
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once(EIU_LIB.'DBCommon.class.htm');
+	
+
+
+	function checkPermission($data){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+	
+	
+		//Vào bảng screen tìm trang cần xét quyền
+		$q_select = "SELECT `RecordID`,`SubScreen` FROM `screen_tbl` WHERE `Screen`='".$data['screen']."'";
+	
+		$rs_select = $oDB->stl_db_select($q_select, $conn);
+	
+
+		$data['permission'] = 0;
+		if(!empty($rs_select[0]->RecordID)){
+			$screenID = $rs_select[0]->RecordID;
+			$q_select1 = "SELECT * FROM `permission_tbl` WHERE `UserID`='".$data['userId']."' AND `Permission` LIKE '%\"ScreenID\":\"$screenID\"%'";
+			$rs_select1 = $oDB->stl_db_select($q_select1, $conn);
+			//print_r($q_select1);
+			$permission = $rs_select1[0]->Permission;
+			$permission = json_decode($permission);
+			$subscreen = $rs_select[0]->SubScreen;
+			if(!empty($subscreen)){
+				$arrSubScreen = explode(',',$subscreen);
+				//print_r($arrSubScreen);
+				foreach($arrSubScreen as $key=>$value){
+					$data['subPermission'][$arrSubScreen[$key]] = findPermission($permission->Permission,$arrSubScreen[$key]);
+				}
+			}
+			
+			$data['permission'] = findPermission($permission->Permission,$screenID);
+			
+		}
+		//print_r($data);
+		return $data;
+		$oDB->stl_closeConn($conn);
+	}
+	
+	function findPermission($jsonArray,$screenID){
+		foreach($jsonArray as $key=>$value){
+			if($jsonArray[$key]->ScreenID==$screenID){
+				return $jsonArray[$key]->Permission;
+			}
+		}
+		return '';
+	}
+	
+	function checkIsAdmin($userID){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		$q_select = "SELECT `isAdmin` FROM  `staff_tbl` WHERE  `StaffID` = '".$userID."'";
+		$rs_select = $oDB->stl_db_select($q_select, $conn);
+		
+		if(!empty($rs_select[0]->isAdmin)){
+			return $rs_select[0]->isAdmin;
+		}
+		return 0;
+		$oDB->stl_closeConn($conn);
+	}
+?>

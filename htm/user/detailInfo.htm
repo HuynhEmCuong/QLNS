@@ -1,0 +1,18 @@
+<?php
+//	print_r($_POST);
+	@session_start();
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'LoginClass.htm');
+
+	/*if(checkSession('employeeDetail.htm?empId='.$_GET['empId'])==true){
+		$data1 = setSession();
+	}
+	*/
+	
+	$data1 = json_decode($_POST['jsonString'], true);
+	$data1['Birthday'] = date("d/m/Y",strtotime($data1['Birthday']));
+	$view = new View();
+	$view->showTmpl("detailInfo.tmpl","n",$data1);
+?>

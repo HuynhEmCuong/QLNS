@@ -1,0 +1,383 @@
+<?php
+require_once('../../lib/'.'BaseDir.inc.htm');
+require_once('../../lib/'.'DBCommon.class.htm');
+require_once '../../lib/class/ExcelClasses/PHPExcel.php';
+require_once (EIU_CLASS.'PermissionClass.htm');
+require_once (EIU_CLASS.'BaseClass.htm');
+
+/** 
+ * @category   PHPExcel
+ * @package    PHPExcel
+ * @copyright  Copyright (c) 2006 - 2011 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
+ * @version    1.7.6, 2011-02-27
+ */
+
+/** Error reporting */
+//error_reporting(E_ALL);
+
+//Thay đổi format cua date từ 2011-Jul sang 2011-7
+$monthWords = array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec");
+$monthNo = array("1","2","3","4","5","6","7","8","9","10","11","12");
+
+//$Key = '2011-5';
+//echo $Key;
+/** PHPExcel */
+
+//$jsonString = '{"Department":"Khoa qu\u1ea3n tr\u1ecb kinh doanh","Result":[{"MSSV":"1132300079","HoLotVN":"V\u0169 Nguy\u1ec5n Kim","TenVN":"Nguy\u00ean","NgaySinh":"1993-09-01","CMND":"024992803","SubjectCode":"30","SubjectName":"Qu\u1ea3n tr\u1ecb Kinh doanh","EmailTruong":"nguyen.vu.k1sba@eiu.edu.vn"},{"MSSV":"1132300117","HoLotVN":"Nguy\u1ec5n Ph\u1ea1m Qu\u1ef3nh","TenVN":"Trang","NgaySinh":"1993-05-04","CMND":"025028521","SubjectCode":"30","SubjectName":"Qu\u1ea3n tr\u1ecb Kinh doanh","EmailTruong":"trang.nguyen.k1sba@eiu.edu.vn"},{"MSSV":"1132300121","HoLotVN":"Nguy\u1ec5n Hu\u1ef3nh Huy\u1ec1n","TenVN":"Tr\u00e2m","NgaySinh":"1993-10-10","CMND":"025028522","SubjectCode":"30","SubjectName":"Qu\u1ea3n tr\u1ecb Kinh doanh","EmailTruong":"tram.nguyen.k1sba@eiu.edu.vn"},{"MSSV":"1132300127","HoLotVN":"Tr\u1ea7n Th\u00e1i Thanh","TenVN":"Tr\u00fac","NgaySinh":"1993-09-25","CMND":"280996489","SubjectCode":"30","SubjectName":"Qu\u1ea3n tr\u1ecb Kinh doanh","EmailTruong":"truc.tran.k1sba@eiu.edu.vn"},{"MSSV":"1132300038","HoLotVN":"Hu\u1ef3nh Anh","TenVN":"H\u1eadu","NgaySinh":"1993-04-23","CMND":"281031887","SubjectCode":"30","SubjectName":"Qu\u1ea3n tr\u1ecb Kinh doanh","EmailTruong":"hau.huynh.k1sba@eiu.edu.vn"},{"MSSV":"1132300044","HoLotVN":"H\u1ed3 Th\u1ecb Ph\u1ee5ng","TenVN":"Ho\u00e0ng","NgaySinh":"1993-06-04","CMND":"281022404","SubjectCode":"30","SubjectName":"Qu\u1ea3n tr\u1ecb Kinh doanh","EmailTruong":"hoang.ho.k1sba@eiu.edu.vn"},{"MSSV":"1132300112","HoLotVN":"Tr\u1ea7n Th\u1ecb Ng\u1ecdc","TenVN":"Th\u1ee7y","NgaySinh":"1993-03-10","CMND":"281061746","SubjectCode":"30","SubjectName":"Qu\u1ea3n tr\u1ecb Kinh doanh","EmailTruong":"thuy.tran.k1sba@eiu.edu.vn"},{"MSSV":"1132300051","HoLotVN":"\u0110\u1ed7 Ki\u1ebfn","TenVN":"Khanh","NgaySinh":"1993-11-12","CMND":"281022969","SubjectCode":"30","SubjectName":"Qu\u1ea3n tr\u1ecb Kinh doanh","EmailTruong":"khanh.do.k1sba@eiu.edu.vn"},{"MSSV":"1132300119","HoLotVN":"Tr\u01b0\u01a1ng Nguy\u1ec5n Ph\u01b0\u01a1ng","TenVN":"Trang","NgaySinh":"1993-06-27","CMND":"280996490","SubjectCode":"30","SubjectName":"Qu\u1ea3n tr\u1ecb Kinh doanh","EmailTruong":"trang.truong.k1sba@eiu.edu.vn"},{"MSSV":"1132300086","HoLotVN":"L\u00fd Th\u1ea3o","TenVN":"Nhi","NgaySinh":"1993-10-30","CMND":"280985794","SubjectCode":"30","SubjectName":"Qu\u1ea3n tr\u1ecb Kinh doanh","EmailTruong":"nhi.ly.k1sba@eiu.edu.vn"},{"MSSV":"1132300004","HoLotVN":"L\u00ea Th\u1ebf","TenVN":"Anh","NgaySinh":"1993-01-26","CMND":"281047446","SubjectCode":"30","SubjectName":"Qu\u1ea3n tr\u1ecb Kinh doanh","EmailTruong":"anh.le.k1sba@eiu.edu.vn"},{"MSSV":"1132300071","HoLotVN":"Nguy\u1ec5n Thu","TenVN":"Ng\u00e2n","NgaySinh":"1993-12-26","CMND":"281053414","SubjectCode":"30","SubjectName":"Qu\u1ea3n tr\u1ecb Kinh doanh","EmailTruong":"ngan.nguyen.k1sba@eiu.edu.vn"},{"MSSV":"1132300050","HoLotVN":"\u0110inh Th\u1ecb C\u1ea9m","TenVN":"Huy\u1ec1n","NgaySinh":"1993-02-18","CMND":"281015152","SubjectCode":"30","SubjectName":"Qu\u1ea3n tr\u1ecb Kinh doanh","EmailTruong":"huyen.dinh.k1sba@eiu.edu.vn"},{"MSSV":"1132300136","HoLotVN":"Nguy\u1ec5n Ho\u00e0i","TenVN":"V\u0169","NgaySinh":"1992-02-20","CMND":"280980769","SubjectCode":"30","SubjectName":"Qu\u1ea3n tr\u1ecb Kinh doanh","EmailTruong":"vu.nguyen.k1sba@eiu.edu.vn"},{"MSSV":"1132300010","HoLotVN":"Tr\u1ecbnh V\u0103n","TenVN":"B\u00ecnh","NgaySinh":"1993-02-20","CMND":"281090825","SubjectCode":"30","SubjectName":"Qu\u1ea3n tr\u1ecb Kinh doanh","EmailTruong":"binh.trinh.k1sba@eiu.edu.vn"},{"MSSV":"1132300089","HoLotVN":"Nguy\u1ec5n Th\u1ecb Tuy\u1ebft","TenVN":"Nhung","NgaySinh":"1993-09-26","CMND":"281012666","SubjectCode":"30","SubjectName":"Qu\u1ea3n tr\u1ecb Kinh doanh","EmailTruong":"nhung.nguyen.k1sba@eiu.edu.vn"},{"MSSV":"1132300111","HoLotVN":"Tr\u00e0 Th\u1ecb Thu","TenVN":"Th\u1ee7y","NgaySinh":"1993-06-27","CMND":"280996305","SubjectCode":"30","SubjectName":"Qu\u1ea3n tr\u1ecb Kinh doanh","EmailTruong":"thuy.tra.k1sba@eiu.edu.vn"},{"MSSV":"1132300091","HoLotVN":"H\u00e0 Tr\u00fac","TenVN":"Ph\u01b0\u01a1ng","NgaySinh":"1993-11-04","CMND":"281022622","SubjectCode":"30","SubjectName":"Qu\u1ea3n tr\u1ecb Kinh doanh","EmailTruong":"phuong.ha.k1sba@eiu.edu.vn"},{"MSSV":"1132300023","HoLotVN":"Ng\u00f4 Qu\u1ed1c","TenVN":"\u0110\u1ea1t","NgaySinh":"1992-08-08","CMND":"281046819","SubjectCode":"30","SubjectName":"Qu\u1ea3n tr\u1ecb Kinh doanh","EmailTruong":"dat.ngo.k1sba@eiu.edu.vn"},{"MSSV":"1132300101","HoLotVN":"Ng\u00f4 Minh","TenVN":"Si\u00eau","NgaySinh":"1993-04-27","CMND":"281017469","SubjectCode":"30","SubjectName":"Qu\u1ea3n tr\u1ecb Kinh doanh","EmailTruong":"sieu.ngo.k1sba@eiu.edu.vn"},{"MSSV":"1132300107","HoLotVN":"\u0110inh Qu\u1ed1c","TenVN":"Th\u1eafng","NgaySinh":"1993-08-29","CMND":"281034202","SubjectCode":"30","SubjectName":"Qu\u1ea3n tr\u1ecb Kinh doanh","EmailTruong":"thang.dinh.k1sba@eiu.edu.vn"},{"MSSV":"1132300021","HoLotVN":"L\u00ea Th\u1ecb M\u1ef9","TenVN":"Duy\u00ean","NgaySinh":"1993-08-21","CMND":"281076821","SubjectCode":"30","SubjectName":"Qu\u1ea3n tr\u1ecb Kinh doanh","EmailTruong":"duyen.le.k1sba@eiu.edu.vn"},{"MSSV":"1132300115","HoLotVN":"Hu\u1ef3nh Th\u1ecb Th\u1ee7y","TenVN":"Ti\u00ean","NgaySinh":"1993-10-04","CMND":"281039890","SubjectCode":"30","SubjectName":"Qu\u1ea3n tr\u1ecb Kinh doanh","EmailTruong":"tien.huynh.k1sba@eiu.edu.vn"}]}';
+//$Room = "B11-407";
+//$Date = "21/09/2011";
+//$TimeExam = "09:00:00";
+
+//$jsonString = str_replace('\"', '"',$_POST['content']);
+//$Room = $_POST["Room"];
+//$Date = $_POST["Date"];
+//$TimeExam = $_POST["TimeExam"];
+
+//$jsonString = utf8_encode($jsonString);
+//$studentList = json_decode($jsonString,true);
+//print_r($studentList);exit();
+//Chinh Name File
+//$nameFile = $Room."_".$Date."_".$TimeExam;
+//$replaceText = array("-",":",".","/");
+//$nameFile = str_replace($replaceText,"_",$nameFile);
+$now = getdate(); 
+$Date = $now["mday"] . "_" . $now["mon"] . "_" . $now["year"]."_".$now["hours"]."_".$now["minutes"];
+//$Date. ="_".$now["hours"] . "_" . $now["minutes"] . "_" . $now["seconds"];
+$nameFile="listStaff_".$Date;
+$objPHPExcel = new PHPExcel();
+
+
+// Create new PHPExcel object
+//echo date("H:i:s") . " Create new PHPExcel object\n";
+
+
+// Set properties
+//echo date("H:i:s") . " Set properties\n";
+$objPHPExcel->getProperties()->setTitle("Office 2007 XLSX English Room")
+							 ->setSubject("Office 2007 XLSX English Room")
+							 ->setDescription("English Room")
+							 ->setKeywords("English Room");
+							
+
+$objPHPExcel->getDefaultStyle()->getFont()->setName('Times New Roman');
+$objPHPExcel->getDefaultStyle()->getFont()->setSize(12); 
+
+// Rename sheet
+// Set active sheet index to the first sheet, so Excel opens this as the first sheet
+$objPHPExcel->setActiveSheetIndex(0);
+
+$objRichText = new PHPExcel_RichText();
+$objPHPExcel->getActiveSheet()->setCellValue("C1", "DANH SÁCH NHÂN VIÊN");
+	//$Room = "Phòng thi: ".$Room;
+//$objPHPExcel->getActiveSheet()->setCellValue("C3", $Room);
+	//$TimeExam = "Thời gian: ".$Date." ".$TimeExam;
+//$objPHPExcel->getActiveSheet()->setCellValue("D3", $TimeExam);
+	//$departmentValue = $studentList['Department'];
+
+//Set dam cho thoi gian, phong thi va khoa
+/*$objRichTextRoom = new PHPExcel_RichText();
+
+$objPayable = $objRichTextRoom->createTextRun("Phòng thi: ");
+//$objPayable->getFont()->setColor( new PHPExcel_Style_Color( PHPExcel_Style_Color::COLOR_WHITE ) );
+$objPayable->getFont()->setSize(12);
+$objPayable->getFont()->setName('Times New Roman');
+
+$objPayable = $objRichTextRoom->createTextRun("$Room");
+$objPayable->getFont()->setSize(12);
+$objPayable->getFont()->setBold(true);
+$objPayable->getFont()->setName('Times New Roman');
+
+$objPHPExcel->getActiveSheet()->getCell('C3')->setValue($objRichTextRoom);*/
+
+
+//set thoi gian
+/*$objRichTextTime = new PHPExcel_RichText();
+
+$objPayable = $objRichTextTime->createTextRun("Thời gian: ");
+//$objPayable->getFont()->setColor( new PHPExcel_Style_Color( PHPExcel_Style_Color::COLOR_WHITE ) );
+$objPayable->getFont()->setSize(12);
+$objPayable->getFont()->setName('Times New Roman');
+
+$objPayable = $objRichTextTime->createTextRun("$Date $TimeExam");
+$objPayable->getFont()->setSize(12);
+$objPayable->getFont()->setBold(true);
+$objPayable->getFont()->setName('Times New Roman');
+
+$objPHPExcel->getActiveSheet()->getCell('D3')->setValue($objRichTextTime);
+*/
+//set Khoa
+/*$objRichTextDep = new PHPExcel_RichText();
+
+if(!empty($departmentValue)){
+	$objPayable = $objRichTextDep->createTextRun("Khoa: ");
+	//$objPayable->getFont()->setColor( new PHPExcel_Style_Color( PHPExcel_Style_Color::COLOR_WHITE ) );
+	$objPayable->getFont()->setSize(12);
+	$objPayable->getFont()->setName('Times New Roman');
+
+	$objPayable = $objRichTextDep->createTextRun("$departmentValue");
+	$objPayable->getFont()->setSize(12);
+	$objPayable->getFont()->setBold(true);
+	$objPayable->getFont()->setName('Times New Roman');
+
+	$objPHPExcel->getActiveSheet()->getCell('G3')->setValue($objRichTextDep);
+}*/
+
+//Set value title
+$objPHPExcel->getActiveSheet()->setCellValue("A5", "STT");
+$objPHPExcel->getActiveSheet()->setCellValue("B5", "MNV");
+$objPHPExcel->getActiveSheet()->setCellValue("C5", "HỌ LÓT");
+$objPHPExcel->getActiveSheet()->setCellValue("D5", "TÊN");
+$objPHPExcel->getActiveSheet()->setCellValue("E5", "NGÀY SINH");
+$objPHPExcel->getActiveSheet()->setCellValue("F5", "EMAIL TRUỜNG");
+$objPHPExcel->getActiveSheet()->setCellValue("G5", "KHOA/PHÒNG BAN");
+
+
+//Set width cho các cột
+$objPHPExcel->getActiveSheet()->getColumnDimension("A")->setWidth(6);
+$objPHPExcel->getActiveSheet()->getColumnDimension("B")->setWidth(15);
+$objPHPExcel->getActiveSheet()->getColumnDimension("C")->setWidth(25);
+$objPHPExcel->getActiveSheet()->getColumnDimension("D")->setWidth(13);
+$objPHPExcel->getActiveSheet()->getColumnDimension("E")->setWidth(13);
+$objPHPExcel->getActiveSheet()->getColumnDimension("F")->setWidth(30);
+$objPHPExcel->getActiveSheet()->getColumnDimension("G")->setWidth(35);
+//Merge cell dữ liệu title
+$objPHPExcel->getActiveSheet()->mergeCells("C1:G1");
+
+/*
+  ----------------------------------------------
+	- Truy cập cơ sở dữ liệu để lấy giá trị -
+  ----------------------------------------------
+*/
+
+//print_r($studenList->{"Department"});
+
+/*$studentNum =  count($studentList['Result']);
+$startRowNum = 6;
+//print_r($studentList['Result'][0]['HoLotVN']);exit();
+for($i=0;$i<$studentNum;$i++){
+	$RowNum = $i+$startRowNum;
+	//Set value cho STT
+	$objPHPExcel->getActiveSheet()->setCellValue("A$RowNum", $i+1);
+	//Set value cho Mssv
+	$objPHPExcel->getActiveSheet()->setCellValue("B$RowNum", $studentList['Result'][$i]['MSSV']);
+	//Set value cho Ho lot
+	$objPHPExcel->getActiveSheet()->setCellValue("C$RowNum", $studentList['Result'][$i]['HoLotVN']);
+	//Set value cho ten
+	$objPHPExcel->getActiveSheet()->setCellValue("D$RowNum", $studentList['Result'][$i]['TenVN']);
+	//Set value cho Ngay sinh
+	$objPHPExcel->getActiveSheet()->setCellValue("E$RowNum", $studentList['Result'][$i]['NgaySinh']);
+	//Set value cho CMND
+	$objPHPExcel->getActiveSheet()->setCellValue("F$RowNum", "".$studentList['Result'][$i]['CMND']);
+	//Set value cho email truong
+	$objPHPExcel->getActiveSheet()->setCellValue("G$RowNum", $studentList['Result'][$i]['EmailSchool']);
+	
+	//Set aligement cho từng cell
+	$objPHPExcel->getActiveSheet()->getStyle("A$RowNum")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+	$objPHPExcel->getActiveSheet()->getStyle("B$RowNum")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+	$objPHPExcel->getActiveSheet()->getStyle("E$RowNum")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+	$objPHPExcel->getActiveSheet()->getStyle("F$RowNum")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+}*/
+//lay du lieu
+	$condition = "";
+	if(isset($_POST['status']) && !empty($_POST['status']))
+	{
+		$_POST['status'] = str_replace("\'", "'",$_POST['status']);
+		$status = $_POST['status'];
+	}
+
+	$condition .= "t.`isDeleted`=".$status." AND t.`isStaff`<>2";
+	
+	if(checkIsAdmin($_SESSION['userID'])!=1 && $_POST['permisstion']<=2){
+		$code = substr($_SESSION['userID'],0,2);
+		$condition .= " AND d.`Code`='$code'";
+	}
+	//print_r($condition);
+	if(isset($_POST['FullName']) && !empty($_POST['FullName'])){
+		$condition .= " AND t.`FullName` LIKE '%".$_POST['FullName']."%'";
+	}
+	
+	if(isset($_POST['StaffID']) && !empty($_POST['StaffID'])){
+		$condition .= " AND t.`StaffID` LIKE '%".$_POST['StaffID']."%'";
+	}
+	
+	if(isset($_POST['SchoolEmail']) && !empty($_POST['SchoolEmail'])){
+		$condition .= " AND t.`SchoolEmail` LIKE '%".$_POST['SchoolEmail']."%'";
+	}
+	
+	if(isset($_POST['department']) && !empty($_POST['department'])){
+		$condition .= " AND t.`DepartmentID` = ".$_POST['department'];
+	}
+	
+	if(isset($_POST['FromCreateContractDate']) && !empty($_POST['FromCreateContractDate'])){
+		$condition .= " AND t.`CreateContractDate` >= '".$_POST['FromCreateContractDate']."'";
+	}
+	
+	if(isset($_POST['ToCreateContractDate']) && !empty($_POST['ToCreateContractDate'])){
+		$condition .= " AND t.`CreateContractDate` <= '".$_POST['ToCreateContractDate']."'";
+	}
+	
+	if(isset($_POST['FromExpireContractDate']) && !empty($_POST['FromExpireContractDate'])){
+		$condition .= " AND t.`ExpireContractDate` >= '".$_POST['FromExpireContractDate']."'";
+	}
+	
+	if(isset($_POST['ToExpireContractDate']) && !empty($_POST['ToExpireContractDate'])){
+		$condition .= " AND t.`ExpireContractDate` <= '".$_POST['ToExpireContractDate']."'";
+	}
+	
+	if(isset($_POST['CreateDate']) && !empty($_POST['CreateDate'])){
+		$condition .= " AND DATE(t.`CreateDate`)='".$_POST['CreateDate']."'";
+	}
+	
+	//$condition .=  " ORDER BY t.`StaffID`";
+	$condition .=  " ORDER BY DATE(t.`LastUpdate`) DESC";
+	//print_r($condition);
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+	$count = "SELECT COUNT(*) as count FROM `staff_tbl` as t LEFT JOIN  `department_tbl` AS d ON ( t.DepartmentID = d.RecordID ) WHERE ".$condition;
+	$rs_count = $oDB->stl_db_select($count, $conn);		
+	if(!empty($rs_count[0]->count)){
+		$studentNum = (int)$rs_count[0]->count;
+	}
+	$startRowNum = 6;
+	$rs_select_staff = selectALlTable("t.*, d.`FullName` AS DepartmentName","`staff_tbl` AS t LEFT JOIN  `department_tbl` AS d ON ( t.DepartmentID = d.RecordID )",$condition);
+	if(is_array($rs_select_staff))
+	{
+		$i=0;
+		foreach($rs_select_staff as $key=>$value)
+		{
+			$RowNum = $i+$startRowNum;
+			//print_r($RowNum);exit();
+			//Set value cho STT
+			$objPHPExcel->getActiveSheet()->setCellValue("A$RowNum", $i+1);
+			//Set value cho MNV
+			$objPHPExcel->getActiveSheet()->setCellValue("B$RowNum", "'".$rs_select_staff[$key]->StaffID);
+			//Set value cho Ho lot
+			$objPHPExcel->getActiveSheet()->setCellValue("C$RowNum", $rs_select_staff[$key]->LastName." ".$rs_select_staff[$key]->MiddleName);
+			//Set value cho ten
+			$objPHPExcel->getActiveSheet()->setCellValue("D$RowNum", $rs_select_staff[$key]->FirstName);
+			//Set value cho Ngay sinh
+			$objPHPExcel->getActiveSheet()->setCellValue("E$RowNum", $rs_select_staff[$key]->BirthDate."/".$rs_select_staff[$key]->BirthMonth."/".$rs_select_staff[$key]->BirthYear);
+			//Set value cho email truong
+			$objPHPExcel->getActiveSheet()->setCellValue("F$RowNum", $rs_select_staff[$key]->SchoolEmail);
+			//Set value cho khoa
+			$objPHPExcel->getActiveSheet()->setCellValue("G$RowNum", $rs_select_staff[$key]->DepartmentName);
+			//print_r($rs_select_staff[$key]->StaffID);exit();
+			//Set aligement cho từng cell
+			$objPHPExcel->getActiveSheet()->getStyle("A$RowNum")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+			$objPHPExcel->getActiveSheet()->getStyle("B$RowNum")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+			$objPHPExcel->getActiveSheet()->getStyle("E$RowNum")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+			//$objPHPExcel->getActiveSheet()->getStyle("F$RowNum")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+			//$objPHPExcel->getActiveSheet()->getStyle('B')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+		
+			$i++;
+		}
+	}
+	
+//Set style
+$styleBoldCell = array(
+	'font' => array(
+		'bold' => true,
+	),
+);
+
+$styleThinBorderOutline = array(
+	'borders' => array(
+		'allborders' => array(
+			'style' => PHPExcel_Style_Border::BORDER_THIN,
+			'color' => array('argb' => '000000'),
+		),
+	),
+);
+
+$styleTinBorderBottom = array(
+	'borders' => array(
+		'bottom' => array(
+			'style' => PHPExcel_Style_Border::BORDER_THIN,
+			'color' => array('argb' => '000000'),
+		),
+	),
+);
+
+
+$objPHPExcel->getActiveSheet()->getStyle('A5:G5')->applyFromArray($styleBoldCell);
+
+//Đóng border cho danh sách
+$RowEnd = $startRowNum + $studentNum - 1;
+$RowStart = $startRowNum - 1;
+//print_r($RowEnd);exit();
+
+$objPHPExcel->getActiveSheet()->getStyle("A$RowStart:G$RowEnd")->applyFromArray($styleThinBorderOutline);
+
+//set Border cho title
+//Set backgournd Color
+$objPHPExcel->getActiveSheet()->getStyle('A5:G5')->getFill()
+->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+->getStartColor()->setARGB('C2D69A');
+
+
+$objPHPExcel->getActiveSheet()->getStyle('A5:G5')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+$objPHPExcel->getActiveSheet()->getStyle('C1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+//Insert thêm row trước
+//Insert Row trước
+$objPHPExcel->getActiveSheet()->insertNewRowBefore(1, 1);
+$objPHPExcel->getActiveSheet()->insertNewRowBefore(1, 1);
+$objPHPExcel->getActiveSheet()->insertNewRowBefore(1, 1);
+$objPHPExcel->getActiveSheet()->insertNewRowBefore(1, 1);
+
+//Set titile
+$objPHPExcel->getActiveSheet()->setCellValue("C2", "TRƯỜNG ĐẠI HỌC QUỐC TẾ MIỀN ĐÔNG");
+$objPHPExcel->getActiveSheet()->setCellValue("C3", "EASTERN INTERNATIONAL UNIVERSITY");
+
+//Set font lon cho danh sach thi
+$objPHPExcel->getActiveSheet()->getStyle('C2')->getFont()->setSize(16); 
+$objPHPExcel->getActiveSheet()->getStyle('C3')->getFont()->setSize(12); 
+$objPHPExcel->getActiveSheet()->getStyle('C5')->getFont()->setSize(24); 
+
+//Insert picture logo EIU
+$objDrawing = new PHPExcel_Worksheet_Drawing();
+$objDrawing->setName('Logo');
+$objDrawing->setDescription('Logo');
+$objDrawing->setPath('../../img/logo2.png');
+$objDrawing->setHeight(105);
+$objDrawing->setCoordinates('B1');
+$objDrawing->setWorksheet($objPHPExcel->getActiveSheet());
+
+//Merge cell dữ liệu title
+$objPHPExcel->getActiveSheet()->mergeCells("C3:F3");
+$objPHPExcel->getActiveSheet()->mergeCells("C2:F2");
+$objPHPExcel->getActiveSheet()->getStyle('C2:F3')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+$objPHPExcel->getActiveSheet()->getStyle('C2:F3')->applyFromArray($styleBoldCell);
+$objPHPExcel->getActiveSheet()->getStyle('C3:G3')->applyFromArray($styleTinBorderBottom);
+$objPHPExcel->getActiveSheet()->getStyle('C5')->applyFromArray($styleBoldCell);
+
+//Set orientation
+$objPHPExcel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
+$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
+
+//Insert 1 dòng tước STT để đẹp
+$objPHPExcel->getActiveSheet()->insertNewColumnBefore("A", 1);
+$objPHPExcel->getActiveSheet()->getColumnDimension("A")->setWidth(5);
+
+//Seet page margins
+$objPHPExcel->getActiveSheet()->getPageMargins()->setTop(0.5);
+$objPHPExcel->getActiveSheet()->getPageMargins()->setBottom(0);
+
+
+// Set active sheet index to the first sheet, so Excel opens this as the first sheet
+$objPHPExcel->setActiveSheetIndex(0);
+$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+//$data["filePath"] = LOCAL_PATH."ExportTmp/$nameFile.xlsx";
+
+$data["filePath"] = EIU_FILE_EXPORTED."$nameFile.xlsx";
+$data["fileName"]=$nameFile.".xlsx";
+
+//print_r($objPHPExcel);exit();
+$objWriter->save($data["filePath"]);
+//print_r($nameFile);exit();
+$data["nameFile"] = $nameFile;
+//print_r($data["nameFile"]);exit();
+$data["status"] = "OK";
+//print_r($data);exit();
+echo json_encode($data);

@@ -1,0 +1,40 @@
+<?php
+	@session_start();
+	
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'LoginClass.htm');
+	require_once (EIU_CLASS.'PermissionClass.htm');
+	
+	if(checkSession('mainpage.htm')==true){
+		$data1 = setSession();
+	}
+	
+	$screen = basename($_SERVER["REQUEST_URI"]).PHP_EOL;
+	$data['screen'] = RTRIM($screen);
+	
+	$data1['screen'] = $data['screen'];
+	$data = checkPermission($data1);	
+	
+	$data1['permission'] = $data['permission'];
+	
+	//Process SubPermission
+	if(checkIsAdmin($data1['userId'])==1){
+		$data1['permission'] = 4;
+		$data1['add'] = 4;
+		$data1['update'] = 4;
+		$data1['reset'] = 4;
+	}else if(is_array($data1['subPermission'])){
+		$data1['add'] = $data1['subPermission'][2];
+		$data1['update'] = $data1['subPermission'][3];
+		$data1['reset'] = $data1['subPermission'][4];
+	}
+	//print_r($data1);	
+	$view = new View();
+	if($data1['permission']>0){		
+		$view->showTmpl("emailpage.tmpl","n",$data1);
+	}else{
+		echo "Can not access to this page";
+	}
+?>

@@ -1,0 +1,50 @@
+<?php
+	@session_start();
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'LoginClass.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	require_once (EIU_CLASS.'PermissionClass.htm');
+	
+	$view = new View();
+	$data = selectALlTable('*', '`staff_tbl`', "`isDeleted`=0 AND `StaffID`='".$_POST['staffID']."'");
+	$data1 = get_object_vars($data[0]);
+	$arrNationality = explode("_",$data1['Nationality']);
+	$data1['naID'] = $arrNationality[0];
+	
+	if($data1['BirthDate']==0){
+		$data1['BirthDate'] = '';
+	}
+	if($data1['BirthYear']==0){
+		$data1['BirthYear'] = '';
+	}
+	$data1 = '';
+	$data1['image'] = EIU_IMAGE_STAFF."no_image.jpg";
+	
+	if(checkSession('listStaff.htm')==true){
+		$data = setSession();
+	}
+	
+	$screen = basename($_SERVER["REQUEST_URI"]).PHP_EOL;
+	$data['screen'] = RTRIM($screen);
+	
+	$data = checkPermission($data);
+	//Set value login
+	$data1['userName'] = $data['userName'];
+	$data1['userLoginTime'] = $data['userLoginTime'];
+	$data1['userId'] = $data['userId'];
+	$data1['isLogin'] = $data['isLogin'];
+	$data1['screen'] = $data['screen'];
+	$data1['permission'] = $data['permission'];
+	
+	if(checkIsAdmin($data1['userId'])==1){
+		$data1['permission'] = 4;
+	}
+	
+	if($data1['permission']>0){		
+		$view->showTmpl("addDetailInfoStaff.tmpl","n",$data1);
+	}else{
+		echo "Can not access to this page";
+	}		
+?>

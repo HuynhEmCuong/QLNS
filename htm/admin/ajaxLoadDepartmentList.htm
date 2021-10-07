@@ -1,0 +1,22 @@
+<?php
+	session_start();
+	
+	//print_r($_POST);
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	require_once (EIU_CLASS.'PermissionClass.htm');
+	//print_r($_POST);
+	//print_r($_SESSION);
+	//print_r($_SESSION);
+
+	if(checkIsAdmin($_SESSION['userID'])==1 || $_POST['permisstion']>2){
+		$data = loadDepartmentList();
+	}else if(isset($_SESSION['userID']) && !empty($_SESSION['userID'])){
+		$code = substr($_SESSION['userID'], 0,2);
+		$data = loadDepartmentListByCondition($code);
+	}
+	echo json_encode($data);
+
+?>

@@ -1,0 +1,14 @@
+<?php
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+	$coDate=changeDateFormat($_POST['date'],"words2num");
+
+	$q_update="Update `asset_detail_tbl` set `SerialNumber`='".$_POST['serial']."',`STAID`=".$_POST['staID'].",`Location`=".$_POST['locaID'].",`ConID`=".$_POST['conID'].",`CheckOutPerson`='".$_POST['person']."',`CheckOutDate`='".$coDate."',`UserName`='".$_POST['user']."' where `AssCode`='".$_POST['assetCode']."'";
+	$rs=$oDB->stl_db_change($q_update, $conn);
+	echo $rs;
+	$oDB->stl_closeConn($conn);
+?>

@@ -1,0 +1,28 @@
+<?php
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+	
+	$assCode=$_POST['assetCode'];
+	$isDeleted=0;
+	//Kiem tra cac thong tin dua vao
+	$q_select="SELECT * FROM `asset_detail_tbl` WHERE `isDeleted`=0";
+	$rs_select = $oDB->stl_db_select($q_select, $conn);
+	if(is_array($rs_select))
+	{
+		foreach($rs_select as $key=>$value)
+		{
+			if($rs_select[$key]->AssCode!=$assCode)
+			{
+				$q="Insert into `asset_detail_tbl`(`GroupCode`,`AssCode`,`SerialNumber`,`STAID`,`Location`,`ConID`,`isDeleted`,`CreateDate`)values('".$_POST['groupCode']."','".$_POST['assetCode']."','".$_POST['serial']."',".$_POST['staID'].",".$_POST['loID'].",".$_POST['conID'].",".$isDeleted.",'".$_POST['create']."')";
+				//$q="Insert into `asset_detail_tbl`(`GroupCode`,`AssCode`,`SerialNumber`,`STAID`,`Location`,`ConID`,`isDeleted`)values('".$_POST['groupCode']."','".$_POST['assetCode']."','".$_POST['serial']."',".$_POST['staID'].",'".$_POST['loID']."',".$_POST['conID'].",".$isDeleted.")";
+			}
+		}
+	}
+	$rs=$oDB->stl_db_change($q, $conn);
+	echo $rs;
+	$oDB->stl_closeConn($conn);
+?>

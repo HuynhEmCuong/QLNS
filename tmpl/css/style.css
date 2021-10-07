@@ -1,0 +1,834 @@
+body{
+	font-size:12px;
+	padding:0px;
+	margin:0px;
+
+}
+
+#wrapper{
+	margin: auto;
+	width: 800px;
+}
+
+#table{
+	/*border: 1px solid;*/
+   /* height: 941px;*/
+}
+
+#poNo{
+	font-size:16px;
+	padding-left: 5px;
+}
+
+a:hover{
+	color:blue;
+}
+
+ul li{
+
+}
+
+.col-1{
+	width: 105px;
+}
+
+.col-2{
+	width: 220px;
+	text-align: center;
+}
+
+.col-3{
+	width: 200px;
+	text-align: center;
+}
+
+.col-4{
+
+}
+
+.td-right{
+	border-right: 1px solid;
+    float: left;
+    line-height: 30px;
+}
+
+.td-right-checked{
+	border-right: 1px solid;
+    float: left;
+    line-height: 14px;
+}
+
+.tr{
+	border: 2px solid;
+    float: left;
+    width: 794px;
+	
+}
+
+.tr-none{
+    float: left;
+    width: 794px;
+}
+
+p,input{
+	/*padding:0;
+	margin:0;*/
+}
+a{
+	text-decoration: underline;
+	color:#303030;
+}
+
+#paymenTerms, #remark{
+	padding-left:10px;
+}
+
+.clear{
+	clear:left;
+}
+
+.bold{
+	font-weight: bold;
+}
+
+.no-bold{
+	font-weight:normal;
+}
+
+.text-center{
+	text-align:center;
+}
+
+.text-right{
+	text-align:right;
+}
+
+.pdLeft10px{
+	padding-left:10px;
+}
+.pdLeft5px{
+	padding-left:5px;
+}
+
+.height-1{
+	height:33px;
+}
+
+.height-2{
+	height:25px;
+}
+
+.height-3{
+	height:150px;
+}
+
+/*LucVo Edit Height:30px;*/
+.height-4{
+	height:30px;
+}
+/*
+.height-4{
+	height:50px;
+}
+*/
+.height-5{
+	height:60px;
+}
+
+.height-6{
+	
+	/*LucVo Edit*/
+	line-height:1.5;
+	height:65px;
+}
+
+.height-1-1{
+	height:40px;
+}
+
+.distance{
+	padding-left: 10px;
+}
+
+.p-top{
+	padding-top:10px;
+}
+
+#quo-ref{
+	padding: 0px 10px;
+    width: 476px;
+	height:30px;
+}
+
+.title-2{
+	height: 43px;;
+    padding-top: 17px;
+}
+
+.description{
+	width: 281px;
+}
+
+.spec-loc{
+	width: 150px;
+}
+
+/*div[id^="spec-loc-"]{
+	border-right: 1px solid;
+}*/
+
+.qty{
+	width: 60px;
+}
+
+.qty11{
+	height: 41px;
+    padding-top: 0;
+    width: 45px;
+}
+
+.unit{
+	 width: 60px;
+}
+
+.currency, .usd{
+	border-bottom: 1px solid;
+	height:25px;	
+}
+
+.curr-rate{
+	 width: 115px;
+}
+
+.sum{
+	width: 120px;
+	border-right:none;
+}
+
+.line{
+	background-color: #000000;
+    height: 1px;
+    margin: 0 18px;
+    width: 243px;
+}
+
+.option{
+	float: left;
+    padding-left: 5px;
+    width: 200px;
+}
+
+.bo-bottom-none{
+	 border-bottom: medium none;
+}
+
+.bo-top-none{
+	border-top: none;
+}
+
+.bo-right-none{
+	 border-right: medium none;
+}
+
+
+.bo-left-none{
+	 border-left: medium none;
+}
+
+.bo-top{
+	border-top:1px solid #8EB4E3;
+}
+
+.bo-left{
+	border-left:1px solid #8EB4E3;
+}
+
+
+.bo-right{
+	border-right:1px solid #8EB4E3;
+}
+
+.bo-bottom{
+	border-bottom:1px solid #8EB4E3;
+}
+
+.underline{
+	text-decoration: underline;
+}
+
+.bacground{
+	background-color:#c0c0c0;
+}
+
+.space-2{
+	padding-right: 3px;
+}
+
+input[type="checkbox"] {
+
+}
+
+.edit{
+	/*background-color: yellow;*/
+}
+
+.stt{
+	width: 20px; 
+	float:left; 
+	border-right: 1px solid;
+}
+
+.parent{
+
+}
+
+/*PROJECTLIST*/
+.table{
+	display:table;
+}
+.row{
+	display:table-row;
+	width:100%;
+}
+
+.row-title{
+	background-color: #dce6f2;
+	display: table-row;
+}
+
+.color-title{
+	color:#17375e;
+}
+
+.bg-title{
+	background-color: #17375e;
+	color:white;
+}
+
+.row-title1{
+	background-color: #DCE6F2;
+	display: table-row;
+}
+
+input.row{
+//	height: 16px;
+	height: 20px;
+	border: none;
+	padding: 0;
+	margin: 0;
+}
+
+.bg-input{
+	background-color: #DCE6F2;
+}
+
+.bg-pink{
+	background-color:pink;
+}
+
+.cell{
+	border-bottom: 1px solid #8EB4E3;
+	border-right: 1px solid #8EB4E3;
+	border-top: 1px solid #8EB4E3;
+	display: table-cell;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.cell-top-none{
+	border-bottom: 1px solid #8EB4E3;
+	border-right: 1px solid #8EB4E3;
+	display: table-cell;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.cell-1{
+	width: 25px;
+}
+
+ .cell-2{
+	width: 55px;;
+}
+
+.cell-3 {
+	width: 180px;;
+}
+
+.cell-4 {
+	width:420px;
+}
+
+.cell-5,.cell-11, .cell-15 {
+	width: 100px;
+}
+
+.cell-6 {
+	width: 90px;;
+}
+
+.cell-7 , .cell-8{
+	width: 65px;
+}
+
+.cell-9 {
+	width: 52px;
+}
+
+.cell-10 {
+	width:250px;
+}
+
+.cell-12 {
+	width: 150px;
+}
+.cell-13 {
+	width:648px;
+}
+.cell-14 {
+	width:505px;
+}
+
+.left-header{
+	float:left;
+}
+.right-header{
+	float:right;
+}
+
+#client{
+	margin-left: 3px;
+}
+
+#contract{
+	margin-right: 20px;
+}
+
+.height-7{
+	height: 27px;
+    padding-top: 5px;
+}
+
+.height-8{
+	height: 16px;
+}
+
+.height-row{
+	height:20px;
+}
+
+.background-none{
+	background-color: white;
+}
+
+.border-double{
+	border-right: medium double #8EB4E3;
+}
+
+#list-category{
+	width:700px;
+	margin-left:86px;
+}
+
+#categories1{
+	font-size:10px;
+	font-weight:bold;
+    float: left;
+}
+
+#categories2{
+	font-weight:bold;
+	font-size:10px;
+}
+
+/*LucVo: Edit 20.26 15/04/2010 PROJECT LIST*/
+#tb-report{
+	display: table;
+	float:left;
+	clear:both;
+}
+
+
+.leftBorder{
+	border-left:1px solid;
+}
+
+.NoCell, .DesCell, .SpecLocCell, .QtyCell, .UnitCell, .RateCell, .AmountCell{
+	display:table-cell;	
+	/*LucVo Edit 13/05*/
+	/*padding-top:10px;*/
+	/*height:30px;*/
+	height:15px;
+	vertical-align:middle;	
+} 
+
+.QtyCellPO,.RateCellPO{
+	display:table-cell;	
+	height:40px;
+	border-left:1px solid;
+}
+
+.DesCell, .SpecLocCell, .QtyCell, .UnitCell, .RateCell, .AmountCell{
+	border-left:1px solid;
+} 
+
+.inputFieldPO{
+	height:30px;
+}
+
+
+.NoCell{
+	width: 21px;
+}
+
+.DesCell{
+	width: 255px;
+}
+
+.SpecLocCell{
+	width:148px;
+}
+
+.QtyCell{
+	width: 61px;
+}
+
+.UnitCell{
+	width:58px;
+}
+
+.RateCell{
+	width: 113px;
+}
+
+.AmountCell{
+	width:117px;
+}
+
+.AmountCellWid{
+	width:117px;
+}
+
+.padRight2px{
+	padding-right:2px;
+}
+
+.padLeft2px{
+	padding-left:2px;
+}
+
+/*PROJECT BASE*/
+.inputText{
+	border: 1px solid;
+    float: left;
+    margin-right: 5px;
+    margin-top: 3px;
+    width: 155px;
+}
+
+/*MAIN PAGE*/
+.mp-col-1{
+	float: left;
+    margin-right: 40px;
+    width: 500px;
+}
+
+.bg-titlemp{
+	color:#c00000;
+}
+
+.bg-content{
+	background-color: #4281CD;
+}
+
+.bg-content-right{
+	background-color: #388FA7;
+}
+
+.bg-line{
+	color:#4a7ebb;
+	margin-bottom: 10px;
+}
+
+.mp-title{
+	font-size: 16pt;
+    font-weight: bold;
+    margin: 5px;
+}
+
+.mp-col-2{
+	float: right;
+	width: 370px;
+}
+
+#title-col-1{
+	background-color: #C0504D;
+    border-style: double;
+    border-width: medium;
+    color: white;
+    font-size: 12pt;
+    text-align: center;
+}
+
+#title-col-2{
+	background-color: #9bbb59;
+    border-style: double;
+    border-width: medium;
+    color: white;
+    font-size: 12pt;
+    text-align: center;
+}
+
+.btn-col-1{
+    -moz-box-shadow: 5px 5px 5px #CCCCCC;
+    font-size: 11pt;
+    margin: 5px;
+    padding: 5px 5px 5px 30px;
+}
+
+.btn-col-2{
+    -moz-box-shadow: 5px 5px 5px #CCCCCC;
+    font-size: 11pt;
+    margin: 5px;
+    padding: 5px 5px 5px 30px;
+	color: #FFF;
+	
+}
+
+a#logout{
+	float:right; 
+	font-size:10px; 
+	margin-top:15px;
+}
+
+a#logout:active{
+	color:red;
+}
+
+a.content, a.content2{
+	color: white;
+    text-decoration: none;
+}
+
+a.content:hover, a.content2:hover{
+	color:#C00000;
+}
+
+/*a.content:visited, a.content2:visited{
+	color:yellow;
+}*/
+a.content:active, a.content2:active{
+	color:yellow;
+}
+
+a.choose{
+	color: blue;
+	font-weight: bold;
+}
+
+.login{
+	color: blue;
+    float: right;
+    font-size: 15px;
+    font-style: italic;
+    font-weight: normal;
+    margin-right: 10px;
+    margin-top: 13px;
+}
+
+select{
+
+}
+
+#employeesList{
+	position: absolute;
+	visibility: hidden;
+	width: 328px;
+	/*height: 200px;		*/
+	background-color: #DCE6F2;
+	border-left: 1px solid #8EB4E3;
+	border-bottom: 1px solid #8EB4E3;
+	padding: 10px 10px 4px 10px;	
+	}
+
+#contentPopup{
+	display:table;
+	border-bottom: 1px solid #8EB4E3;		
+}
+
+.rowPopup{
+		display:table-row;
+		height:30px;
+		
+	}
+	
+	.titlePopup{
+		font-weight:bold;
+		color:white;
+		background-color: #17375E;
+		text-align:center;
+	}
+	
+	
+	.IDEmployee, .FullName, .Position{
+		display:table-cell;
+		vertical-align:middle;
+		text-align:center;
+	}
+	
+	.fullNamePopupDat{
+		text-align:left;
+		padding-left:3px;
+	}
+	
+	.IDEmployee{
+		width:57px;
+		border-left:1px solid #8EB4E3;
+		border-top:1px solid #8EB4E3;
+		border-right:1px solid #8EB4E3;
+	}
+	
+	
+	.FullName{
+		width:236px;
+		border-right:1px solid #8EB4E3;
+		border-top:1px solid #8EB4E3;
+	}
+	
+	.Position{
+		width:100px;
+		border-right:1px solid #8EB4E3;
+		border-top:1px solid #8EB4E3;
+	}
+	
+	.row-right-footer{
+		display: table-row;
+	}
+	
+	.btom-right-footer{
+		
+		width:100%;	
+	}
+	
+	.supplier-right-footer, .refDoc-right-footer{
+		display: table-cell;
+		height:20px;
+		vertical-align:middle;
+		padding-left:5px;
+	}
+	
+	.refDoc-right-footer{
+		width: 333px;
+		border-bottom:1px solid #000000;
+		border-right: 1px solid #000000;
+		border-left: 1px solid #000000;
+	}
+	
+	.supplier-right-footer{
+		width:240px;
+		border-left: 1px solid #000000;		
+		border-bottom:1px solid #000000;
+	}
+	
+	#usage{
+		border:1px solid #000000;
+		margin-bottom:10px;
+	}
+	
+	.lable-supplier{
+		width:50px;
+		vertical-align:top;
+	}
+	.dat-supplier{
+		float:right;
+		width:250px;
+		vertical-align:middle;
+	}
+	
+	.lable-supplier, .dat-supplier{
+		
+		display:table-cell;
+	}
+	
+	.IDProjectPopup, .NameProjectPopup{
+		display:table-cell;
+		padding: 2px;		
+		vertical-align:middle;
+		border-left:1px solid #8EB4E3;
+		border-bottom: 1px solid #8EB4E3;
+	}
+	
+	.NameProjectPopup{
+		width: 290px;
+		border-right: 1px solid #8EB4E3;
+	}
+	
+	.IDProjectPopup{
+		width: 80px;
+	}
+	
+	.amount1{
+		width:129px;
+	}
+	.amount2{
+		width:119px;
+	}
+	
+	.pickerDate{
+		position: absolute;
+	//	left: 1015px;
+	//	top: 218px;
+		border: none;
+		height: 18px;
+	//	margin-top: 5px;
+	//	margin-left: 5px;
+		padding-left: 5px;
+		width: 85px;
+		background-color: transparent;
+	}
+	
+	.display{
+		display:block;
+	}
+	
+	.display-none{
+		display:none;
+	}
+	
+	select#sl-amout{
+		margin-top: 3px;
+		width: 60px;
+		font-weight: bold;
+	}
+	
+	.cellChild{
+		display:table-cell;
+	//	border: none;
+	}
+	
+	.border-none{
+		border:none;
+	}
+	
+	.client{
+		padding-left: 5px;
+		width: 155px;
+		text-align: left;
+		height: 20px;
+	}
+	
+	.contract{
+		padding-right: 5px;
+		text-align: right;
+		width: 80px;
+		height: 20px;
+	}
+	
+	.iconDelete{
+		background: url("../../img/icon-delete.jpg") no-repeat scroll left center transparent;
+		width: 16px;
+		height: 16px;
+		margin-top: 2px;
+		margin-left: 68px;
+	}
+

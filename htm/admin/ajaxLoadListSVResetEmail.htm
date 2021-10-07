@@ -1,0 +1,90 @@
+<?php
+	session_start();
+	
+//	print_r($_POST);
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	
+	$condition = "r.isDeleted=0 AND length(r.StaffID)=6";
+	$condition2 = "r.isDeleted=0 AND length(r.StaffID)=10";
+	
+	/*if(isset($_POST['firstname']) && !empty($_POST['firstname'])){
+		$condition .= " AND `TenVN` LIKE '%".$_POST['firstname']."%'";
+	}
+	
+	if(isset($_POST['mssv']) && !empty($_POST['mssv'])){
+		if(isset($_POST['isRestore'])&&!empty($_POST['isRestore'])&&$_POST['isRestore']==1){
+			$condition .= " AND `MSSV` = '".$_POST['mssv']."'";
+		}else{
+			$condition .= " AND `MSSV` LIKE '%".$_POST['mssv']."%'";
+		}
+	}
+	
+	if(isset($_POST['fromdate']) && !empty($_POST['fromdate'])){
+		$fromdate = convertDate($_POST['fromdate'], "/");
+		$condition .= " AND DATE(`CreateDate`) >= '".$fromdate."'";
+	}
+	
+	if(isset($_POST['todate']) && !empty($_POST['todate'])){
+		$todate = convertDate($_POST['todate'], "/");
+		$condition .= " AND DATE(`CreateDate`) <= '".$todate."'";
+	}	
+	
+	if(isset($_POST['subject']) && !empty($_POST['subject'])){
+		$condition .= " AND `SubjectID` = ".$_POST['subject'];
+	}
+	
+	if(isset($_POST['department']) && !empty($_POST['department'])){
+		$condition .= " AND `DepartmentID` = ".$_POST['department'];
+	}*/
+	
+//	print_r($condition);
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+	
+//	$field = "`MSSV`,`HoLotVN`,`TenVN`,`NgaySinh`,`CMND`,`Phone`,`Mobile`,`Email`,`EmailTruong`,`DiaChiHK`";
+	$rs_select_hososinhvien = selectALlTable("*","`resetpwdemail_tbl` AS r LEFT JOIN  `staff_tbl` AS h ON ( r.StaffID = h.StaffID )",$condition);
+	$rs_select_hososinhvien1 = selectALlTable("*","`resetpwdemail_tbl` AS r LEFT JOIN  `student_tbl` AS h ON ( r.StaffID = h.IRN)",$condition2);
+	//print_r($rs_select_hososinhvien1);exit();
+	if(is_array($rs_select_hososinhvien) || is_array($rs_select_hososinhvien1)){
+		$i=0;
+		if(is_array($rs_select_hososinhvien)){
+			foreach($rs_select_hososinhvien as $key=>$value){
+				$data1['Result'][$i]['RecordID']	=	$rs_select_hososinhvien[$key]->RecordID;
+				$data1['Result'][$i]['StaffID']		=	$rs_select_hososinhvien[$key]->StaffID;
+				$data1['Result'][$i]['FullName']	=	$rs_select_hososinhvien[$key]->FullName;
+				$data1['Result'][$i]['SchoolEmail']	=	$rs_select_hososinhvien[$key]->SchoolEmail;
+				$data1['Result'][$i]['FirstName'] = $rs_select_hososinhvien[$key]->FirstName;
+				$data1['Result'][$i]['LastName'] = $rs_select_hososinhvien[$key]->LastName;
+				if(!empty($rs_select_hososinhvien[$key]->MiddleName)){
+					$data1['Result'][$i]['LastName'] = " ".$rs_select_hososinhvien[$key]->MiddleName;
+				}
+				$i++;
+			}
+		}
+		
+		if(is_array($rs_select_hososinhvien1)){
+			foreach($rs_select_hososinhvien1 as $key=>$value){
+				$data1['Result'][$i]['RecordID']	=	$rs_select_hososinhvien1[$key]->RecordID;
+				$data1['Result'][$i]['StaffID']		=	$rs_select_hososinhvien1[$key]->IRN;
+				$data1['Result'][$i]['FullName']	=	$rs_select_hososinhvien1[$key]->FullName;
+				$data1['Result'][$i]['SchoolEmail']	=	$rs_select_hososinhvien1[$key]->SchoolEmail;
+				$data1['Result'][$i]['FirstName'] = $rs_select_hososinhvien1[$key]->FirstName;
+				$data1['Result'][$i]['LastName'] = $rs_select_hososinhvien1[$key]->LastName;
+				if(!empty($rs_select_hososinhvien1[$key]->MiddleName)){
+					$data1['Result'][$i]['LastName'] = " ".$rs_select_hososinhvien1[$key]->MiddleName;
+				}
+				$i++;
+			}
+		}
+		
+		echo json_encode($data1);
+	}else{
+		echo 'NG';
+	}
+	
+	$oDB->stl_closeConn($conn);
+	
+?>

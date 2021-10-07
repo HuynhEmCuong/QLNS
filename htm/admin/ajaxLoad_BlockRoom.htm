@@ -1,0 +1,29 @@
+<?php
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+	
+	$q_select="SELECT * FROM  `roomblock_tbl` AS r,  `block_tbl` AS b WHERE b.`BlockCode` = r.`BlockCode`";
+	$rs_select = $oDB->stl_db_select($q_select, $conn);
+
+	if(is_array($rs_select))
+	{
+		$i=0;
+		foreach($rs_select as $key=>$value)
+		{
+			$data[$i]['roomID']=$rs_select[$key]->RoomID;
+			$data[$i]['roomName']=$rs_select[$key]->BlockCode."-".$rs_select[$key]->RoomCode;
+			$i++;
+		}
+	}
+	else
+	{
+		echo 'NG';
+	}	
+	$arr['LocaList'] = $data;
+	echo json_encode($arr);
+	$oDB->stl_closeConn($conn);
+?>

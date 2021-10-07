@@ -1,0 +1,37 @@
+<?php
+	session_start();
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+	
+	if(isset($_POST['email']) && !empty($_POST['email']))
+	{
+		$q = "SELECT `StaffID`,`FullName`,`FirstName`,`MiddleName`,`LastName`,`SchoolEmail` FROM `staff_tbl` WHERE `isDeleted`=0 and `SchoolEmail` LIKE '".$_POST['email']."%'";
+	}
+	else
+	{
+		$q = "SELECT `StaffID`,`FirstName`,`MiddleName`,`LastName`,`FullName`,`SchoolEmail` FROM `staff_tbl` WHERE `isDeleted`=0";
+	}
+	
+	$rs = $oDB->stl_db_select($q, $conn);
+	
+	$i = 0;
+	if(is_array($rs)){
+		foreach($rs as $key=>$value){
+			$data1['StaffID'] = $rs[$key]->StaffID;	
+			$data1['FullName'] = $rs[$key]->LastName." ".$rs[$key]->MiddleName." ".$rs[$key]->FirstName;	
+			$data1['SchoolEmail'] = $rs[$key]->SchoolEmail;				
+			$arr["Result"][$i] = $data1;
+			$i++;
+		}
+		echo json_encode($arr);
+	}else{
+		echo 'NG';
+	}
+
+	$oDB->stl_closeConn($conn);
+	
+?>

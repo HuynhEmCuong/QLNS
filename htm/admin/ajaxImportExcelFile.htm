@@ -1,0 +1,137 @@
+<?php
+	session_unset();
+	session_start();
+	header('Content-Type: text/html; charset=utf-8');
+//	header("Location: ajaxLoadListImportedRows.htm");
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	require_once (EIU_CLASS.'EmailClass.htm');
+	require_once (EIU_CLASS.'ExcelClasses/PHPExcel.php');
+	require_once (EIU_CLASS.'ExcelClasses/PHPExcel/Reader/Excel2007.php');
+	require_once (EIU_CLASS.'ExcelClasses/PHPExcel/IOFactory.php');
+	
+//	print_r($_SESSION);
+	
+	$msg = '';
+	if(isset($_POST['upload']) && !empty($_POST['upload']) && $_SESSION['ajaxImportExcelFile'] != true){
+		$host = $_SERVER['HTTP_HOST'];
+		$url = $_SERVER['REQUEST_URI'];
+		//print_r($url);
+		/*$arrUrl = explode('/',$url);
+		if(isset($arrUrl[1]) && !empty($arrUrl[1])){
+			$parentPath = "http://".$host."/".$arrUrl[1]."/".FOLDER_NAME_PRIVATE_WEB."/";
+			//print_r($parentPath);
+		}*/
+		
+		$uploads_dir = '../../Files/uploads';
+		foreach ($_FILES["pic"]["error"] as $key => $error) {
+			if ($error == UPLOAD_ERR_OK) {
+				$tmp_name = $_FILES["pic"]["tmp_name"][$key];
+				$name = $_FILES["pic"]["name"][$key];
+				//echo "$name";
+				if(move_uploaded_file($tmp_name, "$uploads_dir/$name")==1){
+					//Read File Uploaded
+					$objPHPExcel = PHPExcel_IOFactory::load('../../Files/uploads/'.$name);
+					foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
+						$worksheetTitle     = $worksheet->getTitle();
+						//only read sheet = SHEET_ACTIVE (define in BaseDir)
+						if($worksheetTitle==SHEET_ACTIVE){
+							$highestRow         = $worksheet->getHighestRow();
+							$highestColumn      = $worksheet->getHighestColumn();
+							$nrColumns = ord($highestColumn) - 64;
+							$highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
+							
+						//	echo "<br>The worksheet ".$worksheetTitle." has ";
+						//	echo $nrColumns . ' columns (A-' . $highestColumn . ') ';
+						//	echo ' and ' . $highestRow . ' row.';
+						//	echo '<br>Data: <table border="1"><tr>';
+							$startRow = '';
+							$columnUnit = '';
+							for ($row = 1; $row <= $highestRow; ++$row) {
+								for ($col = 0; $col < $highestColumnIndex; ++$col) {
+									$cell = $worksheet->getCellByColumnAndRow($col, $row);
+									$val = $cell->getValue();
+									if($val==FIELD_CHECK_NUMBER){
+										$startRow = $row;
+									}
+									if($val==FIELD_CHECK_UNIT){
+										$columnUnit = $col;
+									}
+									if($startRow>0&&$row>$startRow+1){
+										$data[$name][$row][$col] = $val;
+									}
+									
+									$dataType = PHPExcel_Cell_DataType::dataTypeForValue($val);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	//	print_r($data);
+		$arrRowImported = importDataToDB($data,$columnUnit);
+	//	print_r($arrRowImported);exit();
+		
+		if(is_array($arrRowImported)){
+			$stt = 0;
+			foreach($arrRowImported as $key=>$value){
+				foreach($value as $s_key=>$s_value){
+					foreach($s_value as $s_k=>$s_val){
+						$arrDepartment = getValue("department_tbl","`FullName`,`Code`","`RecordID`=".$s_val[8]);
+						//print_r("Department".$arrDepartment);
+						if(!empty($arrDepartment->Code)){//Kiểm tra mã đơn vị có tồn tại hay không (sử dụng mã đơn vị để làm staffID)
+							$dataImport[$stt]['isCreate'] = 0;
+							if($s_key=="createEmail"){
+								$dataImport[$stt]['isCreate'] = 1;
+							}
+							$dataImport[$stt]['STT'] = $s_val[0];
+							$dataImport[$stt]['Code'] = $s_val[1];
+							$dataImport[$stt]['LastName'] = $s_val[2];
+							$dataImport[$stt]['MiddleName'] = $s_val[3];
+							$dataImport[$stt]['FirstName'] = $s_val[4];
+							$dataImport[$stt]['DateBirth'] = $s_val[5];
+							$dataImport[$stt]['MonthBirth'] = $s_val[6];
+							$dataImport[$stt]['YearBirth'] = $s_val[7];
+							$dataImport[$stt]['Department'] = $arrDepartment->FullName;
+							$dataImport[$stt]['DepartmentCode'] = $arrDepartment->Code;
+							$dataImport[$stt]['DepartmentID'] = $s_val[8];
+							$dataImport[$stt]['Email'] = $s_val[9];
+							$dataImport[$stt]['Row'] = $s_k;
+							$dataImport[$stt]['File'] = $key;
+							$dataImport[$stt]['RecordID'] = $stt;
+							$dataImport[$stt]['isPublicEmail'] = $s_val['isPublicEmail'];
+							//$dataImport[$stt]['Birthday'] = $dataImport[$stt]['DateBirth']."/".$dataImport[$stt]['MonthBirth']."/".$dataImport[$stt]['YearBirth'];
+							//$dataImport[$stt]['HoLotVN'] = $dataImport[$stt]['FirstName']." ".$dataImport[$stt]['MiddleName'];
+							//$dataImport[$stt]['TenVN'] = $dataImport[$stt]['LastName'];
+							$stt++;
+						}
+					}
+				}
+			}
+		//	print_r($dataImport);exit();
+			/*$msg .= "List rows can not import:";
+			foreach($arrRowNotImport as $key=>$value){
+				$msg .= " File ".$key;
+				$msg .= "(";
+				foreach($value as $s_key=>$s_val){
+					$msg .= " Row: ".$s_key;
+				}
+				$msg .= "); ";
+			}*/
+		}
+		
+		$_SESSION['ajaxImportExcelFile'] = true;
+	}
+	
+	//$data2 = loadListImportedRows($_POST);
+	//$data1['msg'] = $msg;
+	$data1['Result'] = json_encode($dataImport);
+	$data3 = loadDepartmentList();
+	$data1['depList'] = json_encode($data3);
+	//print_r($data1);exit();
+	$view = new View();
+	$view->showTmpl("listStaffInfo.tmpl","n",$data1);
+?>

@@ -1,0 +1,113 @@
+<?php
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once (EIU_CLASS.'openidClass.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'LoginClass.htm');
+	
+	//phpinfo();exit();
+	
+	require_once '../../lib/src/Google_Client.php';
+	require_once '../../lib/src/contrib/Google_Oauth2Service.php';
+	
+	$google_client_id 		= 	GOOGLE_CLIENT_ID;
+	$google_client_secret 	= 	GOOGLE_CLIENT_SECRET;
+	$google_redirect_url 	= 	GOOGLE_REDIRECT_URL;
+	$google_access_type		=	GOOGLE_ACCESS_TYPE;
+
+
+	@session_start();
+	$gClient = new Google_Client();
+	//$gClient->setApprovalPrompt("force");
+	$gClient->setApplicationName('Google Login Form');
+	$gClient->setClientId($google_client_id);
+	$gClient->setClientSecret($google_client_secret);
+	$gClient->setRedirectUri($google_redirect_url);
+	$gClient->setAccessType($google_access_type);
+	//$gClient->setDeveloperKey($google_developer_key);
+
+	$google_oauthV2 = new Google_Oauth2Service($gClient);
+	//print_r($google_oauthV2);
+	//If user wish to log out, we just unset Session variable
+	if(isset($_REQUEST['reset'])) 
+	{
+	  unset($_SESSION['token']);
+	  $gClient->revokeToken();
+	  unsetSessionLogin();
+	  header('Location: ' . filter_var($google_redirect_url, FILTER_SANITIZE_URL)); //redirect user back to page
+	}
+	
+	//If code is empty, redirect user to google authentication page for code.
+	//Code is required to aquire Access Token from google
+	//Once we have access token, assign token to session variable
+	//and we can redirect user back to page and login.
+	if (isset($_GET['code'])) 
+	{
+		$gClient->authenticate($_GET['code']);
+		$_SESSION['token'] = $gClient->getAccessToken();
+		header('Location: ' . filter_var($google_redirect_url, FILTER_SANITIZE_URL));
+		return;
+	}	
+	if (isset($_SESSION['token'])) 
+	{ 
+		$gClient->setAccessToken($_SESSION['token']);
+	}
+
+	if ($gClient->getAccessToken()) 
+	{
+		//For logged in user, get details from google using access token
+		$user 				= $google_oauthV2->userinfo->get();
+		$user_id 			= $user['id'];
+		$user_name 			= filter_var($user['name'], FILTER_SANITIZE_SPECIAL_CHARS);
+		$email 				= filter_var($user['email'], FILTER_SANITIZE_EMAIL);
+		$profile_url 		= filter_var($user['link'], FILTER_VALIDATE_URL);
+		$profile_image_url 	= filter_var($user['picture'], FILTER_VALIDATE_URL);
+		$personMarkup 		= "$email<div><img src='$profile_image_url?sz=50'></div>";
+		setSessionLogin($email);
+		$_SESSION['token'] 	= $gClient->getAccessToken();
+		header('Location:listStaff.htm');
+	}	
+	else 
+	{
+		//For Guest user, get google login url
+		$authUrl = $gClient->createAuthUrl();
+		//print_r($authUrl);
+	}
+	
+	if(isset($authUrl)) //user is not logged in, show login button
+	{
+		header('Location:'.$authUrl);
+		//echo '<a class="login" href="'.$authUrl.'">Login</a>';
+	} 
+	else // user logged in 
+	{
+		echo $user;
+	}
+
+	/*try
+	{
+		$openid = new LightOpenID(EIU_IP);
+		if(!$openid->mode){
+			$openid->identity = 'https://www.google.com/accounts/o8/id';
+			$openid->required = array('namePerson/first','namePerson/last','contact/email' );
+			header ("Location: ". $openid->authUrl());
+		}
+		elseif($openid->mode == 'cancel')
+		{
+			echo "Use account of Google, please!";
+		}
+		else
+		{
+			$attributes = $openid->getAttributes();
+			$email = $attributes['contact/email'];
+
+			setSessionLogin($email);
+			
+			header('location:listStaff.htm');
+		}
+	}
+	catch(ErrorException $e)
+	{
+		echo $e->getMessage();
+	}*/
+?>

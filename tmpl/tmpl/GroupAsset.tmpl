@@ -1,0 +1,1104 @@
+<html>
+	<head>
+		<title>
+			Group Asset
+		</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link type="text/css" href="../../tmpl/css/assetstyle.css" rel="stylesheet" />
+		<link type="text/css" href="../../tmpl/css/redmond/jquery-ui-1.8.9.custom.css" rel="stylesheet" />
+
+		<script type="text/javascript" src="../../htm/js/base.js"></script>
+		<script type="text/javascript" src="../../htm/js/jquery-1.4.4.min.js"></script>
+		<script type="text/javascript" src="../../htm/js/jquery-ui-1.8.9.custom.min.js"></script>
+		<style type="text/css">
+		</style>
+		<script type="text/javascript">
+			//Làm datePicker
+			//$("#fromDateS").datepicker({dateFormat: 'yy-M-dd'});
+			$(document).ready(function(){
+				$("#fromDate").datepicker({dateFormat: 'yy-M-dd'});
+				$("#toDate").datepicker({dateFormat: 'yy-M-dd'});
+				$("#txtRecDate").datepicker({dateFormat: 'yy-M-dd'});
+				$("#txtExp").datepicker({dateFormat: 'yy-M-dd'});
+			});
+			
+			var clickedRow = new Array();
+			clickedRow.rowId = "";
+			clickedRow.rowColor = "";
+			
+			function storeClickedRow(i)
+			{
+				var row=document.getElementById('r-'+i);
+				//alert(row);
+				//Tr? l?i m?u cho d?ng v?a click tru?c d?
+				if(clickedRow.rowId)
+				{
+					changeColorClickedRow(document.getElementById(clickedRow.rowId),"");
+				}
+				
+				//l?y id cho d?ng v?a dua v?o
+				clickedRow.rowId = row.id;
+				//alert(row.id);
+				
+				//d?i m?u cho d?ng v?a click
+				changeColorClickedRow(row,"#FFCCCC")
+			}
+			function changeColorClickedRow(row,color)
+			{
+				row.style.backgroundColor = color;
+			}
+			function ajaxLoadCategoryList()
+			{
+				var url="ajaxLoadCategoryCode.htm";
+				var queryString = "";
+				var htmlRequest;
+				var dataSearch='';
+				htmlRequest = ajaxFunction();
+				if (htmlRequest==null)
+				{ // If it cannot create a new Xmlhttp object.
+					alert ("Browser does not support HTTP Request");
+					return;
+				}
+				htmlRequest.open("POST", url,true);
+				htmlRequest.onreadystatechange = function()
+				{
+					if(htmlRequest.readyState == 4)
+					{
+						if(trim(htmlRequest.responseText)!='NG')
+						{
+							dataSearch = htmlRequest.responseText;
+							//alert(dataSearch);
+							dataSearch=eval('(' + dataSearch + ')');
+							Load_CAT(dataSearch);
+						}
+					}
+				}
+				htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");				
+				htmlRequest.send(queryString);
+			}
+			function Load_CAT(dataSearch)
+			{
+				
+				if(dataSearch!="")
+				{
+					var count=dataSearch.CATList.length;
+					//alert(count);
+					var slt=document.getElementById("CATList");
+					var option=document.createElement('option');
+					option.innerHTML = "--Category--";
+					option.value="a";
+					slt.appendChild(option);
+					
+					for(var i=0;i<count;i++)
+					{
+						var option = document.createElement('option');
+						option.innerHTML=dataSearch.CATList[i].catShortName;
+						option.value=dataSearch.CATList[i].catCode;
+						slt.appendChild(option);
+					}
+				}
+			}
+			function ajaxLoadManu_PO()
+			{
+				var url="ajaxLoadManu.htm";
+				var queryString = "";
+				var htmlRequest;
+				var dataSearch='';
+				document.getElementById("ManuPopup").innerHTML=""
+				htmlRequest = ajaxFunction();
+				if (htmlRequest==null)
+				{ // If it cannot create a new Xmlhttp object.
+					alert ("Browser does not support HTTP Request");
+					return;
+				}
+				htmlRequest.open("POST", url,true);
+				htmlRequest.onreadystatechange = function()
+				{
+					if(htmlRequest.readyState == 4)
+					{
+						if(trim(htmlRequest.responseText)!='NG')
+						{
+							dataSearch = htmlRequest.responseText;
+							//alert(dataSearch);
+							dataSearch=eval('(' + dataSearch + ')');
+							Load_MANU_Group(dataSearch);
+						}
+					}
+				}
+				htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");				
+				htmlRequest.send(queryString);
+			}
+			function Load_MANU_Group(dataSearch)
+			{
+				var MANUPopup=document.getElementById("ManuPopup");
+				if(dataSearch!="")
+				{
+					for(record in dataSearch.MANUList)
+					{
+							var rowPopup = document.createElement('div');
+							rowPopup.setAttribute('class','rowPopup');
+							rowPopup.setAttribute('id','rPopup'+record);
+								var CATCode = document.createElement("div");
+								CATCode.setAttribute('class','ManuCodePopup text-center');
+								CATCode.setAttribute('id','ManuCodePopup'+record);
+								CATCode.setAttribute('onclick','getManu_PO('+record+');');
+								CATCode.innerHTML = dataSearch.MANUList[record].costCode;
+								
+								var CATName = document.createElement("div");
+								CATName.setAttribute('class','ManuNamePopup');
+								CATName.setAttribute('id','CATNamePopup'+record);
+								CATName.innerHTML = dataSearch.MANUList[record].costName;
+								
+								rowPopup.appendChild(CATCode);
+								rowPopup.appendChild(CATName);
+							MANUPopup.appendChild(rowPopup);
+					}
+				}
+			}
+			
+			function getManu_PO(record)
+			{
+				var code=document.getElementById("ManuCodePopup"+record).innerHTML;
+				document.getElementById("txtManuCode").value=code;
+				var name=document.getElementById("CATNamePopup"+record).innerHTML;
+				document.getElementById("txtManu").value=name;
+				closePopup('manu_PO');
+			}
+			function ajaxLoadGroup_Condition()
+			{
+				var url="ajaxLoadGroupAsset_DK.htm";
+				var queryString;
+				queryString=getData();
+				//alert(queryString);
+				var htmlRequest;
+				var dataSearch='';
+				var content=document.getElementById("content");
+				content.innerHTML="";
+				htmlRequest = ajaxFunction();
+				if (htmlRequest==null)
+				{ // If it cannot create a new Xmlhttp object.
+					alert ("Browser does not support HTTP Request");
+					return;
+				}
+				htmlRequest.open("POST", url,true);
+				htmlRequest.onreadystatechange = function()
+				{
+					if(htmlRequest.readyState == 4)
+					{
+						if(trim(htmlRequest.responseText)!='NG')
+						{
+							dataSearch = htmlRequest.responseText;
+							//alert(dataSearch);
+							dataSearch=eval('(' + dataSearch + ')');
+							LoadGroup(dataSearch);
+							document.getElementById("fromDate").value="From Date";
+							document.getElementById("toDate").value= "To Date";
+							
+						}
+					}
+				}
+				htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");				
+				htmlRequest.send(queryString);
+			}
+			function ajaxLoadGroup()
+			{
+				var url="ajaxLoadGroupAsset.htm";
+				var queryString="";
+				var htmlRequest;
+				var dataSearch='';
+				var content=document.getElementById("content");
+				content.innerHTML="";
+				htmlRequest = ajaxFunction();
+				if (htmlRequest==null)
+				{ // If it cannot create a new Xmlhttp object.
+					alert ("Browser does not support HTTP Request");
+					return;
+				}
+				htmlRequest.open("POST", url,true);
+				htmlRequest.onreadystatechange = function()
+				{
+					if(htmlRequest.readyState == 4)
+					{
+						if(trim(htmlRequest.responseText)!='NG')
+						{
+							dataSearch = htmlRequest.responseText;
+							//alert(dataSearch);
+							dataSearch=eval('(' + dataSearch + ')');
+							LoadGroup(dataSearch);
+						}
+					}
+				}
+				htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");				
+				htmlRequest.send(queryString);
+			}
+			function LoadGroup(data)
+			{
+				if(data!="")
+				{
+					var count=data.GList.length;
+					for(var i=0;i<count;i++)
+					{
+						var row = document.createElement('div');
+						row.setAttribute('id','r-'+i);
+						if(i%2)
+						{
+							row.setAttribute('class','row even rowheight');
+						}
+						else
+						{
+							row.setAttribute('class','row rowheight');
+						}
+						var ID=data.GList[i].groupID;
+						
+						var divdel=document.createElement('div');
+						divdel.setAttribute('class','del1 text-center');
+						
+						var del=document.createElement('input');
+						del.setAttribute('id','delete'+i);
+						del.setAttribute('type','image');
+						del.setAttribute('src','../../img/icon-delete.png');
+						del.setAttribute('name','img'+i);
+						//del.setAttribute('class','del1');
+						//del.setAttribute('onclick','storeClickedRow('+i+')');
+						del.setAttribute('onclick','storeClickedRow('+i+');ajaxDeleteGroup('+ID+');');
+						divdel.appendChild(del);
+						row.appendChild(divdel);
+						
+						var groupID=document.createElement('div');
+						groupID.setAttribute('id','groupID'+i);
+						groupID.innerHTML=data.GList[i].groupID;
+						groupID.setAttribute('hidden',true);
+						row.appendChild(groupID);
+						
+						/*var cat_code=document.createElement('div');
+						cat_code.setAttribute('id','catCode'+i);
+						cat_code.setAttribute('hidden',true);
+						cat_code.setAttribute('class','CATCode1 text-left');
+						cat_code.innerHTML=data.GList[i].catCode;
+						//cat_code.setAttribute('onclick','storeClickedRow('+i+');rowClick('+i+');');
+						row.appendChild(cat_code);*/
+						
+						var gcode=document.createElement('div');
+						gcode.setAttribute('id','gCode'+i);
+						gcode.setAttribute('class','GCode1 text-left');
+						gcode.innerHTML=data.GList[i].groupCode;
+						gcode.setAttribute('onclick','storeClickedRow('+i+');rowClick('+i+');');
+						gcode.setAttribute("onmousemove","openPopup('gCode"+i+"','detail');getDescription("+i+")");
+						//gcode.setAttribute("onmousemove","openPopup('gCode"+i+"','detail');");
+						row.appendChild(gcode);
+						/*var link = document.createElement('a');
+						link.setAttribute('href','DetailGroupAsset.htm?'+'record='+data.GList[i].groupCode);
+						link.setAttribute('target',"_blank");
+						link.setAttribute('id','gCode'+i);
+						link.onclick = Function("storeClickedRow("+i+");");
+						link.innerHTML=data.GList[i].groupCode;
+						gcode.appendChild(link);
+						//gcode.setAttribute('onclick','storeClickedRow('+i+');rowClick('+i+');');
+						row.appendChild(gcode);*/
+						
+						var despt=document.createElement('div');
+						despt.setAttribute('id','despt'+i);
+						despt.setAttribute('hidden',true);
+						//despt.setAttribute('class','GName1 text-left');
+						despt.innerHTML=data.GList[i].description;
+						row.appendChild(despt);
+						
+						var qrec=document.createElement('div');
+						qrec.setAttribute('id','qRec'+i);
+						qrec.setAttribute('class','QR1 text-center');
+						qrec.innerHTML=data.GList[i].qRec;
+						row.appendChild(qrec);
+						
+						var qstore=document.createElement('div');
+						qstore.setAttribute('id','qStore'+i);
+						qstore.setAttribute('class','QStore1 text-center');
+						qstore.innerHTML=data.GList[i].qStore;
+						row.appendChild(qstore);
+						
+						var manu=document.createElement('div');
+						manu.setAttribute('id','manu'+i);
+						manu.setAttribute('class','Manu1 text-left');
+						manu.innerHTML=data.GList[i].manu;
+						row.appendChild(manu);
+						
+						var manucode=document.createElement('div');
+						manucode.setAttribute('id','manucode'+i);
+						manucode.setAttribute('hidden',true);
+						manucode.innerHTML=data.GList[i].manucode;
+						row.appendChild(manucode);
+						
+						var po=document.createElement('div');
+						po.setAttribute('id','po'+i);
+						po.setAttribute('class','PONo1 text-center');
+						po.innerHTML=data.GList[i].poNo;
+						row.appendChild(po);
+						
+						var sup=document.createElement('div');
+						sup.setAttribute('id','sup'+i);
+						sup.setAttribute('class','Sup1 text-left');
+						sup.innerHTML=data.GList[i].supName;
+						row.appendChild(sup);
+						
+						var amount=document.createElement('div');
+						amount.setAttribute('id','amount'+i);
+						amount.setAttribute('class','Amount1 text-right');
+						amount.innerHTML=addCommas(data.GList[i].amount);
+						row.appendChild(amount);
+						
+						var rDate=document.createElement('div');
+						rDate.setAttribute('id','RDate'+i);
+						rDate.setAttribute('class','RDate1 text-center');
+						rDate.innerHTML=data.GList[i].recDate;
+						row.appendChild(rDate);
+						
+						var exp=document.createElement('div');
+						exp.setAttribute('id','exp'+i);
+						exp.setAttribute('class','Exp1 text-center');
+						exp.innerHTML=data.GList[i].exp;
+						row.appendChild(exp);
+						
+						content.appendChild(row);
+						
+						//var cat=document.getElementById("txtCategory");
+						//cat.setAttribute("onclick","openPopup('txtCategory','categoryGroup');");
+						
+						//var po=document.getElementById("txtPO");
+						//po.setAttribute("onclick","openPopup('txtPO','POPopup')");
+					}
+				}
+			}
+			function addCommas(nStr)
+			{
+				nStr += '';
+				x = nStr.split('.');
+				x1 = x[0];
+				x2 = x.length > 1 ? '.' + x[1] : '';
+				var rgx = /(\d+)(\d{3})/;
+				while (rgx.test(x1)) {
+					x1 = x1.replace(rgx, '$1' + ',' + '$2');
+				}
+				return x1 + x2;
+			}
+			function getData()
+			{
+				var strData="";
+				var cat=document.getElementById("CATList");
+				strData+='&catCode='+cat.options[cat.selectedIndex].value;
+				strData+='&fromDate='+document.getElementById('fromDate').value;
+				strData+='&toDate='+document.getElementById('toDate').value;
+				return strData;
+			}
+			function ajaxDeleteGroup(ID)
+			{
+				var queryString="";
+				var url="ajaxDelete_GroupAsset.htm";
+				var catCode=document.getElementById("CATList");
+				var cat=catCode.options[catCode.selectedIndex].value;
+				var frmDate=document.getElementById("fromDate").value;
+				var toDate=document.getElementById("toDate").value;
+				queryString+='&groupID='+ID;
+				alert(queryString);
+				htmlRequest = ajaxFunction();
+				if (htmlRequest==null)
+				{ // If it cannot create a new Xmlhttp object.
+					alert ("Browser does not support HTTP Request");
+					return;
+				}
+				htmlRequest.open("POST", url,true);
+				htmlRequest.onreadystatechange = function()
+				{
+					if(htmlRequest.readyState == 4)
+					{
+						//alert(htmlRequest.responseText);
+						if(trim(htmlRequest.responseText)=='OK')
+						{
+							alert("Delete Successful");
+							if((cat=='a')&&(frmDate=='From Date')&&(toDate=='To Date'))
+							{
+								ajaxLoadGroup();
+							}
+							else
+							{
+								ajaxLoadGroup_Condition();
+							}
+							//ajaxA71List(pjCode.options[pjCode.selectedIndex].text);
+						}
+					}
+				}
+				htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				htmlRequest.send(queryString);
+			}
+			function rowClick(i)
+			{
+				var b_footer=document.getElementById('b_footer');
+				b_footer.innerHTML="";
+				var save=document.createElement('input');
+				save.setAttribute('id','btnAdd');
+				save.setAttribute('type','button');
+				save.setAttribute('onclick','ajaxUpdate();');
+				save.value="Save";
+				b_footer.appendChild(save);
+				
+				var cancel=document.createElement('input');
+				cancel.setAttribute('id','btnAdd');
+				cancel.setAttribute('type','button');
+				cancel.setAttribute('onclick','CanCel();');
+				cancel.value="Cancel";
+				b_footer.appendChild(cancel);
+				
+				var groupID=document.getElementById("txtGroupID");
+				groupID.value=document.getElementById("groupID"+i).innerHTML;
+				
+				//var cat=document.getElementById("txtCategory");
+				//cat.value=document.getElementById("catCode"+i).innerHTML;
+				
+				var gcode=document.getElementById("txtGroupCode");
+				gcode.value=document.getElementById("gCode"+i).innerHTML;
+				
+				var descpt=document.getElementById("txtDescpt");
+				descpt.value=document.getElementById("despt"+i).innerHTML;
+				
+				var qrecpt=document.getElementById("txtQReceipt");
+				qrecpt.value=document.getElementById("qRec"+i).innerHTML;
+				
+				var txtOut=document.getElementById("txtoutput");
+				var store=document.getElementById("qStore"+i).innerHTML;
+				var recpt=document.getElementById("qRec"+i).innerHTML;
+				txtOut.value=recpt-store;
+				
+				var qrecpt=document.getElementById("txtQReceipt");
+				qrecpt.value=document.getElementById("qRec"+i).innerHTML;
+				
+				var manu=document.getElementById("txtManu");
+				manu.value=document.getElementById("manu"+i).innerHTML;
+				
+				var manucode=document.getElementById("txtManuCode");
+				manucode.value=document.getElementById("manucode"+i).innerHTML;
+				
+				var po=document.getElementById("txtPO");
+				po.value=document.getElementById("po"+i).innerHTML;
+				
+				var supp=document.getElementById("txtSupp");
+				supp.value=document.getElementById("sup"+i).innerHTML;
+				
+				var amount=document.getElementById("txtAmount");
+				amount.value=document.getElementById("amount"+i).innerHTML;
+				
+				var redate=document.getElementById("txtRecDate");
+				redate.value=document.getElementById("RDate"+i).innerHTML;
+				
+				var exp=document.getElementById("txtExp");
+				exp.value=document.getElementById("exp"+i).innerHTML;
+			}
+			function openPopup(idClicked,idOpen)
+			{
+				//var b_footer=document.getElementById('b_footer');
+				//b_footer.innerHTML="";
+				
+				//Gi? gi� tr? id c?a � ch? k� v?a du?c click v�o
+				signClicked = idClicked;
+				
+				//alert(id);
+				var layer = document.getElementById(idOpen);
+				bodyWidth = window.innerWidth;
+				bodyHeight = window.innerHeight;
+				//alert(bodyWidth);
+				var but = document.getElementById(idClicked);
+				if((bodyHeight - but.offsetTop)<50){
+					layer.style.top = (but.offsetTop-200)+'px';
+				}else{
+					layer.style.top = (but.offsetTop-100)+'px';
+				}
+				
+				//alert(bodyWidth-but.offsetLeft);
+				
+				if((bodyWidth-but.offsetLeft)<400)
+				{
+					layer.style.left = (but.offsetLeft-300)+'px';
+				}else layer.style.left = (but.offsetLeft+50)+'px';
+				
+				layer.style.visibility = (layer.style.visibility == 'visible') ? 'hidden' : 'visible';
+				
+				//ajaxLoad_PO();
+				/*var save=document.createElement('input');
+				save.setAttribute('id','btnAdd');
+				save.setAttribute('type','button');
+				save.disabled=true;
+				save.setAttribute('onclick','ajaxInsert();');
+				save.value="Save";
+				b_footer.appendChild(save);
+					
+				var cancel=document.createElement('input');
+				cancel.setAttribute('id','btnCancel');
+				cancel.setAttribute('type','button');
+				cancel.setAttribute('onclick','CanCel();');
+				cancel.value="Cancel";
+				cancel.disabled=true;
+				b_footer.appendChild(cancel);*/
+			}
+			function closePopup(id)
+			{
+				var layer = document.getElementById(id);
+				layer.style.visibility = (layer.style.visibility == 'visible') ? 'hidden' : 'visible';
+				//document.getElementById("btnAdd").disabled=false;
+				//document.getElementById("btnCancel").disabled=false;
+			}
+			function CanCel()
+			{
+				document.getElementById("txtDescpt").value="Description";
+				document.getElementById("txtGroupCode").value="GroupCode";
+				document.getElementById("txtQReceipt").value="Q.Receipt";
+				document.getElementById("txtoutput").value="Output";
+				document.getElementById("txtManu").value="Manufacture";
+				document.getElementById("txtPO").value="PO Number";
+				document.getElementById("txtSupp").value="Supplier";
+				document.getElementById("txtAmount").value="Amount";
+				document.getElementById("txtRecDate").value="Receipt Date";
+				document.getElementById("txtExp").value="Exp";
+				var b_footer=document.getElementById('b_footer');
+				b_footer.innerHTML="";
+			}
+			function ajaxLoad_PO()
+			{
+				var url="ajaxLoadPO.htm";
+				var queryString = "";
+				var htmlRequest;
+				var dataSearch='';
+				document.getElementById("C_PO_Popup").innerHTML="";
+				htmlRequest = ajaxFunction();
+				if (htmlRequest==null)
+				{ // If it cannot create a new Xmlhttp object.
+					alert ("Browser does not support HTTP Request");
+					return;
+				}
+				htmlRequest.open("POST", url,true);
+				htmlRequest.onreadystatechange = function()
+				{
+					if(htmlRequest.readyState == 4)
+					{
+						if(trim(htmlRequest.responseText)!='NG')
+						{
+							dataSearch = htmlRequest.responseText;
+							//alert(dataSearch);
+							dataSearch=eval('(' + dataSearch + ')');
+							Load_POPopup(dataSearch);
+						}
+					}
+				}
+				htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");				
+				htmlRequest.send(queryString);
+			}
+			function Load_POPopup(dataSearch)
+			{
+				var CATPopup=document.getElementById("C_PO_Popup");
+				if(dataSearch!="")
+				{
+					
+					var count=dataSearch.PO.length;
+					for(var i=0;i<count;i++)
+					{
+						var rowPopup = document.createElement('div');
+						rowPopup.setAttribute('class','rowPopup');
+						rowPopup.setAttribute('id','rPopup'+i);
+							var PONo = document.createElement("div");
+							PONo.setAttribute('class','PONoPopup text-center');
+							PONo.setAttribute('id','POPopup'+i);
+							PONo.setAttribute('onclick','getPO_PU('+i+');');
+							PONo.innerHTML = dataSearch.PO[i].PONo;
+							
+							var SppName = document.createElement("div");
+							SppName.setAttribute('class','SuppPopUp');
+							SppName.setAttribute('id','supp_PU'+i);
+							SppName.innerHTML = dataSearch.PO[i].ShortName;
+							
+						rowPopup.appendChild(PONo);
+						rowPopup.appendChild(SppName);
+						CATPopup.appendChild(rowPopup);
+					}
+				}
+			}
+			function getPO_PU(i)
+			{
+				var poNo=document.getElementById("POPopup"+i).innerHTML;
+				document.getElementById("txtPO").value=poNo;
+				var supp=document.getElementById("supp_PU"+i).innerHTML;
+				document.getElementById("txtSupp").value=supp;
+				closePopup('POPopup');
+			}
+			function initVal(oldStr,idInput)
+			{
+				var newStr = document.getElementById(idInput).value;
+				if(!newStr)
+				{
+					document.getElementById(idInput).value = oldStr;
+				}
+			}
+			function getUpdate()
+			{
+				var strData="";
+				//strData+='&ID='+document.getElementById("txtGroupID").value;
+				var catcode=document.getElementById("CATList");
+				if(document.getElementById("txtGroupCode").value!="GroupCode")
+				{
+					strData+='&groupCode='+document.getElementById("txtGroupCode").value;
+				}
+				if(document.getElementById("txtDescpt").value!="Description")
+				{
+					strData+='&descpt='+document.getElementById("txtDescpt").value;
+				}
+				if(document.getElementById("txtQReceipt").value!="Q.Receipt")
+				{
+					strData+='&Rept='+document.getElementById("txtQReceipt").value;
+				}
+				if(document.getElementById("txtoutput").value!="Output")
+				{
+					var out=document.getElementById("txtoutput").value;
+					var rept=document.getElementById("txtQReceipt").value;
+					strData+='&store='+(rept-out);
+				}
+				if(document.getElementById("txtManu").value!="Manufacture")
+				{
+					strData+='&manu='+document.getElementById("txtManuCode").value;
+				}
+				if(document.getElementById("txtPO").value!="PO Number")
+				{
+					strData+='&PO='+document.getElementById("txtPO").value;
+				}
+				if(document.getElementById("txtAmount").value!="Amount")
+				{
+					strData+='&amount='+delCommas(document.getElementById("txtAmount").value);
+				}
+				if(document.getElementById("txtRecDate").value!="Receipt Date")
+				{
+					strData+='&rptDate='+document.getElementById("txtRecDate").value;
+				}
+				if(document.getElementById("txtExp").value!="Exp")
+				{
+					strData+='&exp='+document.getElementById("txtExp").value;
+				}
+				//alert(strData);
+				return strData;
+			}
+			function ajaxUpdate()
+			{
+				var url="ajaxUpdate_AssetGroup.htm";
+				var queryString="";
+				queryString +=getUpdate();
+				alert(queryString);
+				htmlRequest = ajaxFunction();
+				if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+					alert ("Browser does not support HTTP Request");
+					return;
+				}
+				htmlRequest.open("POST", url,true);
+				htmlRequest.onreadystatechange = function()
+				{
+					if(htmlRequest.readyState == 4)
+					{
+						
+						if(trim(htmlRequest.responseText)=='OK')
+						{
+							
+							alert("Update successfully");
+							ajaxLoadGroup_Condition();
+							
+							var b_footer=document.getElementById('b_footer');
+							b_footer.innerHTML="";
+							
+							document.getElementById("txtGroupID").value="";
+							document.getElementById("txtGroupCode").value="GroupCode";
+							document.getElementById("txtDescpt").value="Description";
+							document.getElementById("txtQReceipt").value="Q.Receipt";
+							document.getElementById("txtoutput").value="Output";
+							document.getElementById("txtManu").value="Manufacture";
+							document.getElementById("txtPO").value="PO Number";
+							document.getElementById("txtSupp").value="Supplier";
+							document.getElementById("txtAmount").value="Amount";
+							document.getElementById("txtRecDate").value="Receipt Date";
+							document.getElementById("txtExp").value="Exp";
+						}
+						else
+						{
+							alert("Not successfully");
+							return;
+						}
+					}
+				}
+				htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				htmlRequest.send(queryString);
+			}
+			function delCommas(nStr)
+			{
+				var chuoi="";
+				for(var i=0;i<nStr.length;i++)
+				{
+					if(nStr[i]!=',')
+					{
+						chuoi+=nStr[i];
+					}
+				}
+				return chuoi;
+			}
+			function getValueClick(idInput)
+			{
+				var idValue=document.getElementById(idInput);
+				var value=idValue.value;
+				if(value=="GroupCode")
+				{
+					var b_footer=document.getElementById('b_footer');
+					b_footer.innerHTML="";
+					
+					var save=document.createElement('input');
+					save.setAttribute('id','btnAdd');
+					save.setAttribute('type','button');
+					save.setAttribute('onclick','ajaxInsert();');
+					save.value="Save";
+					b_footer.appendChild(save);
+						
+					var cancel=document.createElement('input');
+					cancel.setAttribute('id','btnCancel');
+					cancel.setAttribute('type','button');
+					cancel.setAttribute('onclick','CanCel();');
+					cancel.value="Cancel";
+					b_footer.appendChild(cancel);
+				}
+				idValue.value="";
+				idValue.setAttribute("onblur","initVal('"+value+"','"+idInput+"');");
+			}
+			function getDate()
+			{
+				var date=new Date();
+				var strdate="";
+				var month=date.getMonth()+1;
+				strdate+=date.getFullYear()+"-";
+				strdate+=month+"-";
+				strdate+=date.getDate()+" ";
+				strdate+=date.getHours()+":";
+				strdate+=date.getMinutes()+":";
+				strdate+=date.getSeconds();
+				return strdate;
+			}
+			function repairInsert()
+			{
+				var catcode=document.getElementById("CATList");
+				if(catcode.options[catcode.selectedIndex].value!="a")
+				{
+					var b_footer=document.getElementById("b_footer");
+					b_footer.innerHTML="";
+					getChuoi();
+					var save=document.createElement('input');
+					save.setAttribute('id','btnAdd');
+					save.setAttribute('type','button');
+					save.setAttribute('onclick','ajaxInsert();');
+					save.value="Save";
+					b_footer.appendChild(save);
+					
+					var cancel=document.createElement('input');
+					cancel.setAttribute('id','btnAdd');
+					cancel.setAttribute('type','button');
+					cancel.setAttribute('onclick','CanCel();');
+					cancel.value="Cancel";
+					b_footer.appendChild(cancel);
+				}
+				else
+				{
+					alert("Select categrory");
+					return;
+				}
+			}
+			function getInsert()
+			{
+				var strData="";
+				
+				var catcode=document.getElementById("CATList");
+				strData+='&CATCode='+catcode.options[catcode.selectedIndex].value;
+				//var chuoi=getChuoi();
+				//alert(chuoi);
+				strData+='&groupCode='+document.getElementById("txtGroupCode").value;
+				if(document.getElementById("txtDescpt").value!="Description")
+				{
+					strData+='&desrpt='+document.getElementById("txtDescpt").value;
+				}
+				if(document.getElementById("txtQReceipt").value!="Q.Receipt")
+				{
+					strData+='&Rept='+document.getElementById("txtQReceipt").value;
+				}
+				if(document.getElementById("txtoutput").value!="Output")
+				{
+					var out=document.getElementById("txtoutput").value;
+					var rept=document.getElementById("txtQReceipt").value;
+					strData+='&store='+(rept-out);
+				}
+				if(document.getElementById("txtManu").value!="Manufacture")
+				{
+					strData+='&manu='+document.getElementById("txtManuCode").value;
+				}
+				if(document.getElementById("txtPO").value!="PO Number")
+				{
+					strData+='&PO='+document.getElementById("txtPO").value;
+				}
+				if(document.getElementById("txtAmount").value!="Amount")
+				{
+					strData+='&amount='+delCommas(document.getElementById("txtAmount").value);
+				}
+				if(document.getElementById("txtRecDate").value!="Receipt Date")
+				{
+					strData+='&rptDate='+document.getElementById("txtRecDate").value;
+				}
+				if(document.getElementById("txtExp").value!="Exp")
+				{
+					strData+='&exp='+document.getElementById("txtExp").value;
+				}
+				strData+='&create='+getDate();
+				//alert(strData);
+				return strData;
+			}
+			function getChuoi()
+			{
+				var chuoi="";
+				var catcode=document.getElementById("CATList");
+				chuoi+=catcode.options[catcode.selectedIndex].value;
+				var date=new Date();
+				var a="";
+				a+=date.getFullYear();
+				a=a.substring(a.length-2);
+				chuoi+=a;
+				var month=date.getMonth()+1;
+				if(month>9)
+				{
+					month=month;
+				}
+				else
+				{
+					month="0"+month;
+				}
+				chuoi+=month;
+				
+				var url="ajaxCount_Category.htm";
+				var htmlRequest;
+				var dataSearch='';
+				var queryString = '&CATCode='+catcode.options[catcode.selectedIndex].value;
+				
+				htmlRequest = ajaxFunction();
+				if (htmlRequest==null)
+				{ // If it cannot create a new Xmlhttp object.
+					alert ("Browser does not support HTTP Request");
+					return;
+				}
+				htmlRequest.open("POST", url,true);
+				htmlRequest.onreadystatechange = function()
+				{
+					if(htmlRequest.readyState == 4)
+					{
+						if(trim(htmlRequest.responseText)!='NG')
+						{
+							dataSearch = htmlRequest.responseText;
+							//alert(dataSearch);
+							dataSearch=eval('(' + dataSearch + ')');
+							var count=dataSearch.Count;
+							count=count+1;
+							if(count<=9)
+							{
+								chuoi+="00"+count;
+							}
+							if((count>9)&&(count<=99))
+							{
+								chuoi+="0"+count;
+							}
+							if(count>99)
+							{
+								chuoi+=count;
+							}
+							document.getElementById("txtGroupCode").value=chuoi;
+						}
+					}
+				}
+				htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				htmlRequest.send(queryString);
+				//return chuoi;
+			}
+			function ajaxInsert()
+			{
+				var url="ajaxInsert_GroupAsset.htm";
+				var queryString="";
+				queryString+=getInsert();
+				alert(queryString);
+				htmlRequest = ajaxFunction();
+				if (htmlRequest==null)
+				{ // If it cannot create a new Xmlhttp object.
+					alert ("Browser does not support HTTP Request");
+					return;
+				}
+				htmlRequest.open("POST", url,true);
+				htmlRequest.onreadystatechange = function()
+				{
+					if(htmlRequest.readyState == 4)
+					{
+						if(trim(htmlRequest.responseText)=='OK')
+						{
+							alert("Insert successful");
+							
+							ajaxLoadGroup();
+							
+							var b_footer=document.getElementById('b_footer');
+							b_footer.innerHTML="";
+							
+							document.getElementById("txtGroupID").value="";
+							document.getElementById("txtGroupCode").value="GroupCode";
+							document.getElementById("txtDescpt").value="Description";
+							document.getElementById("txtQReceipt").value="Q.Receipt";
+							document.getElementById("txtoutput").value="Output";
+							document.getElementById("txtManu").value="Manufacture";
+							document.getElementById("txtPO").value="PO Number";
+							document.getElementById("txtSupp").value="Supplier";
+							document.getElementById("txtAmount").value="Amount";
+							document.getElementById("txtRecDate").value="Receipt Date";
+							document.getElementById("txtExp").value="Exp";
+						}
+						else
+						{
+							alert("Not successful");
+							return;
+						}
+					}
+					
+				}
+				htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				htmlRequest.send(queryString);
+			}
+			function getDescription(i)
+			{
+				var gcode=document.getElementById("gCode"+i).innerHTML;
+				var d_gcode=document.getElementById("d_GroupCode");
+				d_gcode.innerHTML="";
+					var link = document.createElement('a');
+					link.setAttribute('href','DetailGroupAsset.htm?'+'record='+gcode);
+					link.setAttribute('target',"_blank");
+					link.innerHTML=gcode;
+				d_gcode.appendChild(link);
+				var descpt=document.getElementById("despt"+i).innerHTML;
+				document.getElementById("d_Descpt").innerHTML=descpt;
+			}
+			
+		</script>
+	</head>
+	<body onload="ajaxLoadCategoryList();ajaxLoadGroup();">
+		<!--
+			Chua popup
+		-->
+		<div id='detail'>
+			<div class="r1">
+				<div style="float:left;color:blue">
+					GroupCode:
+				</div>
+				<div style="float:left;margin-left:5px;" id="d_GroupCode"></div>
+			</div>
+			<div class="r1">
+				<div style="float:left;margin-left:5px;" id="d_Descpt"></div>
+			</div>
+			<div>
+				<button style="float:right" onclick="closePopup('detail')">Cancel</button>
+			</div>
+		</div>
+		<div id="manu_PO">
+			<div class="rowPopup titlePopup">
+				<div class="ManuCodePopup text-center">CostCode</div>
+				<div class="ManuNamePopup text-center">ShortName</div>
+			</div>
+			<div style="height:100px; overflow:auto;">
+				<div id="ManuPopup">
+				</div>
+			</div>
+			<div style="margin-top:4px;">
+				<button style="float:right" onclick="closePopup('manu_PO')">Cancel</button>					
+			</div>
+		</div>
+		
+		<div id="POPopup">
+			<div class="rowPopup titlePopup">
+				<div class="PONoPopup text-center">PONo</div>
+				<div class="SuppPopUp text-center">Supplier Name</div>
+			</div>
+			<div style="height:100px; overflow:auto;">
+				<div id="C_PO_Popup">
+				</div>
+			</div>
+			<div style="margin-top:4px;">
+				<button style="float:right" onclick="closePopup('POPopup')">Cancel</button>					
+			</div>
+		</div>
+
+		
+		<div id="wrapper">
+			<div style="float: left;margin-right: 20px;"><img style="width:100px;" src="../../img/logo.PNG"/></div>
+			<div class="bo-bottom bg-line" style="float: left;margin-left:10px;width:1070px;margin-top: 16px;">
+				<div class="bg-titlemp mp-title">TRƯỜNG ĐẠI HỌC QUỐC TẾ MIỀN ĐÔNG<br><span style="font-size: 13pt;color: #1C1757;padding-left: 46px;">EASTERN INTERNATIONAL UNIVERSITY</span></div>
+			</div>
+			<div id="header">
+				<div class="text-center color-title" ><h1>GROUP ASSET</h1></div>
+				<form action="no_value" style="padding:0;margin:0">
+					<select class="catList" value="Category List" name="CATList" id="CATList">
+					</select>
+				</form>
+				<input type="text" class="txtText" value="From Date" id="fromDate"/>
+				<input type="text" class="txtText" value="To Date" id="toDate"/>
+				<input class="btnSearch" type="submit" value="Search" id="btnSearch" onclick="ajaxLoadGroup_Condition();"/>
+				<input class="btnSearch" type="submit" value="New" id="btnNew" onclick="repairInsert();"/>
+			</div>
+			<div id="m_content">
+				<div id="titleResult">
+					<div class="rowTitle">
+						<div class="del text-center"></div>
+						<!--<div class="CATCode title text-center">CATCode</div>-->
+						<div class="GCode text-center">GroupCode</div>
+						<!--<div class="GName text-center">GroupName</div>-->
+						<div class="QR text-center">Q.Receipt</div>
+						<div class="QStore text-center">Q.Store</div>
+						<div class="Manu text-center">Manufacture</div>
+						<div class="PONo text-center" onclick="ajaxLoad_PO();">PO No</div>
+						<div class="Sup text-center">Supplier</div>
+						<div class="Amount text-center">Amount</div>
+						<div class="RDate text-center">Receipt Date</div>
+						<div class="Exp text-center">Exp</div>
+					</div>
+				</div>
+				<div id="b_content">
+					<div id="content"></div>
+				</div>
+			</div>
+			<div id="footer">
+				<div id="title">
+					<div class="rowTitle">
+						<!--<div class="titleCAT title text-center">CATCode</div>-->
+						<div class="GCode2 text-center">Description</div>
+						<!--<div class="GName text-center">GroupName</div>-->
+						<div class="QR text-center">Q.Receipt</div>
+						<div class="QStore text-center">Q.Out</div>
+						<div class="Manu text-center">Manufacture</div>
+						<div class="PONo text-center" onclick="ajaxLoad_PO();">PO No</div>
+						<div class="Sup text-center">Supplier</div>
+						<div class="Amount text-center">Amount</div>
+						<div class="RDate text-center">Receipt Date</div>
+						<div class="Exp text-center">Exp</div>
+					</div>
+				</div>
+				<div id="t_footer">
+					<input type="text" hidden="true" id="txtGroupID"/>
+					<!--<input type="text" class="background_input text-left" value="CategoryGroup" id="txtCategory" onclick="openPopup('txtCategory','categoryGroup');ajaxLoadCatGroup();"/>-->
+					<input type="text" class="background_input text-left" value="GroupCode" id='txtGroupCode' hidden="true"/>
+					<input type="text" class="background_input text-left" value="Description" id='txtDescpt'onclick="getValueClick('txtDescpt');"/>
+					<input type="text" class="background_input text-center " value="Q.Receipt" id='txtQReceipt' onclick="getValueClick('txtQReceipt');"/>
+					<input type="text" class="background_input text-center " value="Output" id='txtoutput' onclick="getValueClick('txtoutput');"/>
+					<input type="text" class="background_input text-left" value="Manufacture" id='txtManu' onclick="openPopup('txtManu','manu_PO');ajaxLoadManu_PO();"/>
+					<input type="text" class="text-left" value="GroupCode" id='txtManuCode' hidden="true"/>
+					<input type="text" class="background_input text-center" value="PO Number" id="txtPO" onclick="openPopup('txtPO','POPopup');ajaxLoad_PO();" />
+					<input type="text" readonly="true" class="text-left" value="Supplier" id='txtSupp'/>
+					<input type="text" class="background_input text-right" value="Amount" id='txtAmount' onclick="getValueClick('txtAmount');"/>
+					<input type="text" class="background_input text-center" value="Receipt Date" id='txtRecDate' onclick="getValueClick('txtRecDate');"/>
+					<input type="text" class="background_input text-center" value="Exp" id='txtExp' onclick="getValueClick('txtExp');"/>
+				</div>
+				<div id="b_footer" style="float:right; padding: 5px 0 5px 0;"></div>
+			</div>
+		</div>
+	</body>
+</html>

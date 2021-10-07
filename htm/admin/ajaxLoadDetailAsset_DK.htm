@@ -1,0 +1,73 @@
+<?php
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+	if(isset($_POST['staID']))
+	{
+		$q_select="SELECT * FROM `asset_detail_tbl` as d,`status_tbl` as s,`condition_tbl` as c,`roomblock_tbl` as r,`block_tbl` as b WHERE d.`isDeleted`=0 and d.`STAID`=s.`STAID` and d.`Location`=r.`RoomCode` and d.`ConID`=c.`ConID` and r.`BlockCode`=b.`BlockCode` and d.`STAID`='".$_POST['staID']."'";
+	}
+	if(isset($_POST['conID']))
+	{
+		$q_select="SELECT * FROM `asset_detail_tbl` as d,`status_tbl` as s,`condition_tbl` as c,`roomblock_tbl` as r,`block_tbl` as b WHERE d.`isDeleted`=0 and d.`STAID`=s.`STAID` and d.`Location`=r.`RoomCode` and d.`ConID`=c.`ConID` and r.`BlockCode`=b.`BlockCode` and d.`ConID`='".$_POST['conID']."'";
+	}
+	if((isset($_POST['staID']))&& (isset($_POST['conID'])))
+	{
+		$q_select="SELECT * FROM `asset_detail_tbl` as d,`status_tbl` as s,`condition_tbl` as c,`roomblock_tbl` as r,`block_tbl` as b WHERE d.`isDeleted`=0 and d.`STAID`=s.`STAID` and d.`Location`=r.`RoomCode` and d.`ConID`=c.`ConID` and r.`BlockCode`=b.`BlockCode` and d.`ConID`='".$_POST['conID']."' and d.`STAID`='".$_POST['staID']."'";
+	}
+	if(isset($_POST['block']))
+	{
+		$q_select="SELECT * FROM `asset_detail_tbl` as d,`status_tbl` as s,`condition_tbl` as c,`roomblock_tbl` as r,`block_tbl` as b WHERE d.`isDeleted`=0 and d.`STAID`=s.`STAID` and d.`Location`=r.`RoomCode` and d.`ConID`=c.`ConID` and r.`BlockCode`=b.`BlockCode` and b.`BlockCode`='".$_POST['block']."'";
+	}
+	if((isset($_POST['block']))&&(isset($_POST['room'])))
+	{
+		$q_select="SELECT * FROM `asset_detail_tbl` as d,`status_tbl` as s,`condition_tbl` as c,`roomblock_tbl` as r,`block_tbl` as b WHERE d.`isDeleted`=0 and d.`STAID`=s.`STAID` and d.`Location`=r.`RoomCode` and d.`ConID`=c.`ConID` and r.`BlockCode`=b.`BlockCode` and b.`BlockCode`='".$_POST['block']."' and d.`Location`='".$_POST['room']."'";
+	}
+	if((isset($_POST['staID']))&& (isset($_POST['conID']))&&(isset($_POST['block'])))
+	{
+		$q_select="SELECT * FROM `asset_detail_tbl` as d,`status_tbl` as s,`condition_tbl` as c,`roomblock_tbl` as r,`block_tbl` as b WHERE d.`isDeleted`=0 and d.`STAID`=s.`STAID` and d.`Location`=r.`RoomCode` and d.`ConID`=c.`ConID` and r.`BlockCode`=b.`BlockCode` and d.`ConID`='".$_POST['conID']."' and d.`STAID`='".$_POST['staID']."' and b.`BlockCode`='".$_POST['block']."'";
+	}
+	if((isset($_POST['staID']))&& (isset($_POST['conID']))&&(isset($_POST['block']))&&(isset($_POST['room'])))
+	{
+		$q_select="SELECT * FROM `asset_detail_tbl` as d,`status_tbl` as s,`condition_tbl` as c,`roomblock_tbl` as r,`block_tbl` as b WHERE d.`isDeleted`=0 and d.`STAID`=s.`STAID` and d.`Location`=r.`RoomCode` and d.`ConID`=c.`ConID` and r.`BlockCode`=b.`BlockCode` and d.`ConID`='".$_POST['conID']."' and d.`STAID`='".$_POST['staID']."' and b.`BlockCode`='".$_POST['block']."' and d.`Location`='".$_POST['room']."'";
+	}
+	if((!isset($_POST['staID']))&& (!isset($_POST['conID']))&&(!isset($_POST['block']))&&(!isset($_POST['room'])))
+	{
+		$q_select="SELECT * FROM `asset_detail_tbl` as d,`status_tbl` as s,`condition_tbl` as c,`roomblock_tbl` as r,`block_tbl` as b WHERE d.`isDeleted`=0 and d.`STAID`=s.`STAID` and d.`Location`=r.`RoomCode` and d.`ConID`=c.`ConID` and r.`BlockCode`=b.`BlockCode`";
+	}
+	$rs_select=$oDB->stl_db_select($q_select, $conn);
+	if(is_array($rs_select))
+	{
+		$i=0;
+		foreach($rs_select as $key=>$value)
+		{
+			$data[$i]['assID']=$rs_select[$key]->AssID;
+			$data[$i]['groupCode']=$rs_select[$key]->GroupCode;
+			$data[$i]['assCode']=$rs_select[$key]->AssCode;
+			$data[$i]['assName']=$rs_select[$key]->AssName;
+			$data[$i]['serial']=$rs_select[$key]->SerialNumber;
+			//$data[$i]['description']=$rs_select[$key]->Description;
+			$data[$i]['staName']=$rs_select[$key]->STAName;
+			//$data[$i]['loca']=$rs_select[$key]->Location;
+			$data[$i]['loca']=$rs_select[$key]->BlockCode."-".$rs_select[$key]->RoomCode;
+			$data[$i]['condionName']=$rs_select[$key]->ConName;
+			$data[$i]['user']=$rs_select[$key]->UserName;
+			$data[$i]['history']=$rs_select[$key]->History;
+			//$data[$i]['rptPerson']=$rs_select[$key]->ReceiptPerson;
+			//$data[$i]['rptDate']=$rs_select[$key]->ReceiptDate;
+			$data[$i]['chPerson']=$rs_select[$key]->CheckOutPerson;
+			$data[$i]['chDate']=$rs_select[$key]->CheckOutDate;
+			$data[$i]['modifiedBy']=$rs_select[$key]->ModifiedBy;
+			$i++;
+		}
+	}
+	else
+	{
+		echo 'NG';
+	}
+	$arr['DetailList'] = $data;
+	echo json_encode($arr);
+	$oDB->stl_closeConn($conn);
+?>

@@ -1,0 +1,60 @@
+<?php
+	session_start();
+	
+	//print_r($_POST);
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+
+	if(isset($_POST['StaffID']) && strlen(trim($_POST['StaffID']))==6){
+		$q = "SELECT * FROM `staff_tbl` WHERE `StaffID`=".$_POST['StaffID'];
+	}else if(strlen(trim($_POST['StaffID']))==10){
+		$q = "SELECT `IRN` as StaffID, `FullName`, `FirstName`, `LastName`, `MiddleName`, `BirthYear`, `BirthMonth`,`BirthDate`, `SchoolEmail`, `StudentID` as Passport, `ImagePath`, `DepartmentID` as Department  FROM `student_tbl` WHERE `IRN`=".$_POST['StaffID'];
+	}
+	
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+	
+	$rs = $oDB->stl_db_select($q, $conn);
+	if(is_array($rs)){
+		foreach($rs as $key=>$value){
+			$arr['StaffID'] = $rs[$key]->StaffID;
+			$arr['FullName'] = $rs[$key]->FullName;
+			$arr['FirstName'] = $rs[$key]->FirstName;
+			$arr['MiddleName'] = $rs[$key]->MiddleName;
+			// lastName mean LastName
+			$arr['lastName'] = $rs[$key]->LastName;
+			// LastName mean HoLot
+			$arr['LastName'] = $rs[$key]->LastName;
+			if(!empty($rs[$key]->MiddleName)){
+				$arr['LastName'] = " ".$rs[$key]->MiddleName;
+			}
+			$arr['Birthday'] = $rs[$key]->BirthYear."-".$rs[$key]->BirthMonth."-".$rs[$key]->BirthDate;
+			$arr['SchoolEmail'] = $rs[$key]->SchoolEmail;
+			$arr['Passport'] = $rs[$key]->Passport;
+			$arr['Department'] = $rs[$key]->Department;
+			
+			$str = $rs[$key]->StaffID;
+			$data1['pos'] = strpos($str,"_");
+			if(empty($arr['pos'])){
+				if(strlen(trim($arr['StaffID']))==6){
+					$path = EIU_IMAGE_STAFF;
+				}else if(strlen(trim($arr['StaffID']))==10){
+					$path = EIU_IMAGE_STUDENT;
+				}
+				if(!empty($rs[$key]->ImagePath)){
+					$arr['image'] = $path.trim($rs[$key]->ImagePath);
+				}else{
+					$arr['image'] = $path."no_image.jpg";
+				}
+			}
+		}
+		
+		echo json_encode($arr);
+	}else{
+		echo 'NG';
+	}
+
+	$oDB->stl_closeConn($conn);
+
+?>

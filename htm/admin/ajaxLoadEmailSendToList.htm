@@ -1,0 +1,87 @@
+<?php
+	session_start();
+
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	
+	
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+	
+	//Danh sach screenType 
+	$q = "SELECT `RecordID`,`ScreenID`,`Description` FROM `send_email_type_tbl` WHERE `isDelete`=0";
+
+	$rs = $oDB->stl_db_select($q, $conn);
+	$data["dataSearch"]["EmailStyle"] = "";
+	$i = 0;
+	if(is_array($rs)){
+		foreach($rs as $key=>$value)
+		{
+			$data["dataSearch"]["EmailStyle"][$i]['ID'] = $rs[$key]->RecordID;
+			$data["dataSearch"]["EmailStyle"][$i]['ScreenID'] = $rs[$key]->ScreenID;
+			$data["dataSearch"]["EmailStyle"][$i]['Description'] = $rs[$key]->Description;	
+			
+			$i++;
+		}
+	}
+	//Danh sach email nhan vien
+
+	$q = "SELECT `ID`,`StaffID`,`TypeID`,`DepartmentID`,`Name`,`Email_to` FROM `send_email_tbl` WHERE `isDelete`=0";
+	
+	$rs = $oDB->stl_db_select($q, $conn);
+	$data["dataSearch"]["DepartmentList"] = "";
+	$i = 0;
+	if(is_array($rs)){
+		foreach($rs as $key=>$value)
+		{
+			$data["dataSearch"]["StaffList"][$i]['ID'] = $rs[$key]->ID;
+			$data["dataSearch"]["StaffList"][$i]['StaffID'] = $rs[$key]->StaffID;
+			$data["dataSearch"]["StaffList"][$i]['TypeID'] = $rs[$key]->TypeID;
+			$data["dataSearch"]["StaffList"][$i]['DepartmentID'] = $rs[$key]->DepartmentID;
+			$data["dataSearch"]["StaffList"][$i]['Name'] = $rs[$key]->Name;	
+			$data["dataSearch"]["StaffList"][$i]['Email'] = $rs[$key]->Email_to;				
+			
+			$i++;
+		}
+	}	
+	
+	//Danh sach khoa
+	$q = "SELECT `RecordID`,`Code`,`FullName`,`ShortName` FROM `department_student_tbl`";
+	
+	$rs = $oDB->stl_db_select($q, $conn);
+	$data["dataSearch"]["DepartmentList"] = "";
+	$i = 0;
+	if(is_array($rs)){
+		foreach($rs as $key=>$value)
+		{
+			$data["dataSearch"]["DepartmentList"][$i]['RecordID'] = $rs[$key]->RecordID;
+			$data["dataSearch"]["DepartmentList"][$i]['Code'] = $rs[$key]->Code;
+			$data["dataSearch"]["DepartmentList"][$i]['FullName'] = $rs[$key]->FullName;
+			$data["dataSearch"]["DepartmentList"][$i]['ShortName'] = $rs[$key]->ShortName;			
+			
+			$i++;
+		}
+	}
+	
+	//Danh sach phong ban
+	$q = "SELECT `RecordID`,`FullName` FROM `department_tbl` WHERE `isDeleted`=0";
+	
+	$rs = $oDB->stl_db_select($q, $conn);
+	$data["dataSearch"]["RoomList"] = "";
+	$i = 0;
+	if(is_array($rs)){
+		foreach($rs as $key=>$value)
+		{
+			$data["dataSearch"]["RoomList"][$i]['RecordID'] = $rs[$key]->RecordID;			
+			$data["dataSearch"]["RoomList"][$i]['FullName'] = $rs[$key]->FullName;					
+			
+			$i++;
+		}
+	}
+	
+	
+	$oDB->stl_closeConn($conn);
+	$json = json_encode($data["dataSearch"]);
+	echo $json;	
+?>

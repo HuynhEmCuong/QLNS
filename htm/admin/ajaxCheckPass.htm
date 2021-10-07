@@ -1,0 +1,39 @@
+<?php
+	@session_start();
+	
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'LoginClass.htm');
+	
+//	print_r($_POST);
+	if(isset($_POST['empId']) && !empty($_POST['empId']) && isset($_POST['pass'])){
+		// open connect to database
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+
+		$passold = $_POST['pass'];
+	//	print_r($passold);
+		$passold = md5($passold);
+	//	print_r($passold);
+		$q_select = "SELECT COUNT(*) as count,`FullName` FROM `staff_tbl` WHERE `StaffID`='".$_POST['empId']."' AND `Password`='".$passold."'";
+	//	print_r($q_select);
+		$rs_select = $oDB->stl_db_select($q_select, $conn);
+		if($rs_select[0]->count>0){
+			if(isset($_POST['islogin']) && $_POST['islogin']==1){
+				setSessionLogin($_POST['empId'],$rs_select[0]->FullName);
+				if(isset($_SESSION['screen']) && $_SESSION['screen'] != URL_MAINPAGE){
+					echo $_SESSION['screen'];
+				}else{
+					echo 'OK';
+				}
+			}else{
+				echo 'OK';
+			}
+		}else{
+			echo 'NG';
+		}
+		
+		$oDB->stl_closeConn($conn);
+	}
+?>

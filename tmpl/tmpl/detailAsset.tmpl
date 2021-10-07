@@ -1,0 +1,562 @@
+<html>
+<head>
+	<title>ASSET DETAIL</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<script type="text/javascript" src="../../htm/js/base.js"></script>
+	<style type="text/css">
+		body{
+			font-size: 12px;
+		}
+		
+		#outter{
+			width:900px;
+			margin: 0 auto;
+			margin-top:20px;
+		}
+		
+		#header{
+			width:450px;	
+			padding-top:15px;			
+		}
+		
+		#content{
+			display:table;
+			width:410px;			
+		}
+		
+		#footer{
+			width:410px;
+			
+			text-align:center;
+			margin-top:15px;
+			margin-left:148px;
+			
+		}
+		.row{			
+			width:100%;	
+			float:left;
+			margin-top:5px;
+		}
+		
+		.telCont, .position, .mobileCont,.contractAmount, .contractUnit, .address, .prpoNo, .prpoNoDate, .costCode, .mcboq, .description, .supplier, .issued, .contract,.shortNameDt,.fullNameDt{
+			display: table-cell;
+			vertical-align:middle;			
+			padding-left:4px;			
+		}
+
+		.prpoNo{
+			font-weight:bold;
+			text-align:right;
+			width:80px;
+			background-color:#DCE6F2;
+			border: 1px solid #8EB4E3;
+			padding-right:5px;
+			height:20px;
+		}
+		
+		.prpoNoDate{
+			width:320px;
+			text-align:left;
+		}
+		.title{
+			height:34px;			
+		}
+		
+		.inputHeight{
+			height:25px;
+		}
+		
+		.txt-center{
+			text-align:center;
+		}
+		
+		
+		#titleSResul{
+			width:100%; 
+			display:table;			
+			background-color: #17375E;
+			color: #FFFFFF;
+			font-weight:bold;
+		}
+		
+			
+		.txt-center{
+			text-align:center;
+		}
+		
+		/*header*/
+	.bg-titlemp{
+		color:#c00000;
+	}
+	.mp-title{
+		font-size: 16pt;
+		font-weight: bold;
+		margin: 5px;
+	}
+	.bg-line{
+		color:#4a7ebb;
+		margin-bottom: 10px;
+	}
+	.bo-bottom{
+		border-bottom: 1px solid;
+	}
+	a#logout{
+		float: right;
+		font-size: 10px;
+		margin-top: 15px;
+	}
+	.login{
+		color: blue;
+		float: right;
+		font-size: 15px;
+		font-style: italic;
+		font-weight: normal;
+		margin-right: 10px;
+		margin-top: 13px;
+	}
+	.text-center{
+		text-align:center;
+	}
+	
+	.text-left{
+		text-align:left;
+	}
+	
+	.color-title{
+		color:#17375e;
+	}
+	
+	a{
+		color:#000000;
+	}
+	
+	a:hover{
+		color:blue;
+	}
+	
+	a.choose{
+		color: blue;
+		font-weight: bold;
+		text-decoration: underline;
+	}
+	
+	#saveInfo{
+		width:100%;
+		float:left;
+		margin: 0 auto;
+		margin-top:25px;
+		
+	}
+	.widthInput{
+		width:229px;
+	}
+	.bo-bottom {
+		border-bottom: 1px solid;
+	}
+	#txtSerial{
+		width:228px;
+	}
+	</style>
+	
+	<script type="text/javascript">
+		function ajaxLoad_STA()
+		{
+			var url="ajaxLoad_STA.htm";
+			var queryString = "";
+			var htmlRequest;
+			var dataSearch='';
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null)
+			{ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			htmlRequest.open("POST", url,true);
+			htmlRequest.onreadystatechange = function()
+			{
+				if(htmlRequest.readyState == 4)
+				{
+					if(trim(htmlRequest.responseText)!='NG')
+					{
+						dataSearch = htmlRequest.responseText;
+						//alert(dataSearch);
+						dataSearch=eval('(' + dataSearch + ')');
+						Load_STA(dataSearch);
+					}
+				}
+			}
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");				
+			htmlRequest.send(queryString);
+		}
+		function Load_STA(dataSearch)
+		{
+			
+			if(dataSearch!="")
+			{
+				var count=dataSearch.STAList.length;
+				//alert(count);
+				var slt=document.getElementById("statusList");
+				var option=document.createElement('option');
+				option.innerHTML = "--Status --";
+				option.value="s";
+				slt.appendChild(option);
+				
+				for(var i=0;i<count;i++)
+				{
+					var option = document.createElement('option');
+					option.innerHTML=dataSearch.STAList[i].staName;
+					option.value=dataSearch.STAList[i].staID;
+					slt.appendChild(option);
+				}
+			}
+		}
+		function ajaxLoad_COND()
+		{
+			
+			var url="ajaxLoad_Condition.htm";
+			var queryString = "";
+			var htmlRequest;
+			var dataSearch='';
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null)
+			{ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			htmlRequest.open("POST", url,true);
+			htmlRequest.onreadystatechange = function()
+			{
+				if(htmlRequest.readyState == 4)
+				{
+					if(trim(htmlRequest.responseText)!='NG')
+					{
+						dataSearch = htmlRequest.responseText;
+						//alert(dataSearch);
+						dataSearch=eval('(' + dataSearch + ')');
+						Load_COND(dataSearch);
+					}
+				}
+			}
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");				
+			htmlRequest.send(queryString);
+		}
+		function Load_COND(dataSearch)
+		{
+			
+			if(dataSearch!="")
+			{
+				var count=dataSearch.ConList.length;
+				//alert(count);
+				var slt=document.getElementById("condList");
+				var option=document.createElement('option');
+				option.innerHTML = "--Condition --";
+				option.value="c";
+				slt.appendChild(option);
+				
+				for(var i=0;i<count;i++)
+				{
+					var option = document.createElement('option');
+					option.innerHTML=dataSearch.ConList[i].conName+" ("+dataSearch.ConList[i].descpt+" )";
+					option.value=dataSearch.ConList[i].conID;
+					slt.appendChild(option);
+				}
+					
+			}
+		}
+		function ajaxLoad_Location()
+		{
+			var url="ajaxLoad_BlockRoom.htm";
+			var queryString = "";
+			var htmlRequest;
+			var dataSearch='';
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null)
+			{ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			htmlRequest.open("POST", url,true);
+			htmlRequest.onreadystatechange = function()
+			{
+				if(htmlRequest.readyState == 4)
+				{
+					if(trim(htmlRequest.responseText)!='NG')
+					{
+						dataSearch = htmlRequest.responseText;
+						//alert(dataSearch);
+						dataSearch=eval('(' + dataSearch + ')');
+						Load_Location(dataSearch);
+					}
+				}
+			}
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");				
+			htmlRequest.send(queryString);
+		}
+		function Load_Location(dataSearch)
+		{
+			if(dataSearch!="")
+			{
+				var count=dataSearch.LocaList.length;
+				//alert(count);
+				var slt=document.getElementById("locaList");
+				var option=document.createElement('option');
+				option.innerHTML = "--Condition --";
+				option.value="l";
+				slt.appendChild(option);
+				
+				for(var i=0;i<count;i++)
+				{
+					var option = document.createElement('option');
+					option.innerHTML=dataSearch.LocaList[i].roomName;
+					option.value=dataSearch.LocaList[i].roomID;
+					slt.appendChild(option);
+				}
+					
+			}
+		}
+		function ajaxLoad_GroupCode()
+		{
+			var url="ajaxLoad_GroupCode.htm";
+			var queryString = "";
+			var htmlRequest;
+			var dataSearch='';
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null)
+			{ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			htmlRequest.open("POST", url,true);
+			htmlRequest.onreadystatechange = function()
+			{
+				if(htmlRequest.readyState == 4)
+				{
+					if(trim(htmlRequest.responseText)!='NG')
+					{
+						dataSearch = htmlRequest.responseText;
+						//alert(dataSearch);
+						dataSearch=eval('(' + dataSearch + ')');
+						Load_GroupCode(dataSearch);
+					}
+				}
+			}
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");				
+			htmlRequest.send(queryString);
+		}
+		function Load_GroupCode(dataSearch)
+		{
+			if(dataSearch!="")
+			{
+				var count=dataSearch.groupList.length;
+				//alert(count);
+				var slt=document.getElementById("groupCodeList");
+				var option=document.createElement('option');
+				option.innerHTML = "--GroupCode--";
+				option.value="g";
+				slt.appendChild(option);
+					
+				for(var i=0;i<count;i++)
+				{
+					var option = document.createElement('option');
+					option.innerHTML=dataSearch.groupList[i].groupCode;
+					option.value=dataSearch.groupList[i].groupCode;
+					slt.appendChild(option);
+				}
+				slt.setAttribute('onchange','changeOption(this.form)');
+			}
+		}
+		function changeOption(f)
+		{
+			var groupCode=f.groupCodeList.options[f.groupCodeList.selectedIndex].value;
+			//alert(groupCode);
+			ajaxCount_Asset(groupCode);
+		}
+		function ajaxCount_Asset(groupCode)
+		{
+			var url="ajaxCount_GroupCode.htm";
+			var htmlRequest;
+			var dataSearch='';
+			var queryString = '&groupCode='+groupCode;
+			var chuoi="";
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null)
+			{ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			htmlRequest.open("POST", url,true);
+			htmlRequest.onreadystatechange = function()
+			{
+				if(htmlRequest.readyState == 4)
+				{
+					if(trim(htmlRequest.responseText)!='NG')
+					{
+						dataSearch = htmlRequest.responseText;
+						//alert(dataSearch);
+						dataSearch=eval('(' + dataSearch + ')');
+						var count=dataSearch.Count;
+						count=count+1;
+						if(count<=9)
+						{
+							chuoi+=groupCode+"000"+count;
+						}
+						if((count>9)&&(count<=99))
+						{
+							chuoi+=groupCode+"00"+count;
+						}
+						if((count>99)&&(count<=999))
+						{
+							chuoi+=groupCode+"0"+count;
+						}
+						if(count>999)
+						{
+							chuoi+=groupCode+count;
+						}
+						//alert(chuoi);
+						document.getElementById("txtassetCode").value=chuoi;
+					}
+				}
+			}
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			htmlRequest.send(queryString);
+		}
+		function ajaxInsert()
+		{
+			var url="ajaxInsert_Asset.htm";
+			var queryString="";
+			queryString+=getInsert();
+			//alert(queryString);
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null)
+			{ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			htmlRequest.open("POST", url,true);
+			htmlRequest.onreadystatechange = function()
+			{
+				if(htmlRequest.readyState == 4)
+				{
+					if(trim(htmlRequest.responseText)=='OK')
+					{
+						alert("Insert successful");
+					}
+					else
+					{
+						alert("Not successful");
+						return;
+					}
+				}
+					
+			}
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			htmlRequest.send(queryString);
+		}
+		function getInsert()
+		{
+			var strData="";
+			var gcode=document.getElementById("groupCodeList");
+			if(gcode.options[gcode.selectedIndex].value!="g")
+			{
+				strData+='&groupCode='+gcode.options[gcode.selectedIndex].value;
+			}
+			strData+='&assetCode='+document.getElementById("txtassetCode").value;
+			if(document.getElementById("txtSerial").value!="")
+			{
+				strData+='&serial='+document.getElementById("txtSerial").value;
+			}
+			var status=document.getElementById("statusList");
+			if(status.options[status.selectedIndex].value!="s")
+			{
+				strData+='&staID='+status.options[status.selectedIndex].value;
+			}
+			var lo=document.getElementById("locaList");
+			if(lo.options[lo.selectedIndex].value!="l")
+			{
+				strData+='&loID='+lo.options[lo.selectedIndex].value;
+			}
+			var condition=document.getElementById("condList");
+			if(condition.options[condition.selectedIndex].value!="c")
+			{
+				strData+='&conID='+condition.options[condition.selectedIndex].value;
+			}
+			strData+='&create='+getDate();
+			return strData;
+		}
+		function getDate()
+		{
+			var date=new Date();
+			var strdate="";
+			var month=date.getMonth()+1;
+			strdate+=date.getFullYear()+"-";
+			strdate+=month+"-";
+			strdate+=date.getDate()+" ";
+			strdate+=date.getHours()+":";
+			strdate+=date.getMinutes()+":";
+			strdate+=date.getSeconds();
+			return strdate;
+		}
+	</script>
+</head>
+
+<body onload="ajaxLoad_STA();ajaxLoad_COND();ajaxLoad_Location();ajaxLoad_GroupCode();">
+<div id="outter">
+		<div style="float:left"><img style="width:100px;" src="../../img/logo.PNG"/></div>
+		<div class="bo-bottom bg-line" style="float: left; width:770px;margin-left:20px;margin-top:20px;margin-bottom:18px">
+			<div class="bg-titlemp mp-title">TRƯỜNG ĐẠI HỌC QUỐC TẾ MIỀN ĐÔNG<br><span style="font-size: 13pt;color: #1C1757;padding-left: 46px;">EASTERN INTERNATIONAL UNIVERSITY</span></div>
+		</div>
+		<div class="color-title" style="margin-left:321px"><h1>ASSET DETAIL</h1></div>
+		<div id="content" style="margin: 0 auto;">
+				<div class="row">
+					<div class="prpoNo ">GroupCode</div>
+					<div class="prpoNoDate">
+						<form action="no_value" style="padding:0;margin:0">
+							<select class="inputHeight widthInput" value="" name="groupCodeList" id="groupCodeList">
+							</select>
+						</form>
+						<input id="txtassetCode" hidden="true" class="inputHeight" type="text" size="30">
+					</div>
+				</div>
+				<div class="row">
+					<div class="prpoNo ">Serial</div>
+					<div class="prpoNoDate"><input id="txtSerial" class="inputHeight" type="text" size="30"></div>
+				</div>
+				<div class="row">
+					<div class="prpoNo ">Status</div>
+					<div class="prpoNoDate">
+						<form action="no_value" style="padding:0;margin:0">
+							<select class="inputHeight widthInput" value="" name="statusList" id="statusList">
+							</select>
+						</form>
+					</div>
+				</div>
+				<div class="row">
+					<div class="prpoNo ">Location</div>
+					<div class="prpoNoDate">
+						<form action="no_value" style="padding:0;margin:0">
+							<select class="inputHeight widthInput" value="" name="locaList" id="locaList">
+							</select>
+						</form>
+					</div>
+				</div>
+				<div class="row">
+					<div class="prpoNo ">Condition</div>
+					<div class="prpoNoDate">
+						<form action="no_value" style="padding:0;margin:0">
+							<select class="inputHeight widthInput" value="" name="condList" id="condList">
+							</select>
+						</form>
+					</div>
+				</div>
+		</div>
+		<div id="footer">
+			<button id="cancelBut" style="float:right" onclick="window.close();">Cancel</button>
+						
+			<button id="saveBut" style="float:right" onclick="ajaxInsert();">Save</button>
+		</div>
+		<!-- Chứa thông tin của save info -->
+		<div id="saveInfo"></div>
+		
+</div>
+</body>
+</html>

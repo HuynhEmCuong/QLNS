@@ -1,0 +1,62 @@
+<?php
+	session_start();
+	
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+	//xoa email list
+	if(isset($_POST['ID']) && $_POST['isDeleted']==1)
+	{
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();	
+		$q_del = "UPDATE `send_email_tbl` SET `isDelete` = 1 WHERE `ID` =".$_POST['ID'];
+		$rs_delete = $oDB->stl_db_change($q_del, $conn);	
+		echo $rs_delete;
+		$oDB->stl_closeConn($conn);
+	}	
+	if(isset($_POST['info']) && !empty($_POST['info']))
+	{
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		$_POST['info'] = str_replace('\"', '"',$_POST['info']);
+		$emailList = json_decode($_POST['info'],true);	
+		if(is_array($emailList))
+		{
+			foreach($emailList['emailList'] as $key=>$value)
+			{
+				$name=$value['name'];
+				$staffID=$value['staffID'];
+				$email=$value['email'];
+				$typeID=$value['typeID'];
+				$departmentID=$value['departID'];
+				$roomID=$value['roomID'];
+				$modified=$value['modified'];
+				
+				$q="SELECT `StaffID` FROM `send_email_tbl` WHERE `isDelete`=0";
+				$rs = $oDB->stl_db_select($q, $conn);
+				if(is_array($rs))
+				{
+					foreach($rs as $key=>$value)
+					{
+						if($staffID==$rs[$key]->StaffID)
+						{
+							$rs="Unsuccesfull";
+							exit();
+						}
+					}
+				}
+				
+				//insert
+				$q_insert="Insert into `send_email_tbl`(`StaffID`,`TypeID`,`DepartmentID`,`RoomID`,`Name`,`Email_to`,`CreateDate`,`isDelete`,`LastUpdate`,`ModifyBy`) values('".$staffID."','".$typeID."','".$departmentID."','".$roomID."','".$name."','".$email."',now(),0,now(),'".$modified."')";
+				
+				$rs=$oDB->stl_db_change($q_insert, $conn);
+			}
+		}
+	}
+	echo $rs;
+	$oDB->stl_closeConn($conn);
+?>

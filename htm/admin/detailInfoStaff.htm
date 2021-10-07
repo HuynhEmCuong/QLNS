@@ -1,0 +1,82 @@
+<?php
+	@session_start();
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'LoginClass.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	require_once (EIU_CLASS.'PermissionClass.htm');
+	
+	$status = 0;
+	if(isset($_POST['status'])&& !empty($_POST['status'])){
+		$_POST['status'] = str_replace("\'", "'",$_POST['status']);
+		$status = $_POST['status'];
+	}
+	
+	$view = new View();
+	$data = selectALlTable('*', '`staff_tbl`', "`isDeleted`=".$status." AND `StaffID`='".$_POST['staffID']."'");
+	
+
+	$arrEmergencyContact = selectALlTable('*', '`emergency_contact_tbl`', "`isDeleted`=0 AND `StaffID`='".$_POST['staffID']."'");
+
+	$data1 = get_object_vars($data[0]);
+	$arrNationality = explode("_",$data1['Nationality']);
+	$data1['naID'] = $arrNationality[0];
+	$data1['arrEmergencyContact'] = json_encode($arrEmergencyContact);
+	
+	if($data1['BirthDate']==0){
+		$data1['BirthDate'] = '';
+	}
+	if($data1['BirthYear']==0){
+		$data1['BirthYear'] = '';
+	}
+	// echo json_encode($data1);
+	// die;
+	// if(checkSession('listStaff.htm')==true){
+	// 	$data = setSession();
+	// }
+
+
+	checkLogin();
+	$data = setSession();
+	$screen = basename($_SERVER["REQUEST_URI"]).PHP_EOL;
+	$data['screen'] = RTRIM($screen);
+	$data = checkPermission($data);
+
+	//Set value login
+	$data1['userName'] = $data['userName'];
+	$data1['userLoginTime'] = $data['userLoginTime'];
+	$data1['userId'] = $data['userId'];
+	$data1['isLogin'] = $data['isLogin'];
+	$data1['screen'] = $data['screen'];
+	$data1['permission'] = $data['permission'];
+	
+	//Process SubPermission
+	if(checkIsAdmin($data1['userId'])==1){
+		$data1['permission'] = 4;
+		$data1['add'] = 4;
+		$data1['update'] = 4;
+		$data1['reset'] = 4;
+	}else if(is_array($data1['subPermission'])){
+		$data1['add'] = $data1['subPermission'][2];
+		$data1['update'] = $data1['subPermission'][3];
+		$data1['reset'] = $data1['subPermission'][4];
+	}
+	
+	if(!empty($data1['StaffID']) && $data1['permission']>0){
+		$str = $data1['StaffID'];
+		
+		$data1['pos'] = strpos($str,"_");
+		if(empty($data1['pos'])){
+			if(!empty($data1['ImagePath'])){
+				$data1['image'] = EIU_IMAGE_STAFF.$data1['ImagePath'];
+
+			}else{
+				$data1['image'] = EIU_IMAGE_STAFF."no_image.jpg";
+			}
+		}
+		$view->showTmpl("detailInfoStaff.tmpl","n",$data1);
+	}else{
+		echo "Can not access to this page";
+	}
+?>

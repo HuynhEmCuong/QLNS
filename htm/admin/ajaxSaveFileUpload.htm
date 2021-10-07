@@ -1,0 +1,52 @@
+<?php
+	header('Content-Type: text/html; charset=utf-8');
+	session_start();
+	
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	require_once (EIU_CLASS.'EmailClass.htm');
+	require_once (EIU_CLASS.'MessageClass.htm');
+
+	$_POST['info'] = str_replace('\"', '"',$_POST['info']);
+	$info = json_decode($_POST['info'],true);
+	
+	$arrFileCsv = '';
+	$num = 0;
+	$isUpdateSuccess = false;
+	foreach($info['Result'] as $key=>$value){
+		if(!checkExistFile($value['FileName'],$value['StaffID'])){
+			$rs_insert = insertFileUpload($value);
+		}else{
+			$rs_insert = updateFileUpload($value);
+		}
+		if($rs_insert=='OK'){
+		//	$old = $customer['ImagePath'];
+		//	$new = '../../img/ImageStaff/'.$customer['ImageName'];
+		//	$new = '/usr/local/www/apache22/data/cntt/img/ImageStaff/'.$customer['ImageName'];
+		//	$uploads_dir = '../../Files/uploads/'.$value['StaffID'];
+			$uploads_dir = '/usr/local/www/apache22/data/pcntt/Files/uploads/'.$value['StaffID'];
+		//	print_r($uploads_dir);
+			$dirFolderUpload=$uploads_dir;
+			if(!is_dir($dirFolderUpload))
+			{
+			//	print_r($dirFolderUpload);
+				mkdir($dirFolderUpload);
+			}
+		//	$src = '../../Files/uploads/temp/'.$value['FileName'];
+			$src = '/usr/local/www/apache22/data/pcntt/Files/uploads/temp/'.$value['FileName'];
+			$des = $uploads_dir."/".$value['FileName'];
+			if(!safe_copy($src,$des,$value['FileName'])){
+				echo (ERR_UPLOAD_FILE.":".$value['FileName']);
+			}else{
+				$isUpdateSuccess = true;
+			}
+		}
+	}
+	if($isUpdateSuccess==true){
+		echo MSG_SUCCESSFUL_UDATE_FILE_STAFF;
+	}
+	
+	$oDB->stl_closeConn($conn);
+?>

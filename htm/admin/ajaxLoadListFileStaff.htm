@@ -1,0 +1,56 @@
+<?php
+	session_start();
+	
+//	print_r($_POST);
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	
+	if(isset($_POST['page']) && !empty($_POST['page'])){
+		$startLimit = ($_POST['page']-1)*10;
+		$endLimit = 10;
+	}
+	
+	$condition = "`isDeleted`=0";
+	
+	if(isset($_POST['StaffID']) && !empty($_POST['StaffID'])){
+		$condition .= " AND `StaffID`='".$_POST['StaffID']."'";
+	}
+	
+	$condition .=  " ORDER BY `StaffID`";
+	
+//	print_r($condition);
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+	
+	$count = "SELECT COUNT(*) as count FROM `upload_tbl` WHERE ".$condition;
+	$rs_count = $oDB->stl_db_select($count, $conn);
+	if(!empty($rs_count[0]->count)){
+		$data1["Count"] = (int)$rs_count[0]->count;
+	}
+	if(isset($_POST['page']) && !empty($_POST['page'])){
+		$condition .= " LIMIT ".$startLimit.",".$endLimit;
+	}
+	$rs_select_staff = selectALlTable("*","`upload_tbl`",$condition);
+	
+	if(is_array($rs_select_staff)){
+		$i=0;
+		foreach($rs_select_staff as $key=>$value){
+			$data1['Result'][$i]['StaffID']			=	$rs_select_staff[$key]->StaffID;
+			$data1['Result'][$i]['FileName']		=	$rs_select_staff[$key]->FileName;
+			$data1['Result'][$i]['Description']		=	$rs_select_staff[$key]->Description;
+			$data1['Result'][$i]['CreateDate']		=	$rs_select_staff[$key]->CreateDate;
+			$data1['Result'][$i]['LastUpdate']		=	$rs_select_staff[$key]->LastUpdate;
+			$data1['Result'][$i]['ModifyBy']		=	$rs_select_staff[$key]->ModifyBy;
+			$data1['Staff'][$rs_select_staff[$key]->StaffID] = $rs_select_staff[$key]->StaffID;
+			$i++;
+		}
+		echo json_encode($data1);
+	}else{
+		echo 'NG';
+	}
+	
+	$oDB->stl_closeConn($conn);
+	
+?>

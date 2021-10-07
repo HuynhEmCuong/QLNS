@@ -1,0 +1,52 @@
+<?php
+	@session_start();
+	//$_SESSION['ajaxImportExcelFile'] = false;
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'LoginClass.htm');	
+	
+	
+	
+	if(isset($_SESSION['userID'])&&!empty($_SESSION['userID']))
+	{
+		$data1['userId']=$_SESSION['userID'];
+		$view = new View();
+				
+		//Add contents
+		$barcodes_array = json_decode($_POST["barcodes_json"]);
+		
+		$content = "";		
+		$count_cell = 0;
+		
+		foreach($barcodes_array as $asset_detail)
+		{
+			$content .= '<div class="label">';
+			$content .= '<img src="../../img/Barcode/'.$asset_detail->{"AssCode"}.'.PNG" /><br>';
+			$content .= 'TTS: '.$asset_detail->{"AssName"}.' <br>';
+			$content .= 'HĐ: '.$asset_detail->{"InvcNo"}.'<BR>NCC:'.$asset_detail->{"SuppName"};
+			$content .= '</div>';
+			
+			$count_cell++;
+			if(($count_cell>0) && (fmod($count_cell,30) == 0))
+			{
+				$content .= '<div class="page-break"></div>';
+			}
+			
+			
+		}
+		//echo $content;
+		$data1["content"] = $content;
+		
+		$view->showTmpl("print_CodesList.tmpl","n",$data1);
+	}
+	else
+	{
+		$strLocation = "login.htm";
+		echo '<script type="text/javascript">';
+		echo " location.href='".$strLocation."';";
+		echo "</script>";
+	}	
+	
+
+?>

@@ -1,0 +1,363 @@
+<html>
+<head>
+	<title>LOGIN SCREEN</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link type="text/css" href="../../tmpl/css/popup.css" rel="stylesheet" />
+	<script type="text/javascript" src="../../htm/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../../htm/js/jquery-ui-1.8.9.custom.min.js"></script>
+	<script type="text/javascript" src="../../htm/js/jquery.crypt.js"></script>
+	<script type="text/javascript" src="../../htm/js/base.js"></script>
+	
+	<style type="text/css">
+		body{
+			font-size: 12px;
+		}
+		
+		#outter{
+			width:900px;
+			margin: 0 auto;
+			margin-top:20px;
+		}
+		
+		#header{
+			width:450px;	
+			padding-top:15px;
+		}
+		
+		#content{
+			width: 300px;
+			background-color: #DCE6F2;
+			border: 1px solid #8EB4E3;
+			padding: 25px;
+		}
+		
+		#footer{
+			text-align:center;
+			margin-top:300px;
+			color: #827EB1;
+		}
+		
+		.row{			
+			margin: 5px;
+			margin-right: 30px;
+		}
+		
+		.prpoNo{
+			font-weight: bold;
+			text-align: left;
+			width: 65px;
+			padding-right: 5px;
+			height: 20px;
+			float: left;
+			padding-top: 6px;
+			color: #17375E;
+		}
+		
+		.prpoNoDate{
+			margin-left: 69px;
+		}
+		.title{
+			height:34px;
+		}
+		
+		.inputHeight{
+			height:25px;
+		}
+		
+		.txt-center{
+			text-align:center;
+		}
+		
+		
+		#titleSResul{
+			width:100%; 
+			display:table;			
+			background-color: #17375E;
+			color: #FFFFFF;
+			font-weight:bold;
+		}
+		
+			
+		.txt-center{
+			text-align:center;
+		}
+		
+		#indecator{
+			margin-left: 298px;
+		}
+		/*header*/
+	.bg-titlemp{
+		color:#c00000;
+	}
+	.mp-title{
+		font-size: 16pt;
+		font-weight: bold;
+		margin: 5px;
+		float: left;
+	}
+	.bg-line{
+		color:#4a7ebb;
+		margin-bottom: 10px;
+	}
+	.bo-bottom{
+		border-bottom: 1px solid;
+	}
+	a#logout{
+		float: right;
+		font-size: 10px;
+		margin-top: 15px;
+	}
+	.login{
+		color: blue;
+		float: right;
+		font-size: 15px;
+		font-style: italic;
+		font-weight: normal;
+		margin-right: 10px;
+		margin-top: 13px;
+	}
+	
+	
+	
+	.text-center{
+		text-align:center;
+	}
+	
+	.color-title{
+		color:#17375e;
+	}
+	
+	.text-left{
+		text-align:left;
+	}
+	
+	
+	
+	a{
+		color:#000000;
+	}
+	
+	a:hover{
+		color:blue;
+	}
+	
+	a.choose{
+		color: blue;
+		font-weight: bold;
+		text-decoration: underline;
+	}
+	
+	.display{
+		display:block;
+	}
+	.display-none{
+		display:none;
+	}
+	
+	.iconLogin {
+		background: url("../../img/ajax-loader.gif") no-repeat scroll left center transparent;
+		width: 33px;
+		height: 31px;
+		margin: auto;
+	}
+	
+	.iconArrow {
+		background: url("../../img/arrow.jpg") no-repeat scroll left center transparent;
+		width: 33px;
+		height: 31px;
+		margin: auto;
+		margin-top: -4px;
+	}
+	
+	.iconRed {
+		background: url("../../img/red.PNG") no-repeat scroll left center transparent;
+		width: 33px;
+		height: 31px;
+		margin: auto;
+		margin-top: -4px;
+	}
+	
+	.iconBlue {
+		background: url("../../img/blue.PNG") no-repeat scroll left center transparent;
+		width: 33px;
+		height: 31px;
+		margin: auto;
+		margin-top: -4px;
+	}
+	
+	#pwd{
+		margin-left: 10px;
+		width: 173px;
+		float: left;
+		height: 25px;
+	}
+		
+	</style>
+	
+	<script type="text/javascript">
+		function enableCheckIcon(){
+			document.getElementById("mssv").value="";
+		//	removeClass(document.getElementById('iconArrow'),'display-none');
+		//	addClass(document.getElementById('iconRed'),'display-none');
+		//	addClass(document.getElementById('iconBlue'),'display-none');
+		}
+		
+		function showPopUp(){
+			addClass(document.getElementById('mssv'),'display-none');
+			openPopup("unlockApp","password");
+		}
+		
+		function checkPwd(){
+			var value = document.getElementById('pwd').value;
+			var url = "ajaxCheckPwd.htm";
+			
+			var queryString = "";
+			
+			queryString += "pwd="+value;
+		//	alert(queryString);
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			
+			htmlRequest.onreadystatechange = function(){
+				if(htmlRequest.readyState == 4){
+				//	alert(htmlRequest.responseText);
+					if(trim(htmlRequest.responseText)== 'OK'){
+						location.href = "reports.htm";
+					}else{
+						alert("Mật khẩu không hợp lệ. Vui lòng nhập lại mật khẩu!");
+					}
+				}
+			}
+			
+			htmlRequest.open("POST", url,true);
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				
+			htmlRequest.send(queryString);
+		}
+		
+		function checkEnter(e){
+			var keynum
+			var keychar
+			var numcheck
+			
+			if (e.keyCode == 13){
+				checkMSSV(document.getElementById('mssv'));
+			}
+		}
+		
+		function checkMSSV(obj) {
+		//	addClass(document.getElementById('iconArrow'),'display-none');
+			removeClass(document.getElementById('iconLogin'),'display-none');
+			
+			var url = "ajaxCheckMSSV.htm";
+			var queryString = "";
+			
+			queryString += "mssv="+obj.value;
+						
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			htmlRequest.onreadystatechange = function(){
+				if(htmlRequest.readyState == 4){
+				//	alert(htmlRequest.responseText);
+					if(trim(htmlRequest.responseText)=='EXIST'){
+						addClass(document.getElementById('iconLogin'),'display-none');
+					//	removeClass(document.getElementById('iconArrow'),'display-none');
+						alert("Thông tin Sinh Viên đã được nhập!");
+						document.getElementById("mssv").focus();
+					//	removeClass(document.getElementById('iconArrow'),'display-none');
+					}else if(trim(htmlRequest.responseText)!= 'NG'){
+						addClass(document.getElementById('iconLogin'),'display-none');
+						removeClass(document.getElementById('iconBlue'),'display-none');
+						document.getElementById("jsonString").value = htmlRequest.responseText;
+					//	document.getElementById("submit").disabled = false;
+						submitInfo();
+					}else{
+						addClass(document.getElementById('iconLogin'),'display-none');
+						removeClass(document.getElementById('iconRed'),'display-none');
+					//	document.getElementById("submit").disabled = true;
+						alert("Mã số sinh viên không đúng. Vui lòng nhập lại mã số sinh viên.");
+						document.getElementById("mssv").focus();
+						addClass(document.getElementById('iconRed'),'display-none');
+					//	removeClass(document.getElementById('iconArrow'),'display-none');
+					}
+				}
+			}
+			
+			htmlRequest.open("POST", url,true);
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				
+		//	htmlRequest.setRequestHeader("Content-length", queryString.length);
+		//	htmlRequest.setRequestHeader("Connection", "close");
+			htmlRequest.send(queryString);
+		//	htmlRequest.send(null);
+			
+		}
+		
+		function submitInfo()
+		{
+			CreateForm.submit();
+		}
+		
+		/*$(document).ready(function(){
+			$('#submit1').click(function() {
+				var pwEncrypt;
+				 
+				if( $('input#pwd').val() != '' ) {
+		            pwEncrypt = $().crypt( {
+		                method: 'md5',
+		                source: $('input#pwd').val()
+		            });
+		            $('input#pwd').val(pwEncrypt);
+					checkPwd();
+		            return;
+		        } else {
+		        //    alert('You must enter a password!');
+		            alert('Vui lòng nhập vào mật khẩu!');
+		            return false;
+		        } 		 
+			});
+			
+			$('#pwd').click(function(){
+				$('#pwd').val('');
+			});
+			
+			$('#cancelPopup').click(function(){
+				$('#pwd').val('');
+			});
+		});*/
+	</script>
+</head>
+
+<body>
+<div id="outter">
+		<div style="float: left;margin-right: 20px;"><img style="width:100px;" src="../../img/logo.PNG"/></div>
+		<div class="bo-bottom bg-line" style="float: right;width: 780px;margin-top: 16px;">
+			<div class="bg-titlemp mp-title">TRƯỜNG ĐẠI HỌC QUỐC TẾ MIỀN ĐÔNG<br><span style="font-size: 13pt;color: #1C1757;padding-left: 46px;">EASTERN INTERNATIONAL UNIVERSITY</span></div>
+			<div><img src="../../img/restore-icon.png" title="Xem hồ sơ sinh viên" width=50px onClick="back('restoreTemplate');" style="float: right;padding-top: 10px;" /><img src="../../img/report-icon.png" title="Thống kê" onClick="showPopUp();" style="float: right;padding-top: 10px;" /></div>
+		</div>
+		<div id="content" style="margin: 10px auto;clear:both">
+			<div class="color-title text-center "><h1>TIẾP NHẬN SINH VIÊN</h1></div>
+			<div class="row">
+				<div id="t-username" class="display-none" style="color:red;margin-left: 72px;">Please choose username!</div>
+				<div class="prpoNoDate">
+					<div style="float:right" id="iconLogin" class="iconLogin display-none"></div>
+					<!-- <div style="float:right" id="iconArrow" class="iconArrow" onClick="checkMSSV(document.getElementById('mssv'));"></div> -->
+					<div style="float:right" id="iconRed" class="iconRed display-none"></div>
+					<div style="float:right" id="iconBlue" class="iconBlue display-none"></div>
+					<input id="mssv" onkeydown="return checkEnter(event)" onClick="enableCheckIcon();" type="text" class="inputHeight" type="text" size="20" placeholder="Nhập vào MSSV">
+				</div>
+			</div>
+			<form action="detailInfo.htm" name="CreateForm" id="CreateForm" method="POST">
+				<input type='hidden'  id="jsonString"  name="jsonString" /> 
+			</form>
+			<button id="submit" style="margin-bottom: 10px;margin-left: 77px;" onClick="checkMSSV(document.getElementById('mssv'));">Nhập thông tin sinh viên</button>
+		</div>
+		<div id="footer">@Copyright Phòng Công Nghệ Thông Tin<br>it@eiu.edu.vn</div>
+</div>
+</html>

@@ -1,0 +1,40 @@
+<?php
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+	
+	$q_select="SELECT * FROM `asset_detail_tbl`as d,`status_tbl` as s,`roomblock_tbl` as r,`condition_tbl` as c WHERE d.Location=r.`RoomID` and d.`ConID`=c.`ConID` and d.`STAID`=s.`STAID` and d.`isDeleted`=0 and d.`AssCode`='".$_POST['assetCode']."'";
+	$rs_select = $oDB->stl_db_select($q_select, $conn);
+
+	if(is_array($rs_select))
+	{
+		$i=0;
+		foreach($rs_select as $key=>$value)
+		{
+			$data[$i]['assID']=$rs_select[$key]->AssID;
+			$data[$i]['groupCode']=$rs_select[$key]->GroupCode;
+			$data[$i]['assCode']=$rs_select[$key]->AssCode;
+			$data[$i]['serial']=$rs_select[$key]->SerialNumber;
+			$data[$i]['staID']=$rs_select[$key]->STAID;
+			$data[$i]['staName']=$rs_select[$key]->STAName;
+			$data[$i]['location']=$rs_select[$key]->Location;
+			$data[$i]['roomName']=$rs_select[$key]->BlockCode."-".$rs_select[$key]->RoomCode;
+			$data[$i]['condition']=$rs_select[$key]->ConID;
+			$data[$i]['conName']=$rs_select[$key]->ConName;
+			$data[$i]['ckoutPerson']=$rs_select[$key]->CheckOutPerson;
+			$data[$i]['ckoutDate']=changeDateFormat($rs_select[$key]->CheckOutDate,"");
+			$data[$i]['userName']=$rs_select[$key]->UserName;
+			$i++;
+		}
+	}
+	else
+	{
+		echo 'NG';
+	}	
+	$arr['assetList'] = $data;
+	echo json_encode($arr);
+	$oDB->stl_closeConn($conn);
+?>

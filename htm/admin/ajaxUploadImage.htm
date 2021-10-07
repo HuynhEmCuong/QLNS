@@ -1,0 +1,66 @@
+<?php
+	set_time_limit (0);
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_CLASS.'MessageClass.htm');
+	
+///////////////////Các bước xử lý file////////////////////
+	if(isset($_POST['StaffID'])&&!empty($_POST['StaffID'])){
+		$userID = $_POST['StaffID'];
+	}else{
+		$today = date("Ymdhis");
+		$userID = $today;
+	}
+		$uploads_dir = '../../img/tam/';
+		
+		//Data type returned
+		$dataReturn["imagePath"] = "";
+		$dataReturn["alert"] = "";
+		$dataReturn["status"] = 0;
+		
+		//Extensions accepted
+		$allowedExtensions = array("jpg","JPG","jpeg","gif","png");
+		
+		//Xứ lý file upload
+		$fieldName = key($_FILES);
+		
+		$tmp_name = $_FILES["$fieldName"]["tmp_name"];
+		$uploadedName = $_FILES["$fieldName"]["name"];
+		
+		//Lấy extension của file upload lên
+		$arr = explode(".",$uploadedName);
+		$ext = $arr[count($arr)-1];
+		
+		//Kiểm tra extension có nằm trong danh sách cho phép hay không
+		$accepted = false;
+		if(in_array($ext, $allowedExtensions))
+		{
+			$accepted = true;
+		}
+		
+		if($accepted){
+			//Tạo thư mục để chứa file upload
+			$dirFolderUpload=$uploads_dir;
+			if(!is_dir($dirFolderUpload))
+			{
+				mkdir($dirFolderUpload);
+			}
+			
+			$newName = "$userID.".$ext;
+			
+			move_uploaded_file($tmp_name,"$dirFolderUpload$newName");
+			
+			$dataReturn["imagePath"] = "$dirFolderUpload$newName";
+			$dataReturn["imageName"] = "$newName";
+			$dataReturn["alert"] = MSG_SUCCESSFUL_UPLOAD_IMG;
+			$dataReturn["status"] = 1;
+		}else{
+			$dataReturn["imagePath"] = "";
+			$dataReturn["imageName"] = "";
+			$dataReturn["alert"] = MSG_UNSUCCESSFUL_UPLOAD_IMG;
+			$dataReturn["status"] = 0;
+		}
+	/*}else{
+		$dataReturn["alert"] = MSG_UNSUCCESSFUL_UPLOAD_IMG;
+	}*/
+	echo json_encode($dataReturn);
+?>

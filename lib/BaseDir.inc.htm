@@ -1,0 +1,140 @@
+<?php
+/**
+ * 
+ * @package	package_name
+ * @access		public
+ * @author		tngminh
+ * @create		2007/11/29 16:54
+ * @version	
+ * 
+ * @param		
+ * @return
+ */
+$pathinfo = pathinfo(dirname(__FILE__));
+//LongNguyen add 20090523
+define("EIU_IP",			'localhost/qlns/');
+define("LOCAL_PATH",		'/usr/local/www/apache22/data/pcntt/');
+define("RESET_PWD_EMAIL_PATH","/usr/local/www/apache22/data/resetemail/");
+
+define("EIU_HOME",            $pathinfo['dirname'] . '/');  // base
+define("EIU_LIB",             EIU_HOME . 'lib/');           // library
+define("EIU_CLASS",           EIU_LIB . 'class/');          // class
+
+define("EIU_LOG",             EIU_HOME.'log/');             // log
+define("EIU_DATA",            EIU_HOME.'data/');            // data file
+define("EIU_RESULT",          EIU_HOME.'result/');          // analysis result
+define("EIU_MASTER",          EIU_HOME.'stl_master/');      // STL Code master
+define("EIU_TEST_CONFIG",     EIU_HOME.'test_cfg/');        // Test config
+define("EIU_TMPL",     		  EIU_HOME.'tmpl/tmpl/');       // Template
+define("EIU_IMG",     		  EIU_HOME.'img/');             // Img
+define("EIU_MUSIC",     	  EIU_HOME.'musicdata/');       // Music
+define("PATH_MAIL_TMP",       EIU_HOME.'mail_tmpl/');       // MAIL_TMP
+define("EIU_FILE_EXPORTED",     EIU_HOME.'Files/exports/');		// file Exported
+
+
+error_reporting(0); // do not export warning to screen, by tngminh 15th Apr, 2008
+
+define("HOMEPAGE",				'http://'.EIU_IP.'index.htm');				//Homepage
+define("EIU_IMAGE_STAFF",		'http://'.EIU_IP.'img/ImageStaff/');		//Image Staff Path add 0937AM20032012
+define("EIU_IMAGE_STUDENT",		'http://'.EIU_IP.'img/ImageStudent/');		//Image Staff Path add 1021AM27092012
+define("CALI_LOGO",			'http://'.EIU_IP.'tmpl/img/logosmall.jpg');		//Logo Image
+
+//HIENHUYNH 290511
+define("SB_MH5","B5. CATEGORY");
+define("URL_MAINPAGE","listStaff.htm");
+
+
+//HIENHUYNH 030611
+define("EXPIRE_SESSION",86400);
+//define("EXPIRE_SESSION",0.5);//test
+
+//HIENHUYNH 080811
+define("KHOA",'1');
+
+//HIENHUYNH 220811
+define("PASS","MTRkZWNjMThjZGM1YTc5MjQzNDFhM2UwNzEzZDhhNmJhYmM=");
+define("PASSEXAM","ZDBjZTZmZjNkYTk2MDhmZjJiMTVlMTZiMzNhMTgyYjdhYmM=");
+
+//HIENHUYNH 1402021211
+define("SHEET_ACTIVE","FormCreate-ResetEmail");
+
+//HIENHUYNH 05032012_0956AM
+//define("FOLDER_NAME_PRIVATE_WEB","cntt");
+define("FIELD_CHECK_UNIT","Đơn vị");
+define("FIELD_CHECK_NUMBER","STT");
+
+//HIENHUYNH 17042012_0958AM
+define("NUMBER_DATE_BEFORE_EXPIRE_DATE_EMAIL",10);
+
+//Cau hinh send email
+define('GUSER', 'moetenglishclass@eiu.edu.vn'); // tài khoản đăng nhập Gmail gửi lớp moes
+define('GUSER_SBA', 'moetenglishclass@eiu.edu.vn'); // tài khoản đăng nhập Gmail Khoa QTKD
+//define('GUSER_TTNN', 'english.class@eiu.edu.vn'); // tài khoản đăng nhập Gmail TTNN gửi SV
+define('GUSER_TTNN', 'flie@eiu.edu.vn'); // tài khoản đăng nhập Gmail TTNN gửi SV
+define('GUSER_SET', 'moetenglishclass@eiu.edu.vn'); // tài khoản đăng nhập Gmail Ky Thuat
+define('GUSER_SNS', 'moetenglishclass@eiu.edu.vn'); // tài khoản đăng nhập Gmail Dieu duong
+define('GUSER_IT', 'it.office@eiu.edu.vn');
+//define('GUSER_KCB', '');
+
+define('GPWD', 'pwd123456'); // mật khẩu cho cái mail này  
+define('GPWD_SBA', 'pwd123456'); // mật khẩu cho cái mail này  
+//define('GPWD_TTNN', 'pwd080073'); // mật khẩu cho cái mail này  
+define('GPWD_TTNN', 'eiuenglishcentre'); // mật khẩu cho cái mail này  
+define('GPWD_SET', 'pwd123456'); // mật khẩu cho cái mail này  
+define('GPWD_SNS', 'pwd123456'); // mật khẩu cho cái mail này  
+define('GPWD_IT', 'it@eiu2015');
+//define('GPWD_KCB', '');
+//Field bat dau lay du lieu de send mail
+define("FIELD_CHECK_NUMBER1","IRN");
+//Sheet Active send mail tu dong
+define("SHEET_ACTIVE1","Form");
+
+// STATUS USER
+define("TYPE0","Active");
+define("TYPE1","Inactive");
+define("TYPE2","Discard");
+define("TYPE3","Undefined");
+
+// CREATE NEW EMAIL FOR STUDENT CHANGED IRN: HIEN HUYNH 07/10/2014
+define("DOMAIN",'@eiu.edu.vn');
+define("WARNING_EMAIL","Can't create email!");
+
+// CHANGE IRN
+define("SUCCESSFUL_CHANGED_IRN","IRN changed successful!");
+define("FAIL_CHANGED_IRN","IRN change unsuccessful!");
+define("FAIL_TRANSPORT_INFO","Can't Transport Info!");
+
+// SENT EMAIL 22/10/2014
+define("SUCCESSFUL_EMAIL_SENT","Sent Email!");
+define("FAIL_EMAIL_SENT","Can't Send Email!");
+define("MSG_NO_REPLY","This is an automated notification. Please, don't reply this email!");
+define("MSG_REPLY","Should there be anything <b>unclear</b>, please contact us at ");
+
+
+// ADD STAFF INFO
+define("MSG_SUCCESSFUL_ADD_STAFF_INFO","Add a new staff successful!");
+define("MSG_UNSUCCESSFUL_ADD_STAFF_INFO","Add a new staff unsuccessful!");
+define("MSG_NOT_REQUEST_CREATE_NEW_EMAIL","Staff don't need to create email!");
+define("MSG_NOT_REQUEST_CREATE_NEW_ACCOUNT_PORTAL","Staff don't need to create account portal!");
+
+// UPDATE STAFF INFO
+define("MSG_SUCCESSFUL_UPDATE_STAFF_INFO","Update info staff successful!");
+define("MSG_UNSUCCESSFUL_UPDATE_STAFF_INFO","Update info staff unsuccessful!");
+
+// CREATED CARD
+define("MSG_RECEIVE_CARD_PLACE","p/s: Receiving your card at: IT Department - B05.P208");
+define("MSG_SUCCESSFUL_UPDATE_CARD","Created card");
+define("MSG_NO_CARD_CREATED","No New Card Create");
+define("MSG_UNSUCCESSFUL_UPDATE_CARD","Created card unsuccessful!");
+
+// CREATED EMAIL ON GOOGLE'S SERVER
+define("MSG_SUCCESSFUL_CREATE_EMAIL_GOOGLE","Created email");
+define("MSG_NO_EMAIL_CREATED","No New Email Create");
+define("MSG_UNSUCCESSFUL_UPDATE_EMAIL","Created email unsuccessful!");
+
+//HIENHUYNH 11-05-2015: Setting Google Account
+define("GOOGLE_CLIENT_ID",		'913161320651-6um886voqh5ssaue2bkc3uv9t73kslhq.apps.googleusercontent.com');
+define("GOOGLE_CLIENT_SECRET",	'-p3KSzL_Dqe7etyCsd9fO8ec');
+define("GOOGLE_REDIRECT_URL",	'http://it.eiu.vn/pcntt/htm/admin/login.htm');
+define("GOOGLE_ACCESS_TYPE",	'online');
+?>

@@ -1,0 +1,227 @@
+<?php
+	
+	require_once('BaseDir.inc.htm');
+	require_once("Env.inc.htm");
+	//require_once("Log.class.htm");
+	//require_once("htmltemplate.inc");
+	
+	
+	define("DB_HOST","localhost");
+    define("DB_DATABASE","qlns"); 
+    define("DB_USERNAME","root");
+	define("DB_PASSWORD","");
+//	define("DB_PASSWORD","");
+	
+
+
+class DBCommon {
+	function __construct() {
+	}
+
+	function stl_openConn(){
+		$host       = DB_HOST;
+		$username   = DB_USERNAME;
+		$password   = DB_PASSWORD;
+		$database   = DB_DATABASE;
+		
+		$conn = mysqli_connect($host,$username,$password,$database);
+		if($conn == false){
+			die("ERROR: Could not connect. " . mysqli_connect_error());
+		} 
+		mysqli_set_charset($conn, 'UTF8');
+		return $conn;
+	}		
+		
+	function stl_closeConn($conn) {
+		if ($conn != null) {
+			mysqli_close($conn);
+		}
+		return true;
+	}
+
+	function stl_openRS($conn, $sQuery) {
+		$rs = mysqli_query($conn,$sQuery);
+		return $rs;
+	}
+
+	function stl_closeRS($rs) {
+		mysqli_free_result($rs);
+	}
+
+	function stl_rowcount($rs){
+		return mysqli_num_rows($rs);
+		
+	}
+	
+	function stl_fetch($rs) {
+		return mysqli_fetch_array($rs, MYSQLI_ASSOC);
+	}
+	
+	function stl_getErrorMessage($conn){
+		return mysqli_error($conn);
+	}
+	
+	function stl_isNull($input)	{
+		if(is_null($input) || strlen(trim($input))==0){
+			return true;
+		}
+		return false;
+	}
+	
+	function stl_db_select($sQuery,$conn){
+		if ($conn){
+			$res = DBCommon::stl_openRS($conn, $sQuery);
+			$temp = DBCommon::stl_rowcount($res);				
+			
+			if ($temp != 0) {
+				$arrFields = DBCommon::getFieldNameList($res);	
+				$intFields = count($arrFields);		
+				$index = 0;
+				while($data = DBCommon::stl_fetch($res)) {	
+					$oStructData = new stdClass();
+					for($i = 0; $i < $intFields; $i++){
+						$sFieldName = $arrFields[$i];
+						$oStructData->$sFieldName = $data["".$sFieldName.""];
+					}
+					//$arrData[$index] = array("ID" => $row["timeID"], "Code" => $row["timeCode"], "Name" => $row["timeName"]);	
+					$arrData[$index] = $oStructData;
+					$index ++;
+				}
+				
+			}
+			DBCommon::stl_closeRS($res);
+		}
+		return $arrData;
+		
+	}   
+	
+	//Trung Vo add
+	//ngoai data tra ve con tra ve them array attribute cua ket qua select
+	function stl_db_select_column($sQuery,$conn){
+		if ($conn){
+			$res = DBCommon::stl_openRS($conn, $sQuery);
+			$temp = DBCommon::stl_rowcount($res);
+			if (DBCommon::stl_rowcount($res) != 0){
+				$arrFields = DBCommon::getFieldNameList($res);
+				$intFields = count($arrFields);
+				$index = 0;
+				while ($data = DBCommon::stl_fetch($res)){
+					$oStructData = null;
+					for($i = 0; $i < $intFields; $i++){
+						$sFieldName = $arrFields[$i];
+						$oFieldName->$sFieldName = $sFieldName;
+						$oStructData->$sFieldName = $data["".$sFieldName.""];
+					}
+					$arrData[$index] = $oStructData;
+					$index++;
+				}
+			}
+			DBCommon::stl_closeRS($res);
+		}
+		$result[0] = $arrFields;
+		$result[1] = $arrData;
+		return $result;			
+	}
+	
+	function getFieldNameList($rs){
+		$numField = mysqli_num_fields($rs);		
+		for ($i = 0; $i < $numField; $i++) {
+			$arrField = mysqli_fetch_field_direct($rs, $i);	
+			$arrFieldName[] = $arrField->name;	
+		}	
+		return $arrFieldName;	
+	} 
+	
+	function stl_db_change($cQuery,$conn){
+		if (!DBCommon::stl_isNull($cQuery)) {
+			$bRet = DBCommon::stl_openRS($conn, $cQuery);
+			if (!$bRet) {
+				return DBCommon::stl_getErrorMessage($conn);
+			}
+		} else {
+			return ERR_CONVERT_QUERY;
+		}
+		if(mysqli_affected_rows($conn)>0){
+			//$this->stl_write_to_file($cQuery);
+			return 'OK';
+		}
+		else {
+			return 'NG';
+		}
+	}
+	
+	function stl_db_change_for_backup($cQuery,$conn){
+		if (!DBCommon::stl_isNull($cQuery)) {
+			$bRet = DBCommon::stl_openRS($conn, $cQuery);
+			if (!$bRet) {
+				return DBCommon::stl_getErrorMessage($conn);
+			}
+		} else {
+			return ERR_CONVERT_QUERY;
+		}
+		if(mysql_affected_rows()>0)
+		{
+			return 'OK';
+		}
+		else 
+		{
+			return 'NG';
+		}
+	}
+	
+	
+	/**
+				* Author: HoangLe
+				* CreateDate: 2009/05/29
+				* function ghi vo file cac cau SQL da thuc hien
+				*/
+				
+	function stl_write_to_file($query)
+	{
+		/******* step************
+						**step1: kiem tra xem co file backup hay chua
+						**step2: neu da co file >> open file de ghi them cau Sql
+						**step3: chua co thi tao file >> ghi them sql
+						*****note: sql ghi co them dau ';' o cuoi cau de thuc hien nhieu
+						**step4: kiem tra xem da co bao nhieu cau SQL duoc ghi vao
+						*********neu >= voi so luong cho phep thi step 5
+						********neu < so luong cho phep thi khong lam gi 
+						**step5: push file len server
+						**step6: kiem tra xem viec push file co thanh cong hay ko
+						******neu thanh cong thi thuc hien step 7
+						*****neu khong thanh cong thi khong thuc hien gi
+						**step7: move file toi folder backup theo ngay_gio_phut_giay reset so luong cau sql
+						**step8: kiem tra xem move file co thanh cong hay khong
+						*******neu thanh cong thi thuc hien step9:
+						*******neu khong thanh cong (....................)
+						*/
+		//open file >> fileHandle
+		//neu chua co file thi ham fopen tu tao file moi (option 'a' >> open voi option write only)
+		$stl_sync_tables = STL_SYNC_TABLES;
+		$arrTables = explode(",",$stl_sync_tables);
+		$isSync = false;
+		
+		for($i=0; $i<count($arrTables); $i++)
+		{
+			$pattern = "/".$arrTables[$i]."/";
+			
+			if(preg_match($pattern,$query))
+			{
+				$isSync = true;
+				break;
+			}
+		}
+		if($isSync == true)
+		{
+			$fhandle = fopen(STL_DB_BACKUP_FOLDER . STL_DB_BACKUP_FILE,'a');
+			if($fhandle)
+			{
+			   $content_to_write = $query . ";" . "\n";
+			   fwrite($fhandle, $content_to_write);
+			   fclose($fhandle);       
+			}
+		}
+	}
+}
+	
+?>

@@ -1,0 +1,718 @@
+<html>
+	<head>
+		<title>
+			Detail Group Asset
+		</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link type="text/css" href="../../tmpl/css/groupDetail.css" rel="stylesheet" />
+		<link type="text/css" href="../../tmpl/css/redmond/jquery-ui-1.8.9.custom.css" rel="stylesheet" />
+
+		<script type="text/javascript" src="../../htm/js/base.js"></script>
+		<script type="text/javascript" src="../../htm/js/jquery-1.4.4.min.js"></script>
+		<script type="text/javascript" src="../../htm/js/jquery-ui-1.8.9.custom.min.js"></script>
+		<style type="text/css">
+		</style>
+		<script type="text/javascript">
+			var clickedRow = new Array();
+			clickedRow.rowId = "";
+			clickedRow.rowColor = "";
+			
+			function storeClickedRow(i)
+			{
+				var row=document.getElementById('r-'+i);
+				//alert(row);
+				//Tr? l?i m?u cho d?ng v?a click tru?c d?
+				if(clickedRow.rowId)
+				{
+					changeColorClickedRow(document.getElementById(clickedRow.rowId),"");
+				}
+				
+				//l?y id cho d?ng v?a dua v?o
+				clickedRow.rowId = row.id;
+				//alert(row.id);
+				
+				//d?i m?u cho d?ng v?a click
+				changeColorClickedRow(row,"#FFCCCC")
+			}
+			function changeColorClickedRow(row,color)
+			{
+				row.style.backgroundColor = color;
+			}
+			function ajaxLoadDetail()
+			{
+				var url="ajaxLoadGroupDetail_GCode.htm";
+				var queryString ='&grCode='+record;
+				//alert(queryString);
+				var htmlRequest;
+				var data='';
+				var content=document.getElementById("content");
+				content.innerHTML="";
+				htmlRequest = ajaxFunction();
+				if (htmlRequest==null)
+				{ // If it cannot create a new Xmlhttp object.
+					alert ("Browser does not support HTTP Request");
+					return;
+				}
+				htmlRequest.open("POST", url,true);
+				htmlRequest.onreadystatechange = function()
+				{
+					if(htmlRequest.readyState == 4)
+					{
+						if(trim(htmlRequest.responseText)!='NG')
+						{
+							data = htmlRequest.responseText;
+							//alert(data);
+							data=eval('(' + data+ ')');
+							Load_GroupDetail(data);
+						}
+					}
+				}
+				htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");				
+				htmlRequest.send(queryString);
+			}
+			function Load_GroupDetail(data)
+			{
+				if(data!="")
+				{
+					var count=data.DetailList.length;
+					for(var i=0;i<count;i++)
+					{
+						var row = document.createElement('div');
+						row.setAttribute('id','r-'+i);
+						if(i%2)
+						{
+							row.setAttribute('class','row even');
+						}
+						else
+						{
+							row.setAttribute('class','row');
+						}
+						var ID=data.DetailList[i].assID;
+						var divdel=document.createElement('div');
+						divdel.setAttribute('class','del1 text-center');
+						var del=document.createElement('input');
+						del.setAttribute('id','delete'+i);
+						del.setAttribute('type','image');
+						del.setAttribute('src','../../img/icon-delete.png');
+						del.setAttribute('name','img'+i);
+						//del.setAttribute('onclick','storeClickedRow('+i+')');
+						del.setAttribute('onclick','storeClickedRow('+i+');ajaxDelete('+ID+');');
+						divdel.appendChild(del);
+						row.appendChild(divdel);
+						
+						var assID=document.createElement('div');
+						assID.setAttribute('id','assID'+i);
+						assID.innerHTML=data.DetailList[i].assID;
+						assID.setAttribute('hidden',true);
+						row.appendChild(assID);
+						
+						var gcode=document.createElement('div');
+						gcode.setAttribute('id','gCode'+i);
+						gcode.setAttribute('class','GCode1 text-center');
+						gcode.innerHTML=data.DetailList[i].groupCode;
+						gcode.setAttribute('onclick','storeClickedRow('+i+');');
+						row.appendChild(gcode);
+						var groupcode=data.DetailList[i].groupCode;
+						/*var asscode=document.createElement('div');
+						asscode.setAttribute('id','assCode'+i);
+						asscode.setAttribute('class','ASCode1 text-center');
+						asscode.innerHTML=data.DetailList[i].assCode;
+						asscode.setAttribute("onmousemove","openPopup('assCode"+i+"','detail_popup');getDetail_Popup("+i+")");
+						asscode.setAttribute('onclick','storeClickedRow('+i+');');
+						row.appendChild(asscode);*/
+						var asscode=document.createElement('div');
+							var link = document.createElement('a');
+							link.setAttribute('href','detailAssetUpdate.htm?'+'record='+data.DetailList[i].assCode);
+							link.setAttribute("onmousemove","openPopup('assCode"+i+"','detail_popup');getDetail_Popup("+i+");");
+							link.setAttribute('target',"_blank");
+							link.setAttribute('id','assCode'+i);
+							asscode.setAttribute('class','ASCode1 text-center');
+							link.onclick = Function("storeClickedRow("+i+");");
+							link.innerHTML=data.DetailList[i].assCode;
+						asscode.appendChild(link);
+						row.appendChild(asscode);
+						
+						var assname=document.createElement('div');
+						assname.setAttribute('id','assName'+i);
+						assname.setAttribute('class','ASName1 text-left');
+						assname.innerHTML=data.DetailList[i].assName;
+						row.appendChild(assname);
+						
+						var serial=document.createElement('div');
+						serial.setAttribute('id','serial'+i);
+						serial.setAttribute('class','serial1 text-center');
+						serial.innerHTML=data.DetailList[i].serial;
+						row.appendChild(serial);
+						
+						/*var descrpt=document.createElement('div');
+						descrpt.setAttribute('id','descrpt'+i);
+						descrpt.setAttribute('class','Descpt1 text-center');
+						descrpt.setAttribute('hidden',true);
+						descrpt.innerHTML=data.DetailList[i].description;
+						row.appendChild(descrpt);*/
+						
+						var status=document.createElement('div');
+						status.setAttribute('id','status'+i);
+						status.setAttribute('class','status1 text-center');
+						status.innerHTML=data.DetailList[i].staName;
+						row.appendChild(status);
+						
+						var loca=document.createElement('div');
+						loca.setAttribute('id','loca'+i);
+						loca.setAttribute('class','loca1 text-center');
+						loca.innerHTML=data.DetailList[i].loca;
+						row.appendChild(loca);
+						
+						var condition=document.createElement('div');
+						condition.setAttribute('id','cond'+i);
+						condition.setAttribute('class','Cond1 text-center');
+						condition.innerHTML=data.DetailList[i].condionName;
+						row.appendChild(condition);
+						
+						var user=document.createElement('div');
+						user.setAttribute('id','user'+i);
+						user.setAttribute('class','user1 text-center');
+						user.innerHTML=data.DetailList[i].user;
+						row.appendChild(user);
+						
+						var rptperson=document.createElement('div');
+						rptperson.setAttribute('id','rptperson'+i);
+						rptperson.setAttribute('hidden',true);
+						rptperson.innerHTML=data.DetailList[i].rptPerson;
+						row.appendChild(rptperson);
+						
+						var rptdate=document.createElement('div');
+						rptdate.setAttribute('id','rptdate'+i);
+						rptdate.setAttribute('hidden',true);
+						rptdate.innerHTML=data.DetailList[i].rptDate;
+						row.appendChild(rptdate);
+						
+						var ckperson=document.createElement('div');
+						ckperson.setAttribute('id','chperson'+i);
+						ckperson.setAttribute('hidden',true);
+						ckperson.innerHTML=data.DetailList[i].chPerson;
+						row.appendChild(ckperson);
+						
+						var ckdate=document.createElement('div');
+						ckdate.setAttribute('id','chdate'+i);
+						ckdate.setAttribute('hidden',true);
+						ckdate.innerHTML=data.DetailList[i].chDate;
+						row.appendChild(ckdate);
+						
+						var hist=document.createElement('div');
+						hist.setAttribute('id','hist'+i);
+						//hist.setAttribute('class','hist1 text-center');
+						hist.setAttribute('hidden',true);
+						hist.innerHTML=data.DetailList[i].history;
+						row.appendChild(hist);
+						
+						content.appendChild(row);
+					}
+				}
+			}
+			function ajaxDelete(ID)
+			{
+				var queryString="";
+				var url="ajaxDelete_DetailAsset.htm";
+				queryString+='&assID='+ID;
+				alert(queryString);
+				htmlRequest = ajaxFunction();
+				if (htmlRequest==null)
+				{ // If it cannot create a new Xmlhttp object.
+					alert ("Browser does not support HTTP Request");
+					return;
+				}
+				htmlRequest.open("POST", url,true);
+				htmlRequest.onreadystatechange = function()
+				{
+					if(htmlRequest.readyState == 4)
+					{
+						//alert(htmlRequest.responseText);
+						if(trim(htmlRequest.responseText)=='OK')
+						{
+							alert("Delete Successful");
+							ajaxLoadDetail();
+							//ajaxA71List(pjCode.options[pjCode.selectedIndex].text);
+						}
+					}
+				}
+				htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				htmlRequest.send(queryString);
+			}
+			function ajaxLoad_STA()
+			{
+				var url="ajaxLoad_STA.htm";
+				var queryString = "";
+				var htmlRequest;
+				var dataSearch='';
+				htmlRequest = ajaxFunction();
+				if (htmlRequest==null)
+				{ // If it cannot create a new Xmlhttp object.
+					alert ("Browser does not support HTTP Request");
+					return;
+				}
+				htmlRequest.open("POST", url,true);
+				htmlRequest.onreadystatechange = function()
+				{
+					if(htmlRequest.readyState == 4)
+					{
+						if(trim(htmlRequest.responseText)!='NG')
+						{
+							dataSearch = htmlRequest.responseText;
+							//alert(dataSearch);
+							dataSearch=eval('(' + dataSearch + ')');
+							Load_STA(dataSearch);
+						}
+					}
+				}
+				htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");				
+				htmlRequest.send(queryString);
+			}
+			function Load_STA(dataSearch)
+			{
+				
+				if(dataSearch!="")
+				{
+					var count=dataSearch.STAList.length;
+					//alert(count);
+					var slt=document.getElementById("StaList");
+					var option=document.createElement('option');
+					option.innerHTML = "--Status --";
+					option.value="s";
+					slt.appendChild(option);
+					
+					for(var i=0;i<count;i++)
+					{
+						var option = document.createElement('option');
+						option.innerHTML=dataSearch.STAList[i].staName;
+						option.value=dataSearch.STAList[i].staID;
+						slt.appendChild(option);
+					}
+				}
+			}
+			function ajaxLoad_COND()
+			{
+				var url="ajaxLoad_Condition.htm";
+				var queryString = "";
+				var htmlRequest;
+				var dataSearch='';
+				htmlRequest = ajaxFunction();
+				if (htmlRequest==null)
+				{ // If it cannot create a new Xmlhttp object.
+					alert ("Browser does not support HTTP Request");
+					return;
+				}
+				htmlRequest.open("POST", url,true);
+				htmlRequest.onreadystatechange = function()
+				{
+					if(htmlRequest.readyState == 4)
+					{
+						if(trim(htmlRequest.responseText)!='NG')
+						{
+							dataSearch = htmlRequest.responseText;
+							//alert(dataSearch);
+							dataSearch=eval('(' + dataSearch + ')');
+							Load_COND(dataSearch);
+						}
+					}
+				}
+				htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");				
+				htmlRequest.send(queryString);
+			}
+			function Load_COND(dataSearch)
+			{
+				
+				if(dataSearch!="")
+				{
+					var count=dataSearch.ConList.length;
+					//alert(count);
+					var slt=document.getElementById("CondList");
+					var option=document.createElement('option');
+					option.innerHTML = "--Condition --";
+					option.value="c";
+					slt.appendChild(option);
+					
+					for(var i=0;i<count;i++)
+					{
+						var option = document.createElement('option');
+						option.innerHTML=dataSearch.ConList[i].conName+" ("+dataSearch.ConList[i].descpt+" )";
+						option.value=dataSearch.ConList[i].conID;
+						slt.appendChild(option);
+					}
+					
+				}
+			}
+			function ajaxLoad_Block()
+			{
+				var url="ajaxLoadBlock_Popup.htm";
+				var queryString = "";
+				var htmlRequest;
+				var dataSearch='';
+				htmlRequest = ajaxFunction();
+				if (htmlRequest==null)
+				{ // If it cannot create a new Xmlhttp object.
+					alert ("Browser does not support HTTP Request");
+					return;
+				}
+				htmlRequest.open("POST", url,true);
+				htmlRequest.onreadystatechange = function()
+				{
+					if(htmlRequest.readyState == 4)
+					{
+						if(trim(htmlRequest.responseText)!='NG')
+						{
+							dataSearch = htmlRequest.responseText;
+							//alert(dataSearch);
+							dataSearch=eval('(' + dataSearch + ')');
+							Load_Block(dataSearch);
+						}
+					}
+				}
+				htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");				
+				htmlRequest.send(queryString);
+			}
+			function Load_Block(dataSearch)
+			{
+				
+				if(dataSearch!="")
+				{
+					var count=dataSearch.BlockList.length;
+					//alert(count);
+					var slt=document.getElementById("cbBlock");
+					var option=document.createElement('option');
+					option.innerHTML = "--Block--";
+					option.value="b";
+					slt.appendChild(option);
+					
+					for(var i=0;i<count;i++)
+					{
+						var option = document.createElement('option');
+						option.innerHTML=dataSearch.BlockList[i].bName;
+						option.value=dataSearch.BlockList[i].bCode;
+						slt.appendChild(option);
+					}
+					slt.setAttribute('onchange','changeOption(this.form)');
+				}
+			}
+			function changeOption(f)
+			{
+				var room=document.getElementById("divRoom");
+				var bcode=f.cbBlock.options[f.cbBlock.selectedIndex].value;
+				if(bcode=="b")
+				{
+					room.innerHTML="";
+					return;
+				}
+				else
+				{
+					room.innerHTML="";
+					var frm=document.createElement('form');
+					frm.setAttribute('action','no_value');
+					frm.setAttribute('style','margin:0;padding:0');
+					var slt=document.createElement('select');
+					slt.setAttribute('name','cbRoom');
+					slt.setAttribute('id','cbRoom');
+					slt.setAttribute('class','catList');
+					
+					frm.appendChild(slt);
+					room.appendChild(frm);
+				}
+				ajaxLoad_Room(bcode);
+			}
+			function ajaxLoad_Room(bcode)
+			{
+				var url="ajaxLoadRoom_Block.htm";
+				var queryString = "";
+				queryString+='&bcode='+bcode;
+				var htmlRequest;
+				var dataSearch='';
+				htmlRequest = ajaxFunction();
+				if (htmlRequest==null)
+				{ // If it cannot create a new Xmlhttp object.
+					alert ("Browser does not support HTTP Request");
+					return;
+				}
+				htmlRequest.open("POST", url,true);
+				htmlRequest.onreadystatechange = function()
+				{
+					if(htmlRequest.readyState == 4)
+					{
+						if(trim(htmlRequest.responseText)!='NG')
+						{
+							dataSearch = htmlRequest.responseText;
+							//alert(dataSearch);
+							dataSearch=eval('(' + dataSearch + ')');
+							LoadRoom_Block(dataSearch);
+						}
+					}
+				}
+				htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");				
+				htmlRequest.send(queryString);
+			}
+			function LoadRoom_Block(dataSearch)
+			{
+				var cbblock=document.getElementById("cbBlock");
+				if(dataSearch!="")
+				{
+					if(cbblock.options[cbblock.selectedIndex].value!='b')
+					{
+						var count=dataSearch.RoomList.length;
+						//alert(count);
+						var slt=document.getElementById("cbRoom");
+						var option=document.createElement('option');
+						option.innerHTML = "--Room--";
+						option.value="r";
+						slt.appendChild(option);
+						
+						for(var i=0;i<count;i++)
+						{
+							var option = document.createElement('option');
+							option.innerHTML=dataSearch.RoomList[i].rname;
+							option.value=dataSearch.RoomList[i].rcode;
+							slt.appendChild(option);
+						}
+						//slt.setAttribute('onchange','changeOption(this.form)');
+					}
+				}
+			}
+			function get_DetailDK()
+			{
+				var strData="";
+				var sta=document.getElementById("StaList");
+				if(sta.options[sta.selectedIndex].value!='s')
+				{
+					strData+='&staID='+sta.options[sta.selectedIndex].value;
+				}
+				var con=document.getElementById("CondList");
+				if(con.options[con.selectedIndex].value!='c')
+				{
+					strData+='&conID='+con.options[con.selectedIndex].value;
+				}
+				var block=document.getElementById("cbBlock");
+				if(block.options[block.selectedIndex].value!='b')
+				{
+					strData+='&block='+block.options[block.selectedIndex].value;
+					var room=document.getElementById("cbRoom");
+					if(room.options[room.selectedIndex].value!='r')
+					{
+						strData+='&room='+room.options[room.selectedIndex].value;
+					}
+				}
+				//alert(strData);
+				return strData;
+			}
+			function ajaxSearch_DK()
+			{
+				
+				var url="ajaxLoadDetailAsset_DK.htm";
+				var queryString="";
+				queryString=get_DetailDK();
+				//alert(queryString);
+				var htmlRequest;
+				var dataSearch='';
+				var content=document.getElementById("content");
+				content.innerHTML="";
+				htmlRequest = ajaxFunction();
+				if (htmlRequest==null)
+				{ // If it cannot create a new Xmlhttp object.
+					alert ("Browser does not support HTTP Request");
+					return;
+				}
+				htmlRequest.open("POST", url,true);
+				htmlRequest.onreadystatechange = function()
+				{
+					if(htmlRequest.readyState == 4)
+					{
+						if(trim(htmlRequest.responseText)!='NG')
+						{
+							dataSearch = htmlRequest.responseText;
+							//alert(dataSearch);
+							dataSearch=eval('(' + dataSearch+ ')');
+							Load_GroupDetail(dataSearch);
+						}
+					}
+				}
+				htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");				
+				htmlRequest.send(queryString);
+			}
+			function getValueClick(idInput)
+			{
+				var idValue=document.getElementById(idInput);
+				var value=idValue.value;
+				idValue.value="";
+				idValue.setAttribute("onblur","initVal('"+value+"','"+idInput+"');");
+			}
+			function initVal(oldStr,idInput)
+			{
+				var newStr = document.getElementById(idInput).value;
+				if(!newStr)
+				{
+					document.getElementById(idInput).value = oldStr;
+				}
+			}
+			function openPopup(idClicked,idOpen)
+			{
+				//Gi? gi� tr? id c?a � ch? k� v?a du?c click v�o
+				signClicked = idClicked;
+				
+				//alert(id);
+				var layer = document.getElementById(idOpen);
+				bodyWidth = window.innerWidth;
+				bodyHeight = window.innerHeight;
+				//alert(bodyWidth);
+				var but = document.getElementById(idClicked);
+				if((bodyHeight - but.offsetTop)<50){
+					layer.style.top = (but.offsetTop-200)+'px';
+				}else{
+					layer.style.top = (but.offsetTop-100)+'px';
+				}
+				
+				//alert(bodyWidth-but.offsetLeft);
+				
+				if((bodyWidth-but.offsetLeft)<400)
+				{
+					layer.style.left = (but.offsetLeft-300)+'px';
+				}else layer.style.left = (but.offsetLeft+50)+'px';
+				
+				layer.style.visibility = (layer.style.visibility == 'visible') ? 'hidden' : 'visible';
+				//ajaxLoad_Block_Popup();
+			}
+			function closePopup(id)
+			{
+				var layer = document.getElementById(id);
+				layer.style.visibility = (layer.style.visibility == 'visible') ? 'hidden' : 'visible';
+				
+			}
+			function getBlock_PO(i)
+			{
+				var Code=document.getElementById("BCodePO"+i).innerHTML;
+				document.getElementById("txtBlock").value=Code;
+				closePopup('block_popup');
+			}
+			function getDetail_Popup(i)
+			{
+				var assetcode=document.getElementById("assCode"+i).innerHTML;
+				
+				ajaxLoadDetail_PO(assetcode);
+			}
+			function ajaxLoadDetail_PO(assetcode)
+			{
+				var url="ajaxLoadDetail_Popup.htm";
+				var queryString="";
+				queryString+='&asscode='+assetcode;
+				//alert(queryString);
+				var htmlRequest;
+				var dataSearch='';
+				htmlRequest = ajaxFunction();
+				if (htmlRequest==null)
+				{ // If it cannot create a new Xmlhttp object.
+					alert ("Browser does not support HTTP Request");
+					return;
+				}
+				htmlRequest.open("POST", url,true);
+				htmlRequest.onreadystatechange = function()
+				{
+					if(htmlRequest.readyState == 4)
+					{
+						if(trim(htmlRequest.responseText)!='NG')
+						{
+							dataSearch = htmlRequest.responseText;
+							//alert(dataSearch);
+							dataSearch=eval('(' + dataSearch + ')');
+							document.getElementById("divPO").innerHTML=dataSearch.detail_PO[0].poNo;
+							document.getElementById("divSupplier").innerHTML=dataSearch.detail_PO[0].supp;
+							document.getElementById("divHistory").innerHTML=dataSearch.detail_PO[0].history;
+						}
+					}
+				}
+				htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");				
+				htmlRequest.send(queryString);
+			}
+		</script>
+	</head>
+	<body onload="ajaxLoadDetail();ajaxLoad_STA();ajaxLoad_COND();ajaxLoad_Block();">
+		<!--
+			Chua popup
+		-->
+		<!-- Detail popup-->
+		<div id="detail_popup">
+			<div class="r1">
+				<div style="float:left; width:50px;margin-left:5px;font-size:11px;margin-top:5px;">
+					PO:
+				</div>
+				<div id="divPO" style="font-size:11px;margin-top:5px;float:left;"></div>
+			</div>
+			<div class="r1">
+				<div style="float:left; width:50px;margin-left:5px;font-size:11px;">
+					Supplier:
+				</div>
+				<div id="divSupplier"></div>
+			</div>
+			<div class="r1">
+				<div style="float:left; width:50px;margin-left:5px;font-size:11px;">
+					History:
+				</div>
+				<div id="divHistory"></div>
+			</div>
+			<div style="margin-top:4px;">
+				<button style="float:right" onclick="closePopup('detail_popup')">Cancel</button>					
+			</div>
+		</div>
+		<div id="wrapper">
+			<div style="float: left;margin-right: 20px;"><img style="width:100px;" src="../../img/logo.PNG"/></div>
+			<div class="bo-bottom bg-line" style="float: left;margin-left:10px;width:1070px;margin-top: 16px;margin-bottom:18px;">
+				<div class="bg-titlemp mp-title">TRƯỜNG ĐẠI HỌC QUỐC TẾ MIỀN ĐÔNG<br><span style="font-size: 13pt;color: #1C1757;padding-left: 46px;">EASTERN INTERNATIONAL UNIVERSITY</span></div>
+			</div>
+			<div class="text-center color-title"><h1>DETAIL GROUP ASSET</h1></div>
+			<div id="header">
+				<form action="no_value" style="padding:0;margin:0">
+					<select class="catList" value="Status List" name="StaList" id="StaList">
+					</select>
+				</form>
+				<form action="no_value" style="padding:0;margin:0">
+					<select class="catList" value="Condition" name="CondList" id="CondList">
+					</select>
+				</form>
+				<!--<input type="text" class="txtText" value="Block" id="txtBlock" onclick="openPopup('txtBlock','block_popup');"/>-->
+				<form action="no_value" style="padding:0;margin:0">
+					<select class="catList" value="Block" name="cbBlock" id="cbBlock">
+					</select>
+				</form>
+				<div style="float:left" id="divRoom">
+				</div>
+				<!--<input type="text" class="txtText" value="Room" id="txtRoom" onclick="getValueClick('txtRoom')" />-->
+				<!--<form action="no_value" style="padding:0;margin:0">
+					<select class="catList" value="Room" name="cbRoom" id="cbRoom">
+					</select>
+				</form>-->
+				<input class="btnSearch" type="submit" value="Search" id="btnSearch" onclick="ajaxSearch_DK();"/>
+				
+				<form name="btnNew" class="btnSearch" method="POST" action="detailAsset.htm"  style="width:40px; height:23px; float:left;">
+					<input class="btnSearch" type="hidden" name="btnNew" value="1" style="text-decoration: none;color: black;">
+					<input id="add" onclick="this.form.target='_blank'; return;" type="submit" value="New" style="text-decoration: none;color: black;">
+				</form>
+			</div>
+			<div id="m_content">
+				<div id="titleResult">
+					<div class="rowTitle">
+						<div class="del text-center">Del</div>
+						<div class="GCode title text-center">GroupCode</div>
+						<div class="ASCode text-center">AssetCode</div>
+						<div class="ASName text-center">AssetName</div>
+						<div class="serial text-center">Serial Number</div>
+						<!--<div class="Descpt text-center">Description</div>-->
+						<div class="status text-center">Status</div>
+						<div class="loca text-center">Location</div>
+						<div class="Cond text-center">Condition</div>
+						<div class="user text-center">User</div>
+						<!--<div class="hist text-center">History</div>-->
+					</div>
+				</div>
+				<div id="b_content">
+					<div id="content">
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

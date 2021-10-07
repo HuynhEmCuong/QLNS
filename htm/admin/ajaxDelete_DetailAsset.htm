@@ -1,0 +1,14 @@
+<?php
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+	$assID=$_POST["assID"];
+	$q_update="Update asset_detail_tbl set isDeleted=1 where AssID=".$assID;
+	$rs=$oDB->stl_db_change($q_update, $conn);
+	//print_r($q_update);
+	echo $rs;
+	$oDB->stl_closeConn($conn);
+?>

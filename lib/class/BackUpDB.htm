@@ -1,0 +1,72 @@
+<?php
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once(EIU_LIB.'DBCommon.class.htm');
+	
+	backup_tables('log','*');
+
+	/* backup the db OR just a table */
+	function backup_tables($name,$tables)
+	{
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		//get all of the tables
+		if($tables == '*'){
+			$tables = array();
+			
+			$q = "SHOW TABLES";
+			$rs_q = $oDB->stl_db_select($q, $conn);
+			
+			$i=0;
+			if(is_array($rs_q)){
+				foreach($rs_q as $key=>$val){
+					$tables[$i] = $val->Tables_in_tuyensinh;
+					$i++;
+				}
+			}
+			
+		}else{
+			$tables = is_array($tables) ? $tables : explode(',',$tables);
+		}
+		
+	//	print_r($result);exit();
+		//cycle through
+		foreach($tables as $table){
+			$q1 = "SELECT * FROM $table";
+			$rs_q1 = $oDB->stl_db_select($q1, $conn);
+			$num_fields = 0;
+			foreach($rs_q1[0] as $k=>$v){
+				$num_fields++;
+			}
+			
+			$return.= 'DROP TABLE '.$table.';';
+			$row2 = mysql_fetch_row(mysql_query('SHOW CREATE TABLE '.$table));
+			$result = mysql_query("SELECT * FROM $table");
+			$return.= "\n\n".$row2[1].";\n\n";
+		
+			for ($i = 0; $i < $num_fields; $i++) 
+			{	
+				while($row = mysql_fetch_row($result)){
+					$return.= 'INSERT INTO '.$table.' VALUES(';
+					for($j=0; $j<$num_fields; $j++){
+						$row[$j] = addslashes($row[$j]);
+						$row[$j] = ereg_replace("\n","\\n",$row[$j]);
+						if (isset($row[$j])) { $return.= '"'.$row[$j].'"' ; } else { $return.= '""'; }
+						if ($j<($num_fields-1)) { $return.= ','; }
+					}
+					$return.= ");\n";
+				}
+			}
+			$return.="\n\n\n";
+		}
+	//	print_r($return);
+		//save file
+	//	$handle = fopen('db-backup-'.time().'-'.(md5(implode(',',$tables))).'.sql','w+');
+		$handle = fopen('D:\\BACKUP\\BACKUP\\db-backup-'.time().'-'.(md5(implode(',',$tables))).'.sql','w+');
+	//	print_r($handle);exit();
+		fwrite($handle,$return);
+		fclose($handle);
+		
+		$oDB->stl_closeConn($conn);
+	}
+?>

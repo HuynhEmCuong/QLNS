@@ -1,0 +1,25 @@
+<?php
+	header('Content-Type: text/html; charset=utf-8');
+	session_start();
+	
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	require_once (EIU_CLASS.'EmailClass.htm');
+	require_once (EIU_CLASS.'MessageClass.htm');
+
+	$_POST['info'] = str_replace('\"', '"',$_POST['info']);
+	$info = json_decode($_POST['info'],true);
+	
+	if(empty($info['RecordID'])){
+		$rs_insert = insertEmergencyContact($info);
+	}else{
+		$rs_insert = updateEmergencyContact($info);
+	}
+	if($rs_insert=='OK'){
+		$arrEmergencyContact = selectALlTable('*', '`emergency_contact_tbl`', "`isDeleted`=0 AND `StaffID`='".$info['StaffID']."'");
+		echo json_encode($arrEmergencyContact);
+	}
+	$oDB->stl_closeConn($conn);
+?>

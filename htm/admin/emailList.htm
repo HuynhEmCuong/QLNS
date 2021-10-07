@@ -1,0 +1,14 @@
+<?php
+	@session_start();
+	
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'LoginClass.htm');
+	
+	if(checkSession('mainpage.htm')==true){
+		$data1 = setSession();
+	}
+	$view = new View();
+	$view->showTmpl("emailList.tmpl","n",$data1);
+?>

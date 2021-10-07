@@ -1,0 +1,618 @@
+<?php
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once(EIU_LIB.'DBCommon.class.htm');
+	
+	//ham dung de chuyen dinh dang cua date
+	//words2num
+	//num2words
+	
+	function changeDateFormat($date,$type)
+	{	
+		//echo  $date;
+		if($type == "words2num"){
+			$monthWords = array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec");
+			$monthNo = array("01","02","03","04","05","06","07","08","09","10","11","12");
+			return str_replace($monthWords,$monthNo,$date);
+		}else{
+			$monthNo = array("-01-","-02-","-03-","-04-","-05-","-06-","-07-","-08-","-09-","-10-","-11-","-12-");
+			$monthWords = array("-Jan-","-Feb-","-Mar-","-Apr-","-May-","-Jun-","-Jul-","-Aug-","-Sep-","-Oct-","-Nov-","-Dec-");
+			return str_replace($monthNo,$monthWords,$date);
+		}
+	}
+	
+	/*
+		@author: 	Hien Huynh
+		@des:		Hàm convert ngày từ dạng: 20/08/2011 sang dạng: 2011-08-20
+		@date:		20/08/2011
+		@param: 	$date: ngày
+					$space: dấu ngăn cách
+		@return:	$date
+	*/
+	function convertDate($date, $space){
+		$arrDate = explode($space,$date);
+		
+		if(isset($arrDate[2]) && !empty($arrDate[2]) && isset($arrDate[1]) && !empty($arrDate[1]) && isset($arrDate[0]) && !empty($arrDate[0])){
+			return $arrDate[2]."-".$arrDate[1]."-".$arrDate[0];
+		}
+	}
+	
+	function changeTVToEnglish($value){
+		$marTViet=array("à","á","ạ","ả","ã","â","ầ","ấ","ậ","ẩ","ẫ","ă",
+		"ằ","ắ","ặ","ẳ","ẵ","è","é","ẹ","ẻ","ẽ","ê","ề"
+		,"ế","ệ","ể","ễ",
+		"ì","í","ị","ỉ","ĩ",
+		"ò","ó","ọ","ỏ","õ","ô","ồ","ố","ộ","ổ","ỗ","ơ"
+		,"ờ","ớ","ợ","ở","ỡ",
+		"ù","ú","ụ","ủ","ũ","ư","ừ","ứ","ự","ử","ữ",
+		"ỳ","ý","ỵ","ỷ","ỹ",
+		"đ",
+		"À","Á","Ạ","Ả","Ã","Â","Ầ","Ấ","Ậ","Ẩ","Ẫ","Ă"
+		,"Ằ","Ắ","Ặ","Ẳ","Ẵ",
+		"È","É","Ẹ","Ẻ","Ẽ","Ê","Ề","Ế","Ệ","Ể","Ễ",
+		"Ì","Í","Ị","Ỉ","Ĩ",
+		"Ò","Ó","Ọ","Ỏ","Õ","Ô","Ồ","Ố","Ộ","Ổ","Ỗ","Ơ"
+		,"Ờ","Ớ","Ợ","Ở","Ỡ",
+		"Ù","Ú","Ụ","Ủ","Ũ","Ư","Ừ","Ứ","Ự","Ử","Ữ",
+		"Ỳ","Ý","Ỵ","Ỷ","Ỹ",
+		"Đ");
+
+		$marKoDau=array("a","a","a","a","a","a","a","a","a","a","a"
+		,"a","a","a","a","a","a",
+		"e","e","e","e","e","e","e","e","e","e","e",
+		"i","i","i","i","i",
+		"o","o","o","o","o","o","o","o","o","o","o","o"
+		,"o","o","o","o","o",
+		"u","u","u","u","u","u","u","u","u","u","u",
+		"y","y","y","y","y",
+		"d",
+		"A","A","A","A","A","A","A","A","A","A","A","A"
+		,"A","A","A","A","A",
+		"E","E","E","E","E","E","E","E","E","E","E",
+		"I","I","I","I","I",
+		"O","O","O","O","O","O","O","O","O","O","O","O"
+		,"O","O","O","O","O",
+		"U","U","U","U","U","U","U","U","U","U","U",
+		"Y","Y","Y","Y","Y",
+		"D");
+		return str_replace($marTViet,$marKoDau,$value);
+	}
+	
+	/*
+		@author: 	Hien Huynh
+		@des:		Hàm trả về giá trị của tất cả các field của một table
+		@date:		20/08/2011
+		@param: 	$table: tên table. `HoSoSV`
+					$field: `MSSV`,`HoVN`,`TenVN`
+					$con: điều kiện `RecordID`=1 AND `HoVN`='Huỳnh'
+		@return:	Array
+					Trả về '' nếu không tìm được giá trị
+	*/
+	
+	function selectALlTable($field, $table, $con){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		if(isset($con) && !empty($con)){
+			$q_select = "SELECT $field FROM $table WHERE $con;";
+		}else{
+			$q_select = "SELECT $field FROM $table;";
+		}
+		
+	//	print_r($q_select);
+		$rs_select = $oDB->stl_db_select($q_select, $conn);
+		//print_r($rs_select);exit();
+		return $rs_select;
+	}
+	
+	/*
+		@author: 	Hien Huynh
+		@des:		Hàm trả về giá trị của tất cả các field của một table
+		@date:		20/08/2011
+		@param: 	$table: tên table. `HoSoSV`
+					$field: `MSSV`,`HoVN`,`TenVN`
+					$con: điều kiện `RecordID`=1 AND `HoVN`='Huỳnh'
+		@return:	Array
+					Trả về '' nếu không tìm được giá trị
+	*/
+	
+	function selectOneColumnOfTable($field, $table, $con){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		if(isset($con) && !empty($con)){
+			$q_select = "SELECT `$field` FROM $table WHERE $con;";
+		}else{
+			$q_select = "SELECT `$field` FROM $table;";
+		}
+	
+		$rs_select = $oDB->stl_db_select($q_select, $conn);
+	
+		return $rs_select[0]->$field;
+	}
+
+	/*
+		@author: 	Hien Huynh
+		@des:		Hàm trả về giá trị của field cần lấy
+		@date:		17/08/2011
+		@param: 	$subject: Mã ngành
+					$field: tên field muốn trả về
+		@return:	Giá trị của field cần lấy
+					Trả về '' nếu không tìm được giá trị
+	*/
+	function getFieldOfTable($subject, $field, $table){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		$q_select_shortname = "SELECT `$field` as value FROM `$table` WHERE RecordID = (
+					SELECT `DepartmentID`
+					FROM  `major_tbl` 
+					WHERE  `Code` ='$subject'
+					)";
+		//print_r($q_select_shortname);
+		
+		$value = '';
+		$rs_select = $oDB->stl_db_select($q_select_shortname, $conn);
+		
+		if(is_array($rs_select)){
+			foreach($rs_select as $key=>$value){
+				$value = $rs_select[$key]->value;
+			}
+		}		
+		return $value;
+		$oDB->stl_closeConn($conn);
+	}
+	
+	function updateValueByField($field, $fieldCon, $table, $value, $valueCon){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		$q_update = "UPDATE `$table` SET  `$field` =  $value WHERE `$fieldCon` = $valueCon LIMIT 1";
+	//	print_r($q_update);exit();
+		$rs_update = $oDB->stl_db_change($q_update, $conn);
+		
+		return $rs_update;
+		$oDB->stl_closeConn($conn);
+	}
+	
+	function getSttEmail($emailTruong){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+	
+		$stt='';
+		
+		//Lấy số thứ tự email trong hososinhvien
+		$q_select_stt = "SELECT count(*) as count FROM `hososinhvien` WHERE `NguyenVong`=1 AND `EmailTruong` LIKE '$emailTruong%'";
+		//print_r($q_select_stt);
+		$rs_select_stt = $oDB->stl_db_select($q_select_stt, $conn);
+		
+		if(isset($rs_select_stt[0]->count)&&$rs_select_stt[0]->count>0){
+			$stt=$rs_select_stt[0]->count;
+		}
+	
+		//Lấy số thứ tự email trong dulieusinhvien
+		$q_select_stt1 = "SELECT count(*) as count FROM `dulieusinhvien` WHERE `EmailTruong` LIKE '$emailTruong%'";
+	//	print_r($q_select_stt1);
+		$rs_select_stt1 = $oDB->stl_db_select($q_select_stt1, $conn);
+		
+		if(isset($rs_select_stt1[0]->count)&&$rs_select_stt1[0]->count>0){
+			$stt =($stt+$rs_select_stt1[0]->count);
+		}
+		
+		if(!empty($stt)&&$stt<=0){
+			$stt='';
+		}
+		
+		return $stt;
+		$oDB->stl_closeConn($conn);
+	}
+	
+	function getSttEmailPre($emailTruong){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+	
+		$stt='';
+		
+		//Lấy số thứ tự email trong dulieusinhvien
+		$q_select_stt1 = "SELECT count(*) as count FROM `dulieusinhvien` WHERE `EmailTruong` LIKE '$emailTruong%' AND `NguyenVong`=4";
+		
+		$rs_select_stt1 = $oDB->stl_db_select($q_select_stt1, $conn);
+		
+		if(isset($rs_select_stt1[0]->count)&&$rs_select_stt1[0]->count>0){
+			$stt =($stt+$rs_select_stt1[0]->count);
+		}
+		
+		if(!empty($stt)&&$stt<=0){
+			$stt='';
+		}
+		
+		return $stt;
+		$oDB->stl_closeConn($conn);
+	}
+	
+	function createEmailType2(){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		$q_select = "SELECT col.MaSV,TRIM(col.HoVN) as HoVN,TRIM(col.TenVN) as TenVN,s.Name,dt.FullName,dt.ShortName FROM(SELECT SUBSTRING(d.`MaSV`,5,2) as Subject,LOWER(d.TenVN) as TenVN, d.MaSV, LOWER(SUBSTRING(TRIM(`HoLotVN`),1,LOCATE(' ',TRIM(`HoLotVN`)))) as HoVN FROM `dulieusinhvien` as d WHERE (d.NguyenVong=2 OR d.NguyenVong=3) AND d.MaSV NOT IN(SELECT `MaSV` FROM `dulieusinhvien` WHERE `EmailTruong`<>'' AND (`NguyenVong`=2 OR `NguyenVong`=3))) as col LEFT JOIN `subject` as s ON(col.Subject=s.Code) LEFT JOIN `department` as dt ON(s.DepartmentID=dt.RecordID) ORDER BY  `TenVN`,`HoVN`,`MaSV`";
+		//Hien Huynh 180911 - Tạo mail cho sinh viên mới vào
+	//	$q_select = "SELECT col.MaSV,TRIM(col.HoVN) as HoVN,TRIM(col.TenVN) as TenVN,s.Name,dt.FullName,dt.ShortName FROM(SELECT SUBSTRING(d.`MaSV`,5,2) as Subject,LOWER(d.TenVN) as TenVN, d.MaSV, LOWER(SUBSTRING(`HoLotVN`,1,LOCATE(' ',`HoLotVN`))) as HoVN FROM `dulieusinhvien` as d WHERE d.NguyenVong=2 AND (d.EmailTruong IS NULL OR d.EmailTruong='')) as col LEFT JOIN `subject` as s ON(col.Subject=s.Code) LEFT JOIN `department` as dt ON(s.DepartmentID=dt.RecordID) ORDER BY  `TenVN`,`HoVN`,`MaSV`";
+		$rs_select1 = $oDB->stl_db_select($q_select, $conn);
+		$stt_old = '';
+		foreach($rs_select1 as $key=>$value){
+			$shortname='';$ten='';$ho='';
+		
+			$shortname = $rs_select1[$key]->ShortName;
+			$ten = $rs_select1[$key]->TenVN;
+			$ho = $rs_select1[$key]->HoVN;
+			
+			$ten = changeTVToEnglish($ten);
+			$ho = changeTVToEnglish($ho);
+			
+			$emailTruong = $ten.'.'.$ho.'.k'.KHOA.$shortname;
+			
+			$stt=getSttEmail($emailTruong);
+			
+			$emailTruong = $emailTruong.$stt."@eiu.edu.vn";
+			
+		//	print_r($emailTruong);
+			$q_update = "UPDATE `dulieusinhvien` SET `EmailTruong` = '".$emailTruong."' WHERE `dulieusinhvien`.`MaSV` = '".$rs_select1[$key]->MaSV."'";
+			$rs_update = $oDB->stl_db_change($q_update, $conn);
+		}
+		
+		$oDB->stl_closeConn($conn);
+	}
+	
+	//Hien Huynh 1514PM09092011: Hàm tạo email cho các SV không trùng tên, họ, ngành
+	function createEmailType1($type){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		if($type==1){
+			$q_select1 = "SELECT col3.DepartmentID,col3.MaSV,TRIM(col3.TenVN) as TenVN, TRIM(col3.HoVN) as HoVN,dt.ShortName FROM(SELECT * FROM(SELECT count(*) as count, col.DepartmentID, col.MaSV, TRIM(col.TenVN) as TenVN, TRIM(col.HoVN) as HoVN FROM(SELECT t1.MaSV,t1.HoVN, t1.TenVN, t2.DepartmentID FROM(SELECT `MaSV`,SUBSTRING(`MaSV`,5,2) as Subject,LOWER(SUBSTRING(TRIM(`HoLotVN`),1,LOCATE(' ',TRIM(`HoLotVN`)))) as HoVN,LOWER(`TenVN`) as TenVN FROM `dulieusinhvien` WHERE LOCATE(' ',TRIM(`HoLotVN`))<>0 AND (`NguyenVong`=2 OR `NguyenVong`=3) AND (`EmailTruong`='' OR `EmailTruong` IS NULL)) as t1 LEFT JOIN `subject` as t2 ON(t1.Subject=t2.Code)) as col GROUP BY col.HoVN, col.TenVN, col.DepartmentID) as col1 WHERE col1.count=1) as col3 LEFT JOIN `department` as dt ON(col3.DepartmentID=dt.RecordID)";
+		}else{
+			$q_select1 = "SELECT col3.DepartmentID,col3.MaSV,TRIM(col3.TenVN) as TenVN, TRIM(col3.HoVN) as HoVN,dt.ShortName FROM(SELECT * FROM(SELECT count(*) as count, col.DepartmentID, col.MaSV, TRIM(col.TenVN) as TenVN, TRIM(col.HoVN) as HoVN FROM(SELECT t1.MaSV,t1.HoVN, t1.TenVN, t2.DepartmentID FROM(SELECT `MaSV`,SUBSTRING(`MaSV`,5,2) as Subject,LOWER(TRIM(`HoLotVN`)) as HoVN,LOWER(`TenVN`) as TenVN FROM `dulieusinhvien` WHERE LOCATE(' ',TRIM(`HoLotVN`))=0 AND (`NguyenVong`=2 OR `NguyenVong`=3) AND (`EmailTruong`='' OR `EmailTruong` IS NULL)) as t1 LEFT JOIN `subject` as t2 ON(t1.Subject=t2.Code)) as col GROUP BY col.HoVN, col.TenVN, col.DepartmentID) as col1 WHERE col1.count=1) as col3 LEFT JOIN `department` as dt ON(col3.DepartmentID=dt.RecordID)";
+		}
+		
+		$rs_select1 = $oDB->stl_db_select($q_select1, $conn);
+	//	print_r($rs_select1);
+		if(is_array($rs_select1)){
+			foreach($rs_select1 as $key=>$value){
+				// Lấy mã ngành của SV
+				$ten='';$ho=='';$shortname='';
+				
+				$shortname = $rs_select1[$key]->ShortName;
+				$ten = $rs_select1[$key]->TenVN;
+				$ho = $rs_select1[$key]->HoVN;
+				
+				$ho = changeTVToEnglish($ho);
+				$ten = changeTVToEnglish($ten);
+				
+				/*$emailTruong = $ten.'.'.$ho.'.k'.KHOA.$shortname;
+				
+				//Lấy số thứ tự của email
+				$q_select_stt = "SELECT count(*) as count FROM `hososinhvien` WHERE `EmailTruong` LIKE '$emailTruong%'";
+			//	print_r($q_select_stt);
+				$rs_select_stt = $oDB->stl_db_select($q_select_stt, $conn);
+				
+				if(isset($rs_select_stt[0]->count)&&$rs_select_stt[0]->count>0){
+					if($rs_select_stt[0]->count==1){
+						$stt=1;
+					}else{
+						$stt=$rs_select_stt[0]->count;
+					}
+				}
+				
+				$emailTruong = $emailTruong.$stt."@eiu.edu.vn";*/
+				$emailTruong = $ten.'.'.$ho.'.k'.KHOA.$shortname;
+			
+				$stt=getSttEmail($emailTruong);
+			
+				$emailTruong = $emailTruong.$stt."@eiu.edu.vn";
+				
+				$q_update = "UPDATE `dulieusinhvien` SET `EmailTruong` = '".$emailTruong."' WHERE `dulieusinhvien`.`MaSV` = '".$rs_select1[$key]->MaSV."'";
+				$rs_update = $oDB->stl_db_change($q_update, $conn);
+				
+			}
+		}
+		$oDB->stl_closeConn($conn);
+	}
+	
+//	initEmail();
+	//HienHuynh Hàm Tự động Khởi tạo Email
+	function initEmail(){
+		// Tạo mail cho các SV không trùng tên
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		//Select MaSV, HoVN, TenVN của những SV không trùng tên, họ và ngành
+		//Trường hợp có khoảng trắng sau họ
+		createEmailType1(1);
+		createEmailType1(2);
+		createEmailType2();
+		
+		$oDB->stl_closeConn($conn);
+	}
+	
+	/*--------------------------------------------------------------------------
+		@Author: HienHuynh 1403PM17112011
+		@Desc: Auto create email for pre student
+	--------------------------------------------------------------------------*/
+	
+	function createEmail($sql){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		$rs = $oDB->stl_db_select($sql, $conn);
+		
+		$shortname = "pre";
+		if(is_array($rs)){
+			foreach($rs as $key=>$value){
+				$ten = $rs[$key]->TenVN;
+				$ho = $rs[$key]->HoLotVN;
+				
+				$ho = changeTVToEnglish($ho);
+				$ten = changeTVToEnglish($ten);
+				
+				$emailTruong = $ten.'.'.$ho.'.k'.KHOA.$shortname;
+				
+				$stt=getSttEmailPre($emailTruong);
+			//	print_r($stt);exit();
+				$emailTruong = $emailTruong.$stt."@eiu.edu.vn";
+			//	print_r($emailTruong."</br>");
+				
+				$q_update = "UPDATE `dulieusinhvien` SET `EmailTruong` = '".$emailTruong."' WHERE `dulieusinhvien`.`MaSV` = '".$rs[$key]->MaSV."'";
+				
+				$rs_update = $oDB->stl_db_change($q_update, $conn);
+			//	print_r($rs_update);
+			}
+		}
+
+		$oDB->stl_closeConn($conn);
+	}
+	
+//	initEmailPre();
+	function initEmailPre(){
+		//Select HoLotVN, TenVN of Student, trim all space at start and end of string.
+		$sql1 = "SELECT s.MaSV AS MaSV,TRIM(SUBSTRING(s.HoLotVN FROM 1 FOR s.pos)) AS HoLotVN, s.TenVN FROM (SELECT `MaSV`, LOCATE(' ',LOWER(TRIM(`HoLotVN`)),2) AS pos,LOWER(TRIM(`HoLotVN`)) AS HoLotVN, LOWER(TRIM(`TenVN`)) AS TenVN FROM `dulieusinhvien` WHERE `NguyenVong`=4 AND `isDeleted`=0) AS s WHERE s.pos<>0";
+		$sql2 = "SELECT s.MaSV AS MaSV,s.HoLotVN AS HoLotVN, s.TenVN FROM (SELECT `MaSV`, LOCATE(' ',LOWER(TRIM(`HoLotVN`)),2) AS pos,LOWER(TRIM(`HoLotVN`)) AS HoLotVN, LOWER(TRIM(`TenVN`)) AS TenVN FROM `dulieusinhvien` WHERE `NguyenVong`=4 AND `isDeleted`=0) AS s WHERE s.pos=0";
+		
+		createEmail($sql1);
+		createEmail($sql2);
+	}
+	
+	//initRoom();
+	
+	//HienHuynh Hàm tự động sắp xếp phòng thi
+	function initRoom(){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		//Lấy MaSV, DepartmentID tương ứng MaSV
+		$q_select = "SELECT tbl.`MaSV`, s.DepartmentID FROM (SELECT `MaSV`, SUBSTRING(`MaSV`,5,2) as Subject FROM `dulieusinhvien` WHERE (`NguyenVong`=2 OR `NguyenVong`=3) AND (`RoomID`=0 OR `RoomID` IS NULL)) as tbl LEFT JOIN `Subject` as s ON (tbl.Subject=s.Code)";
+		$rs_select = $oDB->stl_db_select($q_select, $conn);
+		
+		if(is_array($rs_select)){
+			foreach($rs_select as $key=>$value){
+				$departmentID = $rs_select[$key]->DepartmentID;
+				$maSV = $rs_select[$key]->MaSV;
+				//Lấy RoomID
+				$q_s = "SELECT RecordID FROM  `room` WHERE `Priority` <> 0 AND `CapacityAct` <  `CapacityPlan` AND `DepartmentList` LIKE '%{\"ID\":\"$departmentID\"}%' ORDER BY  `Timer` ASC , `Priority` ASC LIMIT 1";
+				$rs_sel_room = $oDB->stl_db_select($q_s, $conn);
+				$roomID = $rs_sel_room[0]->RecordID;
+				//Update RoomID cho SV
+				$q_update = "UPDATE  `dulieusinhvien` SET  `RoomID` =  '$roomID' WHERE  `dulieusinhvien`.`MaSV` =  '$maSV' LIMIT 1";
+				$rs_update = $oDB->stl_db_change($q_update, $conn);
+				if($rs_update=='OK'){
+					$rs_update_room = updateValueByField('CapacityAct', 'RecordID', 'room', '`CapacityAct`+1', $roomID);
+				}
+			}
+		}
+		
+		$oDB->stl_closeConn($conn);
+	}
+	
+/*	//resetEmailNV1();
+	function resetEmailNV1(){
+		resetEmail('`hososinhvien`','sba');
+		resetEmail('`hososinhvien`','set');
+		resetEmail('`hososinhvien`','sns');
+	}
+	
+	
+	function resetEmail($table,$department){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		$sql = "SELECT `MSSV`,SUBSTRING(`EmailTruong`,1,LOCATE('@',`EmailTruong`)-1) as EmailTruong FROM $table WHERE `EmailTruong` LIKE '%$department@eiu.edu.vn'";
+		$rs = $oDB->stl_db_select($sql, $conn);
+		
+		if(isset($rs)){
+			foreach($rs as $key=>$value){
+				$email = $rs[$key]->EmailTruong;
+				$stt = getSttEmail($emailTruong);
+				
+				if(isset($stt)&&$stt>1){
+					$emailTruong=$email.$stt."@eiu.edu.vn";
+					$mssv=$rs[$key]->MSSV;
+					$q="UPDATE $table SET `EmailTruong`='$emailTruong' WHERE `MaSV`='$mssv'";
+				//	print_r($q);
+				//	$r = $oDB->stl_db_select($q, $conn);
+				}
+			}
+		}
+		$oDB->stl_closeConn($conn);
+	}
+	
+//	resetEmailNV2();
+	function resetEmailNV2(){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		$sql_1 = "SELECT `MaSV`,SUBSTRING(`EmailTruong`,1,LOCATE('@',`EmailTruong`)-1) as EmailTruong FROM `dulieusinhvien` WHERE `EmailTruong` LIKE '%sba@eiu.edu.vn'";
+		$sql_2 = "SELECT `MaSV`,SUBSTRING(`EmailTruong`,1,LOCATE('@',`EmailTruong`)-1) as EmailTruong FROM `dulieusinhvien` WHERE `EmailTruong` LIKE '%set@eiu.edu.vn'";
+		$sql_3 = "SELECT `MaSV`,SUBSTRING(`EmailTruong`,1,LOCATE('@',`EmailTruong`)-1) as EmailTruong FROM `dulieusinhvien` WHERE `EmailTruong` LIKE '%sns@eiu.edu.vn'";
+		
+		$rs_1 = $oDB->stl_db_select($sql_1, $conn);
+		$rs_2 = $oDB->stl_db_select($sql_2, $conn);
+		$rs_3 = $oDB->stl_db_select($sql_3, $conn);
+		
+		if(is_array($rs_1)){
+			foreach($rs_1 as $key=>$value){
+				$email='';$mssv='';$emailTruong='';
+				$email=$rs_1[$key]->EmailTruong;
+				
+				$mssv=$rs_1[$key]->MaSV;
+				$q_1="SELECT count(*) as count FROM `dulieusinhvien` WHERE `EmailTruong` LIKE '$email%'";
+				
+				$r_1 = $oDB->stl_db_select($q_1, $conn);
+				
+				if(isset($r_1[0]->count)&&$r_1[0]->count>1){
+					$emailTruong=$email.$r_1[0]->count."@eiu.edu.vn";
+					$q_u_1="UPDATE `dulieusinhvien` SET `EmailTruong`='$emailTruong' WHERE `MaSV`='$mssv'";
+					$rs_u_1 = $oDB->stl_db_select($q_u_1, $conn);
+				}
+			}
+		}
+		
+		if(is_array($rs_2)){
+			foreach($rs_2 as $key=>$value){
+				$email='';$mssv='';$emailTruong='';
+				$email=$rs_2[$key]->EmailTruong;
+				$mssv=$rs_2[$key]->MaSV;
+				$q_2="SELECT count(*) as count FROM `dulieusinhvien` WHERE `EmailTruong` LIKE '$email%'";
+				$r_2 = $oDB->stl_db_select($q_2, $conn);
+				if(isset($r_2[0]->count)&&$r_2[0]->count>1){
+					$emailTruong=$email.$r_2[0]->count."@eiu.edu.vn";
+					$q_u_2="UPDATE `dulieusinhvien` SET `EmailTruong`='$emailTruong' WHERE `MaSV`='$mssv'";
+					$rs_u_2 = $oDB->stl_db_select($q_u_2, $conn);
+				}
+			}
+		}
+		
+		if(is_array($rs_3)){
+			foreach($rs_3 as $key=>$value){
+				$email='';$mssv='';$emailTruong='';
+				$email=$rs_3[$key]->EmailTruong;
+				$mssv=$rs_3[$key]->MaSV;
+				$q_3="SELECT count(*) as count FROM `dulieusinhvien` WHERE `EmailTruong` LIKE '$email%'";
+				$r_3= $oDB->stl_db_select($q_3, $conn);
+				if(isset($r_3[0]->count)&&$r_3[0]->count>1){
+					$emailTruong=$email.$r_3[0]->count."@eiu.edu.vn";
+					$q_u_3="UPDATE `dulieusinhvien` SET `EmailTruong`='$emailTruong' WHERE `MaSV`='$mssv'";
+					$rs_u_3 = $oDB->stl_db_select($q_u_3, $conn);
+				}
+			}
+		}
+		
+		$oDB->stl_closeConn($conn);
+	}*/
+	//SELECT * FROM `dulieusinhvien` WHERE `NguyenVong` is NULL AND `MaSV` not in (SELECT MSSV FROM `hososinhvien`)
+
+	
+	/*--------------------------------------------------------------------------
+		@Author: HienHuynh 1033AM12032012
+		@Desc: load all department list in `department_tbl`
+	--------------------------------------------------------------------------*/
+	function loadDepartmentList(){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		$q_depList = "SELECT `RecordID`,`Code`, `FullName`, `ShortName` FROM `department_tbl`";
+			
+		$rs_depList = $oDB->stl_db_select($q_depList, $conn);
+		
+		$data1['depList']=[];
+		
+		if(is_array($rs_depList)){
+			$i=0;
+			foreach($rs_depList as $key=>$value){
+				
+			
+				$data1['depList'][$i]['RecordID']		=	$rs_depList[$key]->RecordID;
+				$data1['depList'][$i]['Code']			=	$rs_depList[$key]->Code;
+				$data1['depList'][$i]['FullName']		=	$rs_depList[$key]->FullName;
+				$data1['depList'][$i]['ShortName']		=	$rs_depList[$key]->ShortName;
+				$i++;
+			}
+		}
+		return $data1;
+		
+		$oDB->stl_closeConn($conn);
+	}
+	
+	/*--------------------------------------------------------------------------
+		@Author: HienHuynh 1433PM09012012
+		@Desc: load all department list in `department_tbl`
+	--------------------------------------------------------------------------*/
+	function loadDepartmentListByCondition($code){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		$q_depList = "SELECT `RecordID`,`Code`, `FullName`, `ShortName` FROM `department_tbl` WHERE `Code`=$code";
+			
+		$rs_depList = $oDB->stl_db_select($q_depList, $conn);
+		
+		$data1['depList']='';
+		
+		if(is_array($rs_depList)){
+			$i=0;
+			foreach($rs_depList as $key=>$value){
+				$data1['depList'][$i]['RecordID']		=	$rs_depList[$key]->RecordID;
+				$data1['depList'][$i]['Code']			=	$rs_depList[$key]->Code;
+				$data1['depList'][$i]['FullName']		=	$rs_depList[$key]->FullName;
+				$data1['depList'][$i]['ShortName']		=	$rs_depList[$key]->ShortName;
+				$i++;
+			}
+		}
+		
+		return $data1;
+		
+		$oDB->stl_closeConn($conn);
+	}
+	
+	function safe_copy($src, $dest, $imageName) {
+		$filename = $dest; 
+
+		if (file_exists($filename)) { 
+			unlink($filename);
+		}
+		//copy($src, $dest) or die(ERR_UPLOAD_IMG);
+		copy($src, $dest) or die(ERR_UPLOAD_IMG);
+		return true;
+	}
+	
+	function email($email) {
+		return preg_match("/^(?!.{255,})(?!.{65,}@)(?:(?:\"[^\"]{1,62}\")|(?:[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*))@(?:(?:\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})\])|(?:(?!.*[^.]{64,})(?:(?:xn--)?[a-z0-9]+(?:-[a-z0-9]+)*\.){1,127}(?:xn--)?[a-z0-9]+(?:-[a-z0-9]+)*))$/i", $email);
+	}
+	
+	/*--------------------------------------------------------------------------
+		@Author: HienHuynh 1434PM15012012
+		@Desc: generate pass email config
+		@param:
+			$emailPwd: password email
+			$type:  1 - foward
+					2 - back
+	--------------------------------------------------------------------------*/
+	function generatePassEmailConfig($emailPwd,$type,$departmentID){
+		if($type == 1){
+			//Cat 3 ki tu cuoi chuyen len dau
+			$part1 = substr($emailPwd,-3);
+			$part2 = substr($emailPwd,0,-3);
+			//md5 ma phong ban
+			$part3 = md5($departmentID);//32 bit
+			//Lay 10 bit dau
+			$part4 = substr($part3,0,10);
+			$pass = $part1.$part2.$part4;
+			return $pass;
+		}else{
+			//Bo 10 ki tu cuoi
+			$pass = substr($emailPwd, 0,-10);
+			//Cat 3 ki tu dau chuyen xuong cuoi
+			$part1 = substr($pass,0,3);
+			$part2 = substr($pass,3);
+			$pass = $part2.$part1;
+			return $pass;
+		}
+	}
+
+?>

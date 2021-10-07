@@ -1,0 +1,23 @@
+<?php
+	session_start();
+	
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	require_once (EIU_CLASS.'EmailClass.htm');
+	
+	if(isset($_POST['info']) && !empty($_POST['info'])){
+		$_POST['info'] = str_replace('\"', '"',$_POST['info']);
+	//	print_r($_POST['info']);exit();
+		$customer = json_decode($_POST['info'],true);
+	//	print_r($customer);exit();
+		if(is_array($customer)){
+			$rs_insert = insertResetPwdEmail($customer);
+			if($rs_insert=='OK'){
+				$customer['RecordID'] = mysql_insert_id();
+				echo json_encode($customer);
+			}
+		}
+	}
+?>

@@ -1,0 +1,32 @@
+<?php
+	session_unset();
+	session_start();
+	
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+
+	
+	
+	if(isset($_POST['staffID']) && !empty($_POST['staffID'])){
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		$q_empList = "SELECT `StaffID`,`FullName` FROM `staff_tbl` WHERE `isDeleted` = 0 AND `StaffID`='".$_POST['staffID']."' AND (`isStaff`=1 OR `isStaff`=0) ORDER BY `StaffID`";
+	
+		$rs_empList = $oDB->stl_db_select($q_empList, $conn);
+
+		$data1="";
+		if(is_array($rs_empList)){
+		//	$i=0;
+		//	foreach($rs_empList as $key=>$value){
+				$data1['empList']['EmpID']=$rs_empList[0]->StaffID;
+				$data1['empList']['EmpFullName']=$rs_empList[0]->FullName;
+		//		$i++;
+		//	}
+		}
+		
+		$oDB->stl_closeConn($conn);
+		echo json_encode($data1);
+	}
+?>

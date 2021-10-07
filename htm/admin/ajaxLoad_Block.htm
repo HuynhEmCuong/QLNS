@@ -1,0 +1,29 @@
+<?php
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+	
+	$q_select="SELECT `BlockCode`,`BlockName` FROM `block_tbl` WHERE `isDeleted`=0";
+	$rs_select = $oDB->stl_db_select($q_select, $conn);
+
+	if(is_array($rs_select))
+	{
+		$i=0;
+		foreach($rs_select as $key=>$value)
+		{
+			$data[$i]['blockCode']=$rs_select[$key]->BlockCode;
+			$data[$i]['blockName']=$rs_select[$key]->BlockName;
+			$i++;
+		}
+	}
+	else
+	{
+		echo 'NG';
+	}	
+	$arr['BlockList'] = $data;
+	echo json_encode($arr);
+	$oDB->stl_closeConn($conn);
+?>

@@ -1,0 +1,57 @@
+<?php
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+	$FromDate = changeDateFormat($_POST["fromDate"],"words2num");
+	$ToDate = changeDateFormat($_POST["toDate"],"words2num");
+	
+	if(($_POST['catCode']=="a")&&($FromDate!="From Date")&&($ToDate!="To Date"))
+	{
+		$q_select="SELECT g.GroupID,g.GroupCode,g.Manufacture,g.Descript,g.CATCode,g.QuantityReceipt,g.QuantityStore,g.Manufacture,g.ReceiptDate,s.ShortName,g.PONo,g.Exp,g.Amount,m.CostName FROM group_asset_tbl g,po_tbl p,supplier_tbl s,manufacture_tbl as m WHERE g.isDeleted=0 and g.PONo=p.PONo and p.SuppCode=s.SupCode and g.Manufacture=m.CostCode and Date(g.ReceiptDate)between'".$FromDate."'AND'".$ToDate."' Order By `ReceiptDate`";
+	}
+	if(($_POST['catCode']=="a")&&($FromDate=="From Date")&&($ToDate=="To Date"))
+	{
+		$q_select="SELECT g.GroupID,g.GroupCode,g.Manufacture,g.Descript,g.CATCode,g.QuantityReceipt,g.QuantityStore,g.Manufacture,g.ReceiptDate,s.ShortName,g.PONo,g.Exp,g.Amount,m.CostName FROM group_asset_tbl g,po_tbl p,supplier_tbl s,manufacture_tbl as m WHERE g.isDeleted=0 and g.PONo=p.PONo and g.Manufacture=m.CostCode and p.SuppCode=s.SupCode  Order By `ReceiptDate`";
+	}
+	if(($_POST['catCode']!="a")&&($FromDate!="From Date")&&($ToDate!="To Date"))
+	{
+		$q_select="SELECT g.GroupID,g.GroupCode,g.Manufacture,g.Descript,g.CATCode,g.QuantityReceipt,g.QuantityStore,g.Manufacture,g.ReceiptDate,s.ShortName,g.PONo,g.Exp,g.Amount,m.CostName FROM group_asset_tbl g,po_tbl p,supplier_tbl s,manufacture_tbl as m WHERE g.isDeleted=0 and g.PONo=p.PONo and g.Manufacture=m.CostCode and p.SuppCode=s.SupCode and Date(g.ReceiptDate)between'".$FromDate."'AND'".$ToDate."' and g.CATCode='".$_POST['catCode']."' Order By `ReceiptDate`";
+	}
+	if(($_POST['catCode']!="a")&&($FromDate=="From Date")&&($ToDate=="To Date"))
+	{
+		$q_select="SELECT g.GroupID,g.GroupCode,g.Manufacture,g.Descript,g.CATCode,g.QuantityReceipt,g.QuantityStore,g.Manufacture,g.ReceiptDate,s.ShortName,g.PONo,g.Exp,g.Amount,m.CostName FROM group_asset_tbl g,po_tbl p,supplier_tbl s,manufacture_tbl as m WHERE g.isDeleted=0 and g.PONo=p.PONo and g.Manufacture=m.CostCode and p.SuppCode=s.SupCode and g.CATCode='".$_POST['catCode']."' Order By `ReceiptDate`";
+	}
+	$rs_select=$oDB->stl_db_select($q_select, $conn);
+	
+	if(is_array($rs_select))
+	{
+		$i=0;
+		foreach($rs_select as $key=>$value)
+		{
+			$data[$i]['groupID']=$rs_select[$key]->GroupID;
+			$data[$i]['groupCode']=$rs_select[$key]->GroupCode;
+			$data[$i]['description']=$rs_select[$key]->Descript;
+			$data[$i]['catCode']=$rs_select[$key]->CATCode;
+			$data[$i]['qRec']=$rs_select[$key]->QuantityReceipt;
+			$data[$i]['qStore']=$rs_select[$key]->QuantityStore;
+			$data[$i]['manu']=$rs_select[$key]->CostName;
+			$data[$i]['manucode']=$rs_select[$key]->Manufacture;
+			$data[$i]['supName']=$rs_select[$key]->ShortName;
+			$data[$i]['recDate']=changeDateFormat($rs_select[$key]->ReceiptDate,"");
+			$data[$i]['poNo']=$rs_select[$key]->PONo;
+			$data[$i]['exp']=changeDateFormat($rs_select[$key]->Exp,"");
+			$data[$i]['amount']=$rs_select[$key]->Amount;
+			$i++;
+		}
+	}
+	else
+	{
+		echo 'NG';
+	}
+	$arr['GList'] = $data;
+	echo json_encode($arr);
+	$oDB->stl_closeConn($conn);
+?>

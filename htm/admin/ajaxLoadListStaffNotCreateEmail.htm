@@ -1,0 +1,131 @@
+<?php
+	session_start();
+	
+	//print_r($_POST);exit();
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	require_once (EIU_CLASS.'PermissionClass.htm');
+	
+	$condition = "";
+	if(isset($_POST['page']) && !empty($_POST['page']))
+	{
+		$startLimit = ($_POST['page']-1)*15;
+		$endLimit = 15;
+		if(isset($_POST['endLimit']) && !empty($_POST['endLimit'])){
+			$endLimit = $_POST['endLimit'];
+			$condition .= "(t.`CreatedEmailOnGoogle`=0) AND ";
+		}
+	}
+
+	if(isset($_POST['status']) && !empty($_POST['status']))
+	{
+		$_POST['status'] = str_replace("\'", "'",$_POST['status']);
+		$status = $_POST['status'];
+	}
+
+	$condition .= "t.`isDeleted`=".$status." AND t.`isStaff`<>2";
+	
+	if(checkIsAdmin($_SESSION['userID'])!=1 && $_POST['permisstion']<=2){
+		$code = substr($_SESSION['userID'],0,2);
+		$condition .= " AND d.`Code`='$code'";
+	}
+	//print_r($condition);
+	if(isset($_POST['FullName']) && !empty($_POST['FullName'])){
+		$condition .= " AND t.`FullName` LIKE '%".$_POST['FullName']."%'";
+	}
+	
+	if(isset($_POST['StaffID']) && !empty($_POST['StaffID'])){
+		$condition .= " AND t.`StaffID` LIKE '%".$_POST['StaffID']."%'";
+	}
+	
+	if(isset($_POST['SchoolEmail']) && !empty($_POST['SchoolEmail'])){
+		$condition .= " AND t.`SchoolEmail` LIKE '%".$_POST['SchoolEmail']."%'";
+	}
+	
+	if(isset($_POST['department']) && !empty($_POST['department'])){
+		$condition .= " AND t.`DepartmentID` = ".$_POST['department'];
+	}
+	
+	if(isset($_POST['FromCreateContractDate']) && !empty($_POST['FromCreateContractDate'])){
+		$condition .= " AND t.`CreateContractDate` >= '".$_POST['FromCreateContractDate']."'";
+	}
+	
+	if(isset($_POST['ToCreateContractDate']) && !empty($_POST['ToCreateContractDate'])){
+		$condition .= " AND t.`CreateContractDate` <= '".$_POST['ToCreateContractDate']."'";
+	}
+	
+	if(isset($_POST['FromExpireContractDate']) && !empty($_POST['FromExpireContractDate'])){
+		$condition .= " AND t.`ExpireContractDate` >= '".$_POST['FromExpireContractDate']."'";
+	}
+	
+	if(isset($_POST['ToExpireContractDate']) && !empty($_POST['ToExpireContractDate'])){
+		$condition .= " AND t.`ExpireContractDate` <= '".$_POST['ToExpireContractDate']."'";
+	}
+	
+	if(isset($_POST['CreateDate']) && !empty($_POST['CreateDate'])){
+		$condition .= " AND DATE(t.`CreateDate`)='".$_POST['CreateDate']."'";
+	}
+	
+	//$condition .=  " ORDER BY t.`StaffID`";
+	$condition .=  " ORDER BY DATE(t.`LastUpdate`) DESC";
+	//print_r($condition);
+//	print_r($condition);exit();
+	$oDB = new DBCommon();
+	$conn =  $oDB->stl_openConn();
+	
+	$count = "SELECT COUNT(*) as count FROM `staff_tbl` as t LEFT JOIN  `department_tbl` AS d ON ( t.DepartmentID = d.RecordID ) WHERE ".$condition;
+	$rs_count = $oDB->stl_db_select($count, $conn);
+	if(!empty($rs_count[0]->count)){
+		$data1["Count"] = (int)$rs_count[0]->count;
+	}
+	if(isset($_POST['page']) && !empty($_POST['page'])){
+		$condition .= " LIMIT ".$startLimit.",".$endLimit;
+	}
+//	print_r($condition);exit();
+	$rs_select_staff = selectALlTable("t.*, d.`FullName` AS DepartmentName","`staff_tbl` AS t LEFT JOIN  `department_tbl` AS d ON ( t.DepartmentID = d.RecordID )",$condition);
+	
+	if(is_array($rs_select_staff)){
+		$i=0;
+		$time = time();//lay thoi gian hien hanh
+		foreach($rs_select_staff as $key=>$value){
+			$data1['Result'][$i]['StaffID']			=	$rs_select_staff[$key]->StaffID;
+			$data1['Result'][$i]['FirstName']		=	$rs_select_staff[$key]->FirstName;
+			$data1['Result'][$i]['MiddleName']		=	$rs_select_staff[$key]->MiddleName;
+			$data1['Result'][$i]['LastName']		=	$rs_select_staff[$key]->LastName;
+			$data1['Result'][$i]['FullName']		=	$rs_select_staff[$key]->FullName;
+			$data1['Result'][$i]['BirthDate']		=	$rs_select_staff[$key]->BirthDate;
+			$data1['Result'][$i]['BirthMonth']		=	$rs_select_staff[$key]->BirthMonth;
+			$data1['Result'][$i]['BirthYear']		=	$rs_select_staff[$key]->BirthYear;
+			$data1['Result'][$i]['SchoolEmail']		=	$rs_select_staff[$key]->SchoolEmail;
+			$data1['Result'][$i]['CreatedStaffCard']=	$rs_select_staff[$key]->CreatedStaffCard;
+			$data1['Result'][$i]['CreatedAccountSystem']=	$rs_select_staff[$key]->CreatedAccountSystem;
+			$data1['Result'][$i]['CreatedEmail']=	$rs_select_staff[$key]->CreatedEmailOnGoogle;
+			$data1['Result'][$i]['DepartmentID']	=	$rs_select_staff[$key]->DepartmentID;
+			$data1['Result'][$i]['DepartmentName']	=	$rs_select_staff[$key]->DepartmentName;
+			$data1['Result'][$i]['ExpireDateEmail']	=	$rs_select_staff[$key]->ExpireDateEmail;
+			//print_r("expireDAte".$rs_select_staff[$key]->ExpireContractDate);
+			if(!empty($rs_select_staff[$key]->ExpireContractDate) && $rs_select_staff[$key]->ExpireContractDate!='0000-00-00'){
+				$expireDate = strtotime($rs_select_staff[$key]->ExpireContractDate);
+				$distanceDay = ($expireDate-$time)/86400;
+			//	print_r($distanceDay."\n");
+				if($distanceDay <= NUMBER_DATE_BEFORE_EXPIRE_DATE_EMAIL && $distanceDay>0){
+					$data1['Result'][$i]['isExpire']	= 1;
+				}else if($distanceDay<=0){
+					$data1['Result'][$i]['isExpired']	= 1;
+				}
+			}
+			
+			$i++;
+		}
+		
+	//	print_r($data1);exit();
+		echo json_encode($data1);
+	}else{
+		echo 'NG';
+	}
+	
+	$oDB->stl_closeConn($conn);
+	
+?>

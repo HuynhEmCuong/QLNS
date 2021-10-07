@@ -1,0 +1,178 @@
+<?php
+	session_start();
+	
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	require_once (EIU_CLASS.'EmailClass.htm');
+	require_once (EIU_CLASS.'MessageClass.htm');
+	
+	//print_r($_POST['info']);exit();
+	if(isset($_POST['info']) && !empty($_POST['info'])){
+		//print_r("1");
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		$arrFileCsv = '';
+		$num = 0;
+		$today = date("Y-m-d h:i:s");
+		
+		$_POST['info'] = str_replace('\"', '"',$_POST['info']);
+		$customer = json_decode($_POST['info'],true);
+	//	print_r($customer);exit();
+		if(is_array($customer)){
+			$customer['isPublicEmail']=0;//0:Trường hợp tạo mới email; 1: Trường hợp reset email
+			
+			//Set lại department ID để sử dụng chung hàm với import bằng file excel
+			$customer['department']=$customer['departmentID'];
+			
+			//Lấy department code khi có department ID
+			$arrDepartment = getValue("department_tbl","`FullName`,`Code`","`RecordID`=".$customer['departmentID']);
+			$customer['departmentCode'] = $arrDepartment->Code;
+			$customer['departmentName'] = $arrDepartment->FullName;
+			
+			//Gọi hàm tạo email mới cho user
+			$arr_value = createNewEmail($customer);
+		//	print_r($customer);
+			//print_r($arr_value);exit();
+			//Chỉ add vào thông tin user, không cho add hình vào vì image name có tên là <StaffID>.<extension>
+			if(is_array($arr_value)){
+				$arr_value['StaffID'] = $arr_value['code'];				
+				if($customer['isCreateNewEmail']=='true'){
+					$rs_insert = insertResetPwdEmail($arr_value);
+				}
+				
+				if(!empty($arr_value['StaffID'])){
+					/*START SAVE IMAGE -------------------------------------------------------*/
+					if(!empty($arr_value['imageName'])){
+						//Lấy extension của file upload lên
+						$arr = explode(".",$arr_value['imageName']);
+						$ext = $arr[count($arr)-1];
+		
+						$old = $arr_value['imagePath'];
+						$new = '../../img/ImageStaff/'.$arr_value['StaffID'].".".$ext;
+						
+						if(!safe_copy($old,$new,$arr_value['imageName'])){
+							echo ERR_UPLOAD_IMG;
+						}
+					}
+					/*END SAVE IMAGE ---------------------------------------------------------*/
+					
+					/*START SEND EMAIL -------------------------------------------------------*/
+					$arr_value['DepartmentID'] = $customer['departmentID'];
+					$arr_value['FirstName']	=	$arr_value['firstName'];
+					$arr_value['LastName']	=	$arr_value['lastName'];
+					if(isset($arr_value['middleName']) && !empty($arr_value['middleName'])){
+						$middleName = " ".$arr_value['middleName']." ";
+					}else{
+						$middleName = " ";
+					}
+					$arr_value['MiddleName']=	$arr_value['middleName'];					
+
+					//Get nationality
+					$nationality = '';
+					if(isset($customer['nationality']) && !empty($customer['nationality'])){
+						$nationalities = explode("_",$customer['nationality']);
+						//print_r($nationalities);
+						$nationality = $nationalities[1];
+					}
+					
+					//Get type id to send email
+					$screen = basename($_SERVER["HTTP_REFERER"]).PHP_EOL;					
+					$arrTypeEmail = getTypeByScreenName(RTRIM($screen));
+					$arr_value['TypeDesc'] = $arrTypeEmail[0]->Description;
+					$arr_value['TypeID'] = $arrTypeEmail[0]->RecordID;
+					
+					$subject = '';
+					$subject .= "Status Notification - ".$arr_value['TypeDesc'];					
+					$subject .= " StaffID: ".$arr_value['StaffID']." - ".$arr_value['LastName'].$middleName.$arr_value['FirstName'];
+					
+					$msg = '';					
+					$msg .= '<div><b>Staff ID:	'.$arr_value['StaffID'].'</div>';
+					$msg .= '<div><b>Full Name (Last name in CAPITAL): '.strtoupper($arr_value['LastName']).$middleName.$arr_value['FirstName'].'</div>';
+					$msg .= '<div><b>Department: '.$customer['departmentName'].'</b></div>';
+					
+					$gender = "";
+					if($customer['gender'] == 1){
+						$gender = "Female";
+					}else if($customer['gender'] == 0){
+						$gender = "Male";
+					}else if($customer['gender'] == 2){
+						$gender = "Other";
+					}
+					
+					$msg .= '<br><div><b>Gender: '.$gender.'</b></div>';
+					
+					$birthday = '';
+					
+					if(isset($customer['yearBirth']) && !empty($customer['yearBirth'])){
+						$birthday .= $customer['yearBirth']."-";
+					}else{
+						$birthday .= "-";
+					}	
+					
+					if(isset($customer['monthBirth']) && !empty($customer['monthBirth'])){
+						$birthday .= $customer['monthBirth']."-";
+					}else{
+						$birthday .= "-";
+					}
+					
+					if(isset($customer['dateBirth']) && !empty($customer['dateBirth'])){
+						$birthday .= $customer['dateBirth'];
+					}										
+					
+					$msg .= '<div><b>DOB: '.$birthday.'</b></div>';					
+					$msg .= '<div><b>ID/Passport: '.$customer['passport'].'</b></div>';
+					$msg .= '<div><b>Nationality: '.$nationality.'</b></div>';
+					
+					$msg .= '<br><div><b>Mobile: '.$customer['mobile'].'</b></div>';
+					$msg .= '<div><b>Phone: '.$customer['phone'].'</b></div>';
+					
+					if(isset($arr_value['email']) && !empty($arr_value['email'])){
+						$msg .= '<br><div><b>Email: '.$arr_value['email'].'</b></div>';
+						$msg .= '<div><b>Password: <font color="#15c">pwd'.$arr_value['StaffID'].'</font></b></div>';
+						
+					//	$msg .= '<br><div><b>Account Portal: <font color="#15c">'.str_replace(DOMAIN,"",$arr_value['email']).'</font></b></div>';
+					//	$msg .= '<div><b>Password: <font color="#15c">pwd'.$arr_value['StaffID'].'</font></b></div><br>';
+					}else{
+						$msg .= '<div>'.MSG_NOT_REQUEST_CREATE_NEW_EMAIL.'</div>';
+					}
+
+					//ACCOUNT PORTAL
+					if($customer['isCreateAccountPortal']=='true'){
+						$msg .= '<br><div><b>Account Portal: <font color="#15c">'.str_replace(DOMAIN,"",$arr_value['email']).'</font></b></div>';
+						$msg .= '<div><b>Password: <font color="#15c">pwd'.$arr_value['StaffID'].'</font></b></div><br>';
+					}else{
+						$msg .= '<div>'.MSG_NOT_REQUEST_CREATE_NEW_ACCOUNT_PORTAL.'</div>';
+					}	
+										
+					$msg .= '<div><b>Starting day at EIU: '.$customer['createContractDate'].'</b></div>';
+					//$msg .= '<div><b>Ending day at EIU: '.$customer['expireContractDate'].'</b></div>';					
+					
+					$result = MSG_SUCCESSFUL_ADD_STAFF_INFO;
+					if(isset($arr_value['TypeDesc']) && !empty($arr_value['TypeDesc'])){
+						//print_r("hien");
+						$send = sendEmail($arr_value,$subject,$msg);
+						if($send == 1){
+							$result .= "\n".SUCCESSFUL_EMAIL_SENT;
+						}else{
+							$result .= "\n".FAIL_EMAIL_SENT;
+							$result .= "\n".$send;
+						}
+					}
+					
+					/*END SEND EMAIL ---------------------------------------------------------*/
+					
+					echo $result;
+				}else{
+					echo MSG_UNSUCCESSFUL_ADD_STAFF_INFO;
+				}
+			}else{
+				echo WARNING_EMAIL;
+			}
+		}
+	}else{
+		echo FAIL_TRANSPORT_INFO;
+	}
+?>

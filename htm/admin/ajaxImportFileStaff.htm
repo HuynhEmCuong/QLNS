@@ -1,0 +1,51 @@
+<?php
+	session_unset();
+	session_start();
+	header('Content-Type: text/html; charset=utf-8');
+//	header("Location: ajaxLoadListImportedRows.htm");
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	require_once (EIU_CLASS.'EmailClass.htm');
+//	require_once (EIU_CLASS.'ExcelClasses/PHPExcel.php');
+//	require_once (EIU_CLASS.'ExcelClasses/PHPExcel/Reader/Excel2007.php');
+//	require_once (EIU_CLASS.'ExcelClasses/PHPExcel/IOFactory.php');
+	if(isset($_POST['StaffID']) && !empty($_POST['StaffID'])){
+		$staffID = $_POST['StaffID'];
+		if(isset($_POST['upload']) && !empty($_POST['upload']) && $_SESSION['ajaxImportExcelFile'] != true){
+			$host = $_SERVER['HTTP_HOST'];
+			$url = $_SERVER['REQUEST_URI'];
+			
+		//	$uploads_dir = '../../Files/uploads/temp';
+			$uploads_dir = '/usr/local/www/apache22/data/cntt/Files/uploads/temp';
+			$dirFolderUpload=$uploads_dir;
+			if(!is_dir($dirFolderUpload))
+			{
+				mkdir($dirFolderUpload);
+			}
+			$arrFileImport = '';
+			foreach ($_FILES["pic"]["error"] as $key => $error) {
+				if ($error == UPLOAD_ERR_OK) {
+					$tmp_name = $_FILES["pic"]["tmp_name"][$key];
+					$name = $_FILES["pic"]["name"][$key];
+					//echo "$name";
+					if(move_uploaded_file($tmp_name, "$uploads_dir/$name")==1){
+						//Read File Uploaded
+						$arrFileImport[] = $name;
+					}
+				}
+			}
+			
+			$_SESSION['ajaxImportExcelFile'] = true;
+		}
+		$data1['StaffID'] = $staffID;
+		$data1['listFileImport'] = json_encode($arrFileImport);
+		$view = new View();
+		$view->showTmpl("listFileStaffImport.tmpl","n",$data1);
+	}else{
+		echo '<script type="text/javascript">';
+		echo "location.href='importFileStaff.htm'";
+		echo '</script>';
+	}
+?>

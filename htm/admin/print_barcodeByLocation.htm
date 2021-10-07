@@ -1,0 +1,273 @@
+
+<?php	
+	
+	require_once('../../lib/'.'BaseDir.inc.htm');	
+	
+	require_once (EIU_CLASS.'IOClass.htm');	
+	require_once (EIU_CLASS.'BlockClass.htm');	
+	
+	set_time_limit(30);
+	
+	define("MAX_ROW",5);
+	$data["dataSearch"]["TimeStart"] = date("h:i:s:u");	
+	$ioObj = new io_class();		
+	
+	$IOCode = $_POST["IOCode"];
+	
+	$barcodeList = $ioObj->getBarcodeListByIOCode($IOCode);
+	$supplier = $ioObj->getSupplierByIOCode($IOCode);
+	
+	$data["dataSearch"]["barcodeList"] = $barcodeList;
+	$data["dataSearch"]["supplierInfo"] = $supplier;
+	$data["dataSearch"]["TimeFinish"] = date("h:i:s:u");
+	$json = json_encode($data["dataSearch"]);
+	
+	$block = new block_class();
+	
+	
+	$blockList = $block->getBlockList();
+	$blockSelect = "";
+	foreach($blockList as $block)
+	{		
+		$blockSelect .= '<option value="'.$block->{"BlockID"}.'">'.$block->{"BlockName"}.'</option>';
+	}
+	
+?>
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>C1. IN BARCODE THEO PHÒNG</title>
+	<link href="../../tmpl/css/style.css" rel="stylesheet" type="text/css" />
+	<style type="text/css">
+		body{
+			font-size: 12px;
+		}
+		
+		#outter{
+			width:900px;
+			margin: 0 auto;
+			margin-top:20px;
+			clear:both;
+		}
+	</style>
+	<script type="text/javascript">
+		
+		function ajaxFunction(){
+			var ajaxRequest;
+
+			try{
+				// Opera 8.0+, Firefox, Safari
+				ajaxRequest = new XMLHttpRequest();
+			} catch (e){
+				// Internet Explorer Browsers
+				try{
+					ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
+				} catch (e) {
+					try{
+						ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+					} catch (e){
+						//browsers all not support, rare case
+						alert("Your browser broke!");
+						return false;
+					}
+				}
+			}
+			return ajaxRequest;
+		}
+		
+		function addRoomList(blockCode)
+		{
+			document.getElementsByTagName("body")[0].style.cursor = "wait";		
+			//Disabled het tat ca cac field de khong cho chinh sua trong TH Update
+			//disableFields4POPayment();
+			
+			var url = "ajaxLoadRoomList.htm";
+						
+			queryString = "blockCode="+blockCode;		
+			
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			htmlRequest.onreadystatechange = function(){
+				if(htmlRequest.readyState == 4){
+				
+					dat = htmlRequest.responseText;					
+					var dat = eval('(' + dat + ')');
+					setRoomValue(dat["roomList"]);
+					document.getElementsByTagName("body")[0].style.cursor = "default";		
+				}
+			}
+			
+			htmlRequest.open("POST", url,true);
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+							
+			htmlRequest.send(queryString);
+		}
+		
+		function setRoomValue(arrRoom)
+		{
+			roomList = document.getElementById("roomIm");
+			
+			//Xóa hết tất cả các phòng đang có trong list				
+			lastOpt = roomList.lastChild;
+
+			while( lastOpt.value ) {
+				roomList.removeChild(lastOpt);
+				lastOpt = roomList.lastChild;
+			}
+			
+			//Thêm vào danh sách các phòng theo block mới
+			if(arrRoom){
+				i=0;			
+				while(arrRoom[i])
+				{
+					option = document.createElement("option");
+					option.innerHTML = arrRoom[i]["RoomName"];
+					option.value = arrRoom[i]["RoomID"];
+					
+					roomList.appendChild(option);
+					i++;
+				}
+			}
+		}
+		
+		function printBarcode()
+		{			
+			/*
+			1. Lấy danh sách barcode của thiết bị theo từng group
+				- IO No
+				- Mã sản phẩm
+				- Tên sản phẩm
+				- Tên thiết bị
+				- Nhà sản xuất
+				- Mô tả
+			2. Xuất ra theo template mẫu
+			3. Cho in template ra
+			*/
+			
+			document.getElementsByTagName("body")[0].style.cursor = "wait";				
+			var url = "ajax_returnBarcodeList.htm";		
+			
+			//BlockID = document.getElementById("blockIm").value;
+			RoomID = document.getElementById("roomIm").value;
+			
+			if(RoomID == '')
+			{
+				document.getElementsByTagName("body")[0].style.cursor = "default";		
+				alert("Vui lòng chọn phòng cần in");
+				return;
+			}
+			
+			queryString = "RoomID="+RoomID;						
+			
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			htmlRequest.onreadystatechange = function(){
+				if(htmlRequest.readyState == 4){
+				
+					dat = htmlRequest.responseText;					
+					datAjaxArr = eval('(' + dat + ')');
+					createPrintedPage(datAjaxArr["barcodeList"]);
+					document.getElementsByTagName("body")[0].style.cursor = "default";		
+				}
+			}
+			
+			htmlRequest.open("POST", url,true);
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+							
+			htmlRequest.send(queryString);	
+		}		
+	
+	/*
+		function createPrintedPage(barcodeList) {
+			
+			var header = "";			
+			var content = "";
+			var footer = "";
+			var img = "";			
+			//Gan giá trị cho từng phần
+			for(i=0;i<barcodeList.length;i++)
+			{
+				img = '<div style="float:left; width:33%; margin-top:10px;">';
+				img += '<hr style="margin-bottom:10px;">';
+				img += '<img src="../../img/Barcode/'+barcodeList[i]["AssCode"]+'.PNG" alt="Barcode"><BR/>';
+				img += 'TTS: '+barcodeList[i]["AssName"]+'<BR/>';
+				//img += 'Mô tả: '+barcodeList[i]["AssDescription"]+'<BR/>';
+				img += 'HĐ: '+barcodeList[i]["InvcNo"];
+				//img += 'NCC: '+barcodeList[i]["SuppName"]+'<BR/>';
+				img += '</div>';
+				content += img;
+			}
+			var newPage = "<html><head>";	
+			newPage +=	'<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';									
+			newPage += "</head><body>";
+			
+			newPage += "<div id='container' style='width:640px'>";
+			newPage += '<div style="margin-top:30px; text-align:center;"><h1>BARCODE LIST</h1></div>';
+			newPage += "<div id='header'>";
+			newPage += header;
+			newPage += "</div>";
+			newPage += "<div id='content' style='font-size:10px;'>";
+			newPage += content;
+			newPage += "</div>";
+			newPage += "<div id='footer'>";
+			newPage += footer;
+			newPage += "</div>";
+			
+			newPage += "</div>";			
+			
+			newPage += "</body></html>";			
+			
+			var j = window.open('')
+			j.document.write(newPage);
+			j.document.close();			
+		}
+	*/
+	
+	function createPrintedPage(barcodeList) 
+	{
+		
+		
+		var barcodes_List_Json = JSON.stringify(barcodeList);
+		document.getElementById("barcodes_json").value = barcodes_List_Json;
+		document.getElementById("print_page_template").submit();
+	}
+	
+	</script>
+</head>
+<body>
+	
+	<div style="float: left;margin-right: 20px;"><img src="../../img/logo.PNG"/></div>
+	<div class="bo-bottom bg-line" style="float: left;margin-left:10px;width:900px;margin-top: 16px;">
+		<div class="bg-titlemp mp-title">TRƯỜNG ĐẠI HỌC QUỐC TẾ MIỀN ĐÔNG<br><span style="font-size: 13pt;color: #1C1757;padding-left: 46px;">EASTERN INTERNATIONAL UNIVERSITY</span><a href="logout.htm" id="logout">Logout</a><div class="login"><b><?php echo $_SESSION['userID'];?></b></div></div>
+	</div>
+	<div id="outter">	
+		<div class="text-center color-title"><h1>C1. IN BARCODE THEO VỊ TRÍ PHÒNG</h1></div>
+		<fieldset>
+			<legend>Chọn Block và Room để in barcode</legend>
+			<select id="blockIm" class="inputHeight" onchange="addRoomList(this.value)">
+				<option value="" disabled selected>Block</option>
+				<?php echo $blockSelect; ?>
+			</select>
+			<select id="roomIm" class="inputHeight" style="width:150px;">
+				<option value="" disabled selected>Room</option>
+			</select>
+			
+			<button onclick="printBarcode();">In Barcode theo Phòng</button>
+			
+		</fieldset>
+		
+		<form id="print_page_template" method="POST" type="submit" action="print_CodesList.htm" target="_blank">
+			<input type="hidden" value="" name="barcodes_json" id="barcodes_json"/>
+		</form>
+		
+	</div>
+</body>
+</html>

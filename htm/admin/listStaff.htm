@@ -1,0 +1,65 @@
+<?php
+	@session_start();
+	$_SESSION['ajaxImportExcelFile'] = false;
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'LoginClass.htm');
+	require_once (EIU_CLASS.'PermissionClass.htm');
+	
+	checkLogin();
+		$data1 = setSession();
+		$screen = basename($_SERVER["REQUEST_URI"]).PHP_EOL;
+
+		$data1['screen'] = RTRIM($screen);
+		$data1 = checkPermission($data1);
+
+		if(checkIsAdmin($data1['userId'])==1){
+			$data1['add'] = 4;
+			$data1['update'] = 4;
+			$data1['reset'] = 4;
+			$data1['upload'] = 4;
+			$data1['account'] = 4;
+			$data1['emailPwd'] = 4;
+			$data1['email'] = 4;
+			$data1['permission'] = 4;
+			$data1['changeIRN'] = 4;
+			$data1['createEmail'] = 4;
+			$data1['sendEmailTo'] = 4;
+		}else if(is_array($data1['subPermission'])){
+			$data1['add'] = $data1['subPermission'][2];
+			$data1['update'] = $data1['subPermission'][3];
+			$data1['reset'] = $data1['subPermission'][4];
+			$data1['upload'] = $data1['subPermission'][6];
+			$data1['account'] = $data1['subPermission'][8];
+			$data1['emailPwd'] = $data1['subPermission'][10];
+			$data1['changeIRN'] = $data1['subPermission'][12];
+			$data1['email'] = $data1['subPermission'][9];
+			$data1['createEmail'] = $data1['subPermission'][13];
+			$data1['sendEmailTo'] = $data1['subPermission'][14];
+		}
+		if($data1['permission'] > 0){
+			$view = new View();
+			$view->showTmpl("listStaff.tmpl","n",$data1);
+		}else{
+			echo "Can not access to this page";
+		}
+	
+	// //print_r($_COOKIE);print_r("ASD");
+	// if(checkSession('listStaff.htm')==true){
+	// 	$data1 = setSession();
+	// }
+	// $screen = basename($_SERVER["REQUEST_URI"]).PHP_EOL;
+
+	// $data1['screen'] = RTRIM($screen);
+	// $data1 = checkPermission($data1);
+	
+	// //Process SubPermission
+	
+
+	// $data1 ='';
+	// $view = new View();
+	// $view->showTmpl("listStaff.tmpl","n",$data1);
+
+	
+?>

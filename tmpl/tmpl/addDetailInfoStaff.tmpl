@@ -1,0 +1,904 @@
+<html>
+<head>
+	<title>ADD DETAIL INFORMATION STAFF</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<script type="text/javascript" src="../../htm/js/base.js"></script>
+	<link type="text/css" href="../../tmpl/css/redmond/jquery-ui-1.8.9.custom.css" rel="stylesheet" />
+	<script type="text/javascript" src="../../htm/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../../htm/js/jquery-ui-1.8.9.custom.min.js"></script>
+	<script type="text/javascript" src="../../htm/js/jquery.form.js"></script>
+	
+	<style type="text/css">
+		body{
+			font-size: 12px;
+		}
+		.input-Width{
+			width:248px;
+			margin-left:2px;
+		}
+		#outter{
+			width:900px;
+			margin: 0 auto;
+			margin-top:20px;
+		}
+		
+		#header{
+			width:450px;	
+			padding-top:15px;
+		}
+		
+		#content{
+			/*display:table;*/
+			/*height: 500px;*/
+			width: 351px;
+		}
+		
+		#left{
+			width: 410px;
+			float: left;
+			margin-left:84px;
+		}
+		
+		#right{
+			width: 261px;
+			//border: 1px solid;
+			float: right;
+		}
+		
+		#footer{
+			clear:both;
+			text-align:center;
+			padding-top:100px;
+			color: #827EB1;
+		}
+		
+		/*.row{			
+			width:100%;	
+			float:left;
+			margin-top:5px;
+		}
+		
+		.selectbox{
+			width: 216px;
+			margin-left: 2px;
+			height: 25px;
+		}
+		
+		.telCont, .position, .mobileCont,.contractAmount, .contractUnit, .address, .prpoNo, .prpoNoDate, .costCode, .mcboq, .description, .supplier, .issued, .contract,.shortNameDt,.fullNameDt{
+			display: table-cell;
+			vertical-align:middle;			
+			padding-left:4px;			
+		}
+
+		.prpoNo{
+			font-weight:bold;
+			text-align:right;
+			width:95px;
+			background-color:#DCE6F2;
+			border: 1px solid #8EB4E3;
+			padding-right:5px;
+			height:20px;
+		}
+		
+		.prpoNoDate{
+			width:290px;
+			text-align:left;
+		}*/
+		
+		.iconLogin {
+			background: url("../../img/ajax-loader.gif") no-repeat scroll left center transparent;
+			width: 33px;
+			height: 31px;
+			margin: auto;
+		}
+		
+		.display-none{
+			display:none;
+		}
+		
+		.name input{
+		
+		}
+		.title{
+			height:34px;
+		}
+		
+		.inputHeight{
+			height:25px;
+		}
+		
+		.txt-center{
+			text-align:center;
+		}
+		
+		
+		#titleSResul{
+			width:100%; 
+			display:table;			
+			background-color: #17375E;
+			color: #FFFFFF;
+			font-weight:bold;
+		}
+		
+			
+		.txt-center{
+			text-align:center;
+		}
+		
+		#indecator{
+			margin-left: 298px;
+		}
+		/*header*/
+	.bg-titlemp{
+		color:#c00000;
+	}
+	.mp-title{
+		font-size: 16pt;
+		font-weight: bold;
+		margin: 5px;
+	}
+	.bg-line{
+		color:#4a7ebb;
+		margin-bottom: 10px;
+	}
+	.bo-bottom{
+		border-bottom: 1px solid;
+	}
+	a#logout{
+		float: right;
+		font-size: 10px;
+		margin-top: 15px;
+	}
+	.login{
+		color: blue;
+		float: right;
+		font-size: 15px;
+		font-style: italic;
+		font-weight: normal;
+		margin-right: 10px;
+		margin-top: 13px;
+	}
+	.text-center{
+		text-align:center;
+	}
+	
+	.text-left{
+		text-align:left;
+	}
+	
+	.color-title{
+		color:#17375e;
+	}
+	
+	a{
+		color:#000000;
+	}
+	
+	a:hover{
+		color:blue;
+	}
+	
+	a.choose{
+		color: blue;
+		font-weight: bold;
+		text-decoration: underline;
+	}
+	
+	#saveInfo{
+		width:100%;
+		float:left;
+		margin: 0 auto;
+		margin-top:25px;
+		
+	}
+	
+	/*Add css*/
+	.generalInfo{
+		width: 560px;
+		margin-top: 30px;
+	}
+	
+	.personal{
+		width: 380px;
+		/*height: 197px;*/
+		float: left;
+	}
+
+	.imageStaff{
+		/*width: 177px;
+		height: 198px;
+		float: right;
+		background: url(../../img/border-picture.jpg) no-repeat;*/
+	}
+	
+	.contactInfo{
+	
+	}
+	
+	.emailInfo{
+	
+	}
+	
+	.row-title{
+		font-weight: bold;
+		text-align: right;
+		width: 120px;
+		background-color: #DCE6F2;
+		border: 1px solid #8EB4E3;
+		padding-right: 5px;
+		height: 20px;
+		float:left;
+		padding-top: 3px;
+	}
+	
+	.row{
+		margin-bottom: 2px;
+	}
+	
+	input[type=radio]{
+		height:13px;
+	}
+	
+	select{
+		height:25px;
+	}
+	
+	form{
+		margin: 0;
+	}
+	
+	h1.contactInfo{
+		/*display: block;
+		text-transform: uppercase;
+		font-size: 100%;
+		width: 349px;
+		padding: 8px 0;
+		background: url(../../img/h3.gif) left bottom repeat-x;
+		color: blue;*/
+		color: gray;
+		font-size: 12px;
+	}
+	
+	select{
+		width: 246px;
+		margin-left: 2px;
+	}
+	
+	.bg-select{
+		background-color:#EBEBE4;
+	}
+	
+	.disableScreen{
+		width: 282px;
+		height: 268px;
+	//	border: 1px solid;
+		position: absolute;
+		top: 220px;
+		left: 809px;
+	}
+	</style>
+	
+	<script type="text/javascript">
+		var district=0;
+		var districtName = '';
+		var birthmonth = '';
+		var departmentID = '';
+		var gender = 0;
+		var naID = '';
+		var naName = '';
+		var type = 0;
+		var status = 0;
+		var imagePath = '';
+		var imageName = '';
+		
+		function uploadImage()
+		{				
+			document.getElementById('imageUpload').click();
+		}
+		
+		function chooseImage()
+		{
+			document.getElementById('saveImage').click();
+		}
+		
+		function checkShowField(){
+			if('{val pos}'!=''){
+				addClass(document.getElementById("r_birthday"),'display-none');
+				addClass(document.getElementById("r_passport"),'display-none');
+				addClass(document.getElementById("r_gender"),'display-none');
+				addClass(document.getElementById("r_nationality"),'display-none');
+				addClass(document.getElementById("r_privateEmail"),'display-none');
+				addClass(document.getElementById("r_address"),'display-none');
+				addClass(document.getElementById("r_city"),'display-none');
+				addClass(document.getElementById("r_type"),'display-none');
+				addClass(document.getElementById("imageUploadedFrame"),'display-none');
+				addClass(document.getElementById("disableScreen"),'display-none');
+			}
+		}
+		
+		function disableField(){
+			//document.getElementById("staffID").disabled = true;
+			document.getElementById("firstName").disabled = true;
+			document.getElementById("middleName").disabled = true;
+			document.getElementById("lastName").disabled = true;
+			document.getElementById("mm").disabled = true;
+			document.getElementById("dd").disabled = true;
+			document.getElementById("yy").disabled = true;
+			document.getElementById("passport").disabled = true;
+			document.getElementById("male").disabled = true;
+			document.getElementById("female").disabled = true;
+			document.getElementById("other").disabled = true;
+			document.getElementById("department").disabled = true;
+			document.getElementById("nationality").disabled = true;
+			document.getElementById("privateEmail").disabled = true;
+			document.getElementById("phone").disabled = true;
+			document.getElementById("mobile").disabled = true;
+			document.getElementById("address").disabled = true;
+			document.getElementById("city").disabled = true;
+			document.getElementById("type").disabled = true;
+			document.getElementById("status").disabled = true;
+			/*document.getElementById("expireEmail").disabled = true;*/
+			//document.getElementById("schoolEmail").disabled = true;
+			document.getElementById("lastUpdate").disabled = true;
+			document.getElementById("saveBut").disabled = true;
+			
+			addClass(document.getElementById("type"),"bg-select");
+			addClass(document.getElementById("status"),"bg-select");
+			addClass(document.getElementById("department"),"bg-select");
+			addClass(document.getElementById("city"),"bg-select");
+			addClass(document.getElementById("nationality"),"bg-select");
+			addClass(document.getElementById("mm"),"bg-select");
+			addClass(document.getElementById("disableScreen"),"disableScreen");
+		}
+		
+		function enableField(){
+			//document.getElementById("staffID").disabled = false;
+			document.getElementById("firstName").disabled = false;
+			document.getElementById("middleName").disabled = false;
+			document.getElementById("lastName").disabled = false;
+			document.getElementById("mm").disabled = false;
+			document.getElementById("dd").disabled = false;
+			document.getElementById("yy").disabled = false;
+			document.getElementById("passport").disabled = false;
+			document.getElementById("male").disabled = false;
+			document.getElementById("female").disabled = false;
+			document.getElementById("other").disabled = false;
+			document.getElementById("department").disabled = false;
+			document.getElementById("nationality").disabled = false;
+			document.getElementById("privateEmail").disabled = false;
+			document.getElementById("phone").disabled = false;
+			document.getElementById("mobile").disabled = false;
+			document.getElementById("address").disabled = false;
+			document.getElementById("city").disabled = false;
+			document.getElementById("type").disabled = false;
+			document.getElementById("status").disabled = false;
+			/*document.getElementById("expireEmail").disabled = false;*/
+		//	document.getElementById("schoolEmail").disabled = false;
+			document.getElementById("lastUpdate").disabled = false;
+			document.getElementById("saveBut").disabled = false;
+			
+			removeClass(document.getElementById("type"),"bg-select");
+			removeClass(document.getElementById("status"),"bg-select");
+			removeClass(document.getElementById("department"),"bg-select");
+			removeClass(document.getElementById("city"),"bg-select");
+			removeClass(document.getElementById("nationality"),"bg-select");
+			removeClass(document.getElementById("mm"),"bg-select");
+			removeClass(document.getElementById("disableScreen"),"disableScreen");
+		}
+		
+		function process()
+		{
+			if('{val permission}' > 2){
+				removeClass(document.getElementById('saveBut'),'display-none');
+			}
+			
+			checkShowField();
+			//disableField();
+			//loadBirthday();
+			//loadType();
+			//loadStatus();
+			//loadGender();
+			//loadCity();
+			loadDepartmentList();
+			//loadNationality();
+		}
+		
+		/*function loadGender(){
+			gender = '{val Gender}';
+			if(gender==0&&gender!=''){
+				document.getElementById('male').checked = true;
+			}else if(gender==1){
+				document.getElementById('female').checked = true;
+			}else if(gender==2){
+				document.getElementById('other').checked = true;
+			}
+		}
+		
+		function loadBirthday(){
+			if('{val BirthMonth}'!=''){
+				var f = document.getElementById('frm_birthday');
+				f.mm.value = '{val BirthMonth}';
+				birthmonth = '{val BirthMonth}';
+			}
+		}
+		
+		function loadCity(){
+			if('{val CityCode}'!=''){
+				var f = document.getElementById('frm_city');
+				f.city.value = '{val CityCode}';
+				district = '{val CityCode}';
+			}
+		}
+		
+		function loadNationality(){
+			if('{val naID}'!=''){
+				var f = document.getElementById('frm_nationality');
+				f.nationality.value = '{val naID}';
+				naID = '{val naID}';
+			}
+		}
+		
+		function loadType(){
+			if('{val Type}'!=''){
+				var f = document.getElementById('frm_type');
+				f.type.value = '{val Type}';
+				type = '{val Type}';
+			}
+		}
+		
+		function loadStatus(){
+			if('{val isDeleted}'!=''){
+				var f = document.getElementById('frm_status');
+				f.status.value = '{val isDeleted}';
+				status = '{val isDeleted}';
+			}
+		}*/
+		
+		function loadDepartment(dat){
+			var department = document.getElementById("department");
+			department.innerHTML = "";
+			
+			var option = document.createElement('option');
+			option.innerHTML = "-Select One-";
+			option.value=0;
+			department.appendChild(option);
+			
+			if(dat!=''){
+				depNameList=dat.depList;
+				
+				for(var i=0; i< depNameList.length; i++){
+					var option = document.createElement('option');
+					option.innerHTML =  depNameList[i].Code + "-" + depNameList[i].FullName;
+					//option.innerHTML =  depNameList[i].FullName;
+					option.value =  depNameList[i].RecordID;
+					department.appendChild(option);
+				}
+			}
+			if('{val DepartmentID}'!=''){
+				var f = document.getElementById('frm_department');
+				f.department.value = '{val DepartmentID}';
+				departmentID = '{val DepartmentID}';
+			}
+		}
+		
+		function loadDepartmentList(){
+			var url = "ajaxLoadDepartmentList.htm";
+			queryString = "";
+			queryString += 'permisstion='+'{val permission}';
+			
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			htmlRequest.onreadystatechange = function(){
+				if(htmlRequest.readyState == 4){
+					//alert(htmlRequest.responseText);
+					dat = htmlRequest.responseText;
+				
+					dat = eval('(' + dat + ')');
+					
+					loadDepartment(dat);
+				}
+			}
+			
+			htmlRequest.open("POST", url,true);
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			htmlRequest.send(queryString);
+		}
+
+		function changeDistrict(f){
+			district = f.city.options[f.city.selectedIndex].value;
+			districtName = f.city.options[f.city.selectedIndex].innerHTML;
+		//	alert(district);
+		//	alert(districtName);
+		}
+		
+		function changeNationality(f){
+			naID = f.nationality.options[f.nationality.selectedIndex].value;
+			naName = f.nationality.options[f.nationality.selectedIndex].innerHTML;
+		//	alert(naID);
+		//	alert(naName);
+		}
+		
+		function changeBirthMonth(f){
+			birthmonth = f.mm.options[f.mm.selectedIndex].value;
+		}
+		
+		function changeType(f){
+			type = f.type.options[f.type.selectedIndex].value;
+		}
+		
+		function changeStatus(f){
+			status = f.status.options[f.status.selectedIndex].value;
+		}
+		
+		function daysInMonth(month,year) {
+			return new Date(year, month, 0).getDate();
+		}
+		
+		function changeDepartment(f){
+			departmentID = f.department.options[f.department.selectedIndex].value;
+		//	alert(departmentID);
+		}
+		
+		function save(){
+			var numberInMonth = daysInMonth(birthmonth,document.getElementById('yy').value);
+			if(numberInMonth<document.getElementById('dd').value){
+				alert('Date of birth is invalid');
+				document.getElementById('dd').focus();
+			}else{
+				if(departmentID!=''&&document.getElementById('yy').value!=''&&document.getElementById('firstName').value!='' && document.getElementById('lastName').value!=''){
+					saveInfo = "{";
+					saveInfo += '"staffID":"'+'{val StaffID}'+'",';
+					saveInfo += '"firstName":"'+document.getElementById('firstName').value+'",';
+					saveInfo += '"middleName":"'+document.getElementById('middleName').value+'",';
+					saveInfo += '"lastName":"'+document.getElementById('lastName').value+'",';
+					saveInfo += '"dateBirth":"'+document.getElementById('dd').value+'",';
+					saveInfo += '"monthBirth":"'+birthmonth+'",';
+					saveInfo += '"gender":"'+gender+'",';
+					saveInfo += '"departmentID":"'+departmentID+'",';
+					saveInfo += '"city":"'+districtName+'",';
+					saveInfo += '"cityCode":"'+district+'",';
+					saveInfo += '"imagePath":"'+imagePath+'",';
+					saveInfo += '"imageName":"'+imageName+'",';
+					saveInfo += '"type":"'+type+'",';
+					saveInfo += '"isDeleted":"'+status+'",';
+					saveInfo += '"nationality":"'+naID+'_'+naName+'",';
+					saveInfo += '"yearBirth":"'+document.getElementById('yy').value+'",';
+					saveInfo += '"passport":"'+document.getElementById('passport').value+'",';
+					saveInfo += '"privateEmail":"'+document.getElementById('privateEmail').value+'",';
+					saveInfo += '"phone":"'+document.getElementById('phone').value+'",';
+					saveInfo += '"mobile":"'+document.getElementById('mobile').value+'",';
+					saveInfo += '"createContractDate":"'+document.getElementById('createContractDate').value+'",';
+					saveInfo += '"expireContractDate":"'+document.getElementById('expireContractDate').value+'",';
+					saveInfo += '"isCreateNewEmail":"'+document.getElementById('schoolEmail').checked+'",';
+					saveInfo += '"isCreateAccountPortal":"'+document.getElementById('accountPortal').checked+'",';
+					saveInfo += '"address":"'+document.getElementById('address').value+'"';
+					saveInfo += "}";
+					//alert(saveInfo);exit();
+				//	saveInfo = saveInfo.replace(/&/g, "%26");
+				//	saveInfo = saveInfo.replace(/\+/g, "%2B");
+					saveInfo = saveInfo.replace(/\'/g, "''");
+				//	saveInfo = saveInfo.replace(/\"/g, "%22");
+					
+					document.getElementById("jsonString").value = saveInfo;
+				//	PrintPreview.submit();
+					updateAjax(saveInfo);
+				}else{
+					if(document.getElementById('firstName').value==''){
+						alert('First name can not null.');
+						document.getElementById("firstName").focus();
+						return;
+					}
+					
+					if(document.getElementById('lastName').value==''){
+						alert('Last name can not null.');
+						document.getElementById("lastName").focus();
+						return;
+					}
+					
+					if(departmentID==''){
+						alert('Department can not null.');
+						document.getElementById("department").focus();
+						return;
+					}
+					
+					if(document.getElementById('yy').value==''){
+						alert('Year of birth can not null.');
+						document.getElementById("yy").focus();
+						return;
+					}
+				}
+			}
+		}
+		
+		function checkDate(obj,msg,numberMin,numberMax){
+			var msg = msg+' is invalid';
+			if(isNaN(obj.value)==true){
+				alert(msg);
+				obj.value = '';
+				document.getElementById(obj.id).focus();
+				return;
+			}else{
+				if(obj.value.length<numberMin||obj.value.length>numberMax){
+					alert(msg);
+					obj.value = '';
+					document.getElementById(obj.id).focus();
+					return;
+				}
+			}
+			delete(msg);
+			return true;
+		}
+		
+		function updateAjax(saveInfo) {
+		//	alert(saveInfo);exit();
+			document.getElementById("saveBut").disabled = true;
+			removeClass(document.getElementById('iconLogin'),'display-none');
+			var url = "ajaxAddInfoStaff.htm";
+			queryString = "";
+			queryString += "info="+saveInfo;
+		//	alert(queryString);
+			htmlRequest = ajaxFunction();
+			if (htmlRequest==null){ // If it cannot create a new Xmlhttp object.
+				alert ("Browser does not support HTTP Request");
+				return;
+			}
+			
+			htmlRequest.onreadystatechange = function(){
+				if(htmlRequest.readyState == 4){
+				//	alert(htmlRequest.responseText);exit();
+					alert(trim(htmlRequest.responseText));
+					//addClass(document.getElementById('iconLogin'),'display-none');
+					back('listStaff');
+					//document.getElementById("saveBut").disabled = false;
+				}
+			}
+			
+			htmlRequest.open("POST", url,true);
+			htmlRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				
+		//	htmlRequest.setRequestHeader("Content-length", queryString.length);
+		//	htmlRequest.setRequestHeader("Connection", "close");
+			htmlRequest.send(queryString);
+		}
+		//dateFormat: 'yy-M-dd',
+		$(document).ready(function(){
+			$("#createContractDate").datepicker({
+				changeMonth: true,
+				changeYear: true,
+				currentText: 'Now',
+				dateFormat: 'yy-mm-dd',
+				yearRange : ('-70:+10'),
+				dayNamesShort:['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+			});
+			$("#createContractDate").click(function(){$("#createContractDate").val('');});
+			$("#expireContractDate").datepicker({
+				changeMonth: true,
+				changeYear: true,
+				currentText: 'Now',
+				dateFormat: 'yy-mm-dd',
+				yearRange : ('-70:+10'),
+				dayNamesShort:['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+			});
+			$("#expireContractDate").click(function(){$("#expireContractDate").val('');});
+			
+			//UPLOAD IMAGE
+			$('#uploadImageForm').ajaxForm({
+				beforeSubmit: function() {
+					$('#imageUploaded').css('width','20px');
+					/*$('#imageUploaded').css('height','20px');*/
+					$('#imageUploaded').css('margin-top','35px');
+					
+					$('#imageUploaded').attr('src', '../../img/ajax-loader.gif');
+				},
+				success: function(data) {
+					var dataReturn = eval('('+data+')');
+				
+					$('#imageUploaded').attr('src', dataReturn.imagePath);
+					$('#imageUploaded').css('width','170px');
+					/*$('#imageUploaded').css('height','100px');*/
+					$('#imageUploaded').css('margin-top','auto');
+					imagePath = dataReturn.imagePath;
+				//	alert(imagePath);
+					imageName = dataReturn.imageName;
+				}
+			});
+			
+			$("input[type=radio]").click(function() {
+				gender = $("input[type=radio]:checked").val();
+			});
+		});
+		
+	</script>
+</head>
+
+<body onload="getCookiesUser();process();">
+	<!--use for cookie-->
+	<input id="UserID" hidden value={val userId} />
+	<input id="StartTime" hidden value={val userLoginTime} />
+	
+<div id="outter">
+	<div><a href="logout.htm" id="logout">Logout</a><div class="login"><b>{val userName}</b> {val userLoginTime}</div>
+		
+		<div style="float: left;margin-right: 20px;"><img style="width:100px;" src="../../img/logo.PNG"/></div>
+			<div class="bo-bottom bg-line" style="float: right;width: 780px;">
+				<div class="bg-titlemp mp-title">TRƯỜNG ĐẠI HỌC QUỐC TẾ MIỀN ĐÔNG<br><span style="font-size: 13pt;color: #1C1757;padding-left: 46px;">EASTERN INTERNATIONAL UNIVERSITY</span></div>
+			</div>
+		<div class="text-center color-title" style="clear:both;"><h1>ADD DETAIL INFORMATION STAFF</h1></div>
+		<!-- <div class="bo-bottom bg-line">
+			<div class="bg-titlemp mp-title">TRƯỜNG ĐẠI HỌC QUỐC TẾ MIỀN ĐÔNG<div class="login"></div></div>
+		</div> -->		
+		<!-- <div class="text-center color-title"><h1>NHẬP THÔNG TIN CÁ NHÂN</h1></div> -->
+		<div id="iconLogin" class="iconLogin display-none"></div>
+		<div id="content" style="margin: 0 auto;">
+			<div class="generalInfo">
+				<div class="personal">
+					<!-- <div class="row">
+						<div class="row-title">Staff ID</div>
+						<div class=""><input id="staffID" value='{val StaffID}' class="inputHeight" type="text" size="35"></div>
+					</div> -->
+					<div class="row">
+						<div class="row-title">Full Name<span style="color:red">*</span></div>
+						<div class=""><input placeholder="Last Name" id="lastName" value='{val LastName}' class="inputHeight" style="margin-left:2px" type="text" size="5">-<input placeholder="Middle Name" id="middleName" value='{val MiddleName}' class="inputHeight" type="text" style="width:107px">-<input id="firstName" placeholder="First Name" value='{val FirstName}' class="inputHeight" type="text" size="5" style="width: 65px;"></div>
+					</div>
+					<div id="r_birthday" class="row">
+						<div class="row-title">Birthday<span style="color:red">*</span></div>
+						<div class="">
+							<form id="frm_birthday" action="no_value">
+								<select onChange="changeBirthMonth(this.form);" style="float:left;width: 118px;height: 24px;margin: 0;margin-left: 2px;" title="- Select Month -" name="mm" id="mm" class="" aria-required="true" tabindex="4">
+									<option title="- Select Month -" value="" selected="">- Select Month -</option>
+									<option title="January" value="1">January</option>
+									<option title="February" value="2">February</option>
+									<option title="March" value="3">March</option>
+									<option title="April" value="4">April</option>
+									<option title="May" value="5">May</option>
+									<option title="June" value="6">June</option>
+									<option title="July" value="7">July</option>
+									<option title="August" value="8">August</option>
+									<option title="September" value="9">September</option>
+									<option title="October" value="10">October</option>
+									<option title="November" value="11">November</option>
+									<option title="December" value="12">December</option>
+								</select>
+							</form>
+							-<input onChange="checkDate(this,'Date',1,2);" placeholder="Date" id="dd" value='{val BirthDate}' class="inputHeight" type="text" size="11" style="width: 54px;">
+							-<input onChange="checkDate(this,'Year',4,4);" placeholder="Year" id="yy" value='{val BirthYear}' class="inputHeight" type="text" size="5" style="width: 65px;">
+						</div>
+					</div>
+					<div id="r_passport" class="row">
+						<div class="row-title">ID/Passport</div>
+						<div class=""><input id="passport" value='{val Passport}' class="input-Width inputHeight" type="text" size="35"></div>
+					</div>
+					<div id="r_gender" class="row">
+						<div class="row-title">Gender</div>
+						<div class="">&nbsp;Male&nbsp;<input id="male" type="radio" name="gender" value="0" class="inputHeight" type="text" size="35">&nbsp;Female&nbsp;<input id="female" type="radio" name="gender" value="1" class="inputHeight" type="text" size="30">&nbsp;Other&nbsp;<input type="radio" id="other" name="gender" value="2" title="Other" class="inputHeight" type="text" size="30"></div>
+					</div>
+					<div class="row" style="clear:both;margin-top: 7px;">
+						<div class="row-title">Department<span style="color:red">*</span></div>
+						<div class="">
+							<form id="frm_department" action="no_value">
+								<select name="department" id="department" onchange="changeDepartment(this.form)"></select>
+							</form>
+						</div>
+					</div>
+					<div id="r_nationality" class="row">
+						<div class="row-title">Nationality</div>
+						<div class="">
+							<form id="frm_nationality" action="no_value">
+								<select name="nationality" id="nationality" onchange="changeNationality(this.form)">
+									<option value="">- Select One -</option><option value="af">Afghanistan</option><option value="ax">Aland Islands</option><option value="al">Albania</option><option value="dz">Algeria</option><option value="as">American Samoa</option><option value="ad">Andorra</option><option value="ao">Angola</option><option value="ai">Anguilla</option><option value="aq">Antarctica</option><option value="ag">Antigua and Barbuda</option><option value="ar">Argentina</option><option value="am">Armenia</option><option value="aw">Aruba</option><option value="au">Australia</option><option value="at">Austria</option><option value="az">Azerbaijan</option><option value="bs">Bahamas</option><option value="bh">Bahrain</option><option value="bd">Bangladesh</option><option value="bb">Barbados</option><option value="by">Belarus</option><option value="be">Belgium</option><option value="bz">Belize</option><option value="bj">Benin</option><option value="bm">Bermuda</option><option value="bt">Bhutan</option><option value="bo">Bolivia</option><option value="ba">Bosnia and Herzegovina</option><option value="bw">Botswana</option><option value="bv">Bouvet Island</option><option value="br">Brazil</option><option value="io">British Indian Ocean Territory</option><option value="vg">British Virgin Islands</option><option value="bn">Brunei</option><option value="bg">Bulgaria</option><option value="bf">Burkina Faso</option><option value="bi">Burundi</option><option value="kh">Cambodia</option><option value="cm">Cameroon</option><option value="ca">Canada</option><option value="cv">Cape Verde</option><option value="ky">Cayman Islands</option><option value="cf">Central African Republic</option><option value="td">Chad</option><option value="cl">Chile</option><option value="cn">China</option><option value="cx">Christmas Island</option><option value="cc">Cocos (Keeling) Islands</option><option value="co">Colombia</option><option value="km">Comoros</option><option value="cg">Congo</option><option value="ck">Cook Islands</option><option value="cr">Costa Rica</option><option value="hr">Croatia</option><option value="cu">Cuba</option><option value="cy">Cyprus</option><option value="cz">Czech Republic</option><option value="cd">Democratic Republic of Congo</option><option value="dk">Denmark</option><option value="xx">Disputed Territory</option><option value="dj">Djibouti</option><option value="dm">Dominica</option><option value="do">Dominican Republic</option><option value="tl">East Timor</option><option value="ec">Ecuador</option><option value="eg">Egypt</option><option value="sv">El Salvador</option><option value="gq">Equatorial Guinea</option><option value="er">Eritrea</option><option value="ee">Estonia</option><option value="et">Ethiopia</option><option value="fk">Falkland Islands</option><option value="fo">Faroe Islands</option><option value="fm">Federated States of Micronesia</option><option value="fj">Fiji</option><option value="fi">Finland</option><option value="fr">France</option><option value="gf">French Guyana</option><option value="pf">French Polynesia</option><option value="tf">French Southern Territories</option><option value="ga">Gabon</option><option value="gm">Gambia</option><option value="ge">Georgia</option><option value="de">Germany</option><option value="gh">Ghana</option><option value="gi">Gibraltar</option><option value="gr">Greece</option><option value="gl">Greenland</option><option value="gd">Grenada</option><option value="gp">Guadeloupe</option><option value="gu">Guam</option><option value="gt">Guatemala</option><option value="gn">Guinea</option><option value="gw">Guinea-Bissau</option><option value="gy">Guyana</option><option value="ht">Haiti</option><option value="hm">Heard Island and Mcdonald Islands</option><option value="hn">Honduras</option><option value="hk">Hong Kong</option><option value="hu">Hungary</option><option value="is">Iceland</option><option value="in">India</option><option value="id">Indonesia</option><option value="ir">Iran</option><option value="iq">Iraq</option><option value="xe">Iraq-Saudi Arabia Neutral Zone</option><option value="ie">Ireland</option><option value="il">Israel</option><option value="it">Italy</option><option value="ci">Ivory Coast</option><option value="jm">Jamaica</option><option value="jp">Japan</option><option value="jo">Jordan</option><option value="kz">Kazakhstan</option><option value="ke">Kenya</option><option value="ki">Kiribati</option><option value="kw">Kuwait</option><option value="kg">Kyrgyzstan</option><option value="la">Laos</option><option value="lv">Latvia</option><option value="lb">Lebanon</option><option value="ls">Lesotho</option><option value="lr">Liberia</option><option value="ly">Libya</option><option value="li">Liechtenstein</option><option value="lt">Lithuania</option><option value="lu">Luxembourg</option><option value="mo">Macau</option><option value="mk">Macedonia</option><option value="mg">Madagascar</option><option value="mw">Malawi</option><option value="my">Malaysia</option><option value="mv">Maldives</option><option value="ml">Mali</option><option value="mt">Malta</option><option value="mh">Marshall Islands</option><option value="mq">Martinique</option><option value="mr">Mauritania</option><option value="mu">Mauritius</option><option value="yt">Mayotte</option><option value="mx">Mexico</option><option value="md">Moldova</option><option value="mc">Monaco</option><option value="mn">Mongolia</option><option value="me">Montenegro</option><option value="ms">Montserrat</option><option value="ma">Morocco</option><option value="mz">Mozambique</option><option value="mm">Myanmar</option><option value="na">Namibia</option><option value="nr">Nauru</option><option value="np">Nepal</option><option value="an">Netherlands Antilles</option><option value="nl">Netherlands</option><option value="nc">New Caledonia</option><option value="nz">New Zealand</option><option value="ni">Nicaragua</option><option value="ne">Niger</option><option value="ng">Nigeria</option><option value="nu">Niue</option><option value="nf">Norfolk Island</option><option value="kp">North Korea</option><option value="mp">Northern Mariana Islands</option><option value="no">Norway</option><option value="om">Oman</option><option value="pk">Pakistan</option><option value="pw">Palau</option><option value="ps">Palestinian Territories</option><option value="pa">Panama</option><option value="pg">Papua New Guinea</option><option value="py">Paraguay</option><option value="pe">Peru</option><option value="ph">Philippines</option><option value="pn">Pitcairn Islands</option><option value="pl">Poland</option><option value="pt">Portugal</option><option value="pr">Puerto Rico</option><option value="qa">Qatar</option><option value="re">Reunion</option><option value="ro">Romania</option><option value="ru">Russia</option><option value="rw">Rwanda</option><option value="sh">Saint Helena and Dependencies</option><option value="kn">Saint Kitts and Nevis</option><option value="lc">Saint Lucia</option><option value="pm">Saint Pierre and Miquelon</option><option value="vc">Saint Vincent and the Grenadines</option><option value="ws">Samoa</option><option value="sm">San Marino</option><option value="st">Sao Tome and Principe</option><option value="sa">Saudi Arabia</option><option value="sn">Senegal</option><option value="rs">Serbia</option><option value="sc">Seychelles</option><option value="sl">Sierra Leone</option><option value="sg"></option><option value="sk">Slovakia</option><option value="si">Slovenia</option><option value="sb">Solomon Islands</option><option value="so">Somalia</option><option value="za">South Africa</option><option value="gs">South Georgia and South Sandwich Islands</option><option value="kr">South Korea</option><option value="es">Spain</option><option value="pi">Spratly Islands</option><option value="lk">Sri Lanka</option><option value="sd">Sudan</option><option value="sr">Suriname</option><option value="sj">Svalbard and Jan Mayen</option><option value="sz">Swaziland</option><option value="se">Sweden</option><option value="ch">Switzerland</option><option value="sy">Syria</option><option value="tw">Taiwan</option><option value="tj">Tajikistan</option><option value="tz">Tanzania</option><option value="th">Thailand</option><option value="tg">Togo</option><option value="tk">Tokelau</option><option value="to">Tonga</option><option value="tt">Trinidad and Tobago</option><option value="tn">Tunisia</option><option value="tr">Turkey</option><option value="tm">Turkmenistan</option><option value="tc">Turks And Caicos Islands</option><option value="tv">Tuvalu</option><option value="vi">US Virgin Islands</option><option value="ug">Uganda</option><option value="ua">Ukraine</option><option value="ae">United Arab Emirates</option><option value="uk">United Kingdom</option><option value="um">United States Minor Outlying Islands</option><option value="us">United States</option><option value="uy">Uruguay</option><option value="uz">Uzbekistan</option><option value="vu">Vanuatu</option><option value="va">Vatican City</option><option value="ve">Venezuela</option><option value="vn">Vietnam</option><option value="wf">Wallis and Futuna</option><option value="eh">Western Sahara</option><option value="ye">Yemen</option><option value="zm">Zambia</option><option value="zw">Zimbabwe</option>
+								</select>
+							</form>
+						</div>
+					</div>
+					<h1 class="contactInfo">CONTACT DETAIL</h1>
+					<div class="row" style="margin-bottom:8px;">
+						<div class="row-title">Create Email</div>
+						<div class=""><input type="checkbox" id="schoolEmail" checked></div>
+					</div>
+					<div class="row" style="margin-bottom:8px;">
+						<div class="row-title">Create Account Portal</div>
+						<div class=""><input type="checkbox" id="accountPortal" checked></div>
+					</div>
+					<div id="r_privateEmail" class="row" style="clear:both;">
+						<div class="row-title">Private Email</div>
+						<div class=""><input id="privateEmail" value='{val PrivateEmail}' class="input-Width inputHeight" type="text" size="35"></div>
+					</div>
+					<div class="row">
+						<div class="row-title">Phone</div>
+						<div class=""><input id="phone" value='{val Phone}' class="input-Width inputHeight" type="text" size="35"></div>
+					</div>
+					<div class="row">
+						<div class="row-title">Mobile</div>
+						<div class=""><input id="mobile" value='{val Mobile}' class="input-Width inputHeight" type="text" size="35"></div>
+					</div>
+					<div id="r_address" class="row">
+						<div class="row-title">Address</div>
+						<div class=""><input id="address" value='{val Address}' class="input-Width inputHeight" type="text" size="35"></div>
+					</div>
+					<div id="r_city" class="row">
+							<div class="row-title">City</div>
+							<div class="">
+								<form id="frm_city" action="no_value">
+									<select name="city" id="city" onchange="changeDistrict(this.form)">
+										<option value="0">- Select One -</option>
+										<option value="51">An Giang</option><option value="52">Bà Rịa-Vũng Tàu</option><option value="11">Bắc Cạn</option><option value="18">Bắc Giang</option><option value="60">Bạc Liêu</option><option value="19">Bắc Ninh</option><option value="56">Bến Tre</option><option value="44">Bình Dương</option><option value="37">Bình Định</option><option value="43">Bình Phước</option><option value="47">Bình Thuận</option><option value="61">Cà Mau</option><option value="06">Cao Bằng</option><option value="40">Đắc Lắc</option><option value="63">Đăk Nông</option><option value="62">Điện Biên</option><option value="48">Đồng Nai</option><option value="50">Đồng Tháp</option><option value="38">Gia Lai</option><option value="05">Hà Giang</option><option value="24">Hà Nam</option><option value="20">Hà Tây</option><option value="30">Hà Tĩnh</option><option value="21">Hải Dương</option><option value="64">Hậu Giang</option><option value="23">Hòa Bình</option><option value="22">Hưng Yên</option><option value="41">Khánh Hòa</option><option value="54">Kiên Giang</option><option value="36">KonTum</option><option value="07">Lai Châu</option><option value="42">Lâm Đồng</option><option value="10">Lạng Sơn</option><option value="08">Lào Cai</option><option value="49">Long An</option><option value="25">Nam Định</option><option value="29">Nghệ An</option><option value="27">Ninh Bình</option><option value="45">Ninh Thuận</option><option value="15">Phú Thọ</option><option value="39">Phú Yên</option><option value="31">Quảng Bình</option><option value="34">Quảng Nam</option><option value="35">Quảng Ngãi</option><option value="17">Quảng Ninh</option><option value="32">Quảng Trị</option><option value="59">Sóc Trăng</option><option value="14">Sơn La</option><option value="46">Tây Ninh</option><option value="26">Thái Bình</option><option value="12">Thái Nguyên</option><option value="28">Thanh Hóa</option><option value="33">Thừa Thiên-Huế</option><option value="53">Tiền Giang</option><option value="55">TP. Cần Thơ</option><option value="04">TP. Đà Nẵng</option><option value="01">TP. Hà Nội</option><option value="03">TP. Hải Phòng</option><option value="02">TP. Hồ Chí Minh</option><option value="58">Trà Vinh</option><option value="09">Tuyên Quang</option><option value="57">Vĩnh Long</option><option value="16">Vĩnh Phúc</option><option value="13">Yên Bái</option>
+									</select>
+								</form>
+							</div>
+						</div>
+					<div id="config">
+						<h1 class="contactInfo">CONFIG</h1>
+						<div id="r_type" class="row">
+							<div class="row-title">Type</div>
+							<div class="">
+								<form id="frm_type" action="no_value">
+									<select style="width:100px" name="type" id="type" onchange="changeType(this.form)">
+										<option value="0">Lecturer</option>
+										<option value="1">Staff</option>
+										<option value="2">Guest</option>
+									</select>
+								</form>
+							</div>
+						</div>
+						<div class="row">
+							<div class="row-title">Status</div>
+							<div class="">
+								<form id="frm_status" action="no_value">
+									<select style="width:100px" name="status" id="status" onchange="changeStatus(this.form)">
+										<option value="0">Active</option>
+										<option value="1">Inactive</option>
+									</select>
+								</form>
+							</div>
+						</div>
+						<!-- <div class="row">
+							<div class="row-title">Expired Date</div>
+							<div class=""><input id="expireEmail" value='{val ExpireDateEmail}' class="inputHeight month" type="text" size="35"></div>
+						</div> -->
+						<!-- <div class="row">
+							<div class="row-title">Last Update</div>
+							<div class=""><input id="lastUpdate" value='{val LastUpdate}' class="inputHeight" type="text" size="35"></div>
+						</div> -->
+						<div class="row">
+							<div class="row-title">Create Contract Date</div>
+							<div class=""><input id="createContractDate" value='{val CreateContractDate}' class="inputHeight input-Width" type="text" size="35"></div>
+						</div>
+						<div class="row">
+							<div class="row-title">Expire Contract Date</div>
+							<div class=""><input id="expireContractDate" value='{val ExpireContractDate}' class="inputHeight input-Width" type="text" size="35"></div>
+						</div>
+					</div>
+				</div>
+				<div class="imageStaff">
+					<div id="eventBut">
+						<form id="uploadImageForm" style="height:1px;width:1px;visibility: hidden;" action="ajaxUploadImage.htm" method="post" enctype="multipart/form-data">
+								<input style="height: 1px; width:1px;" type="file" size="1" id="imageUpload" onchange="chooseImage();" name="myFile">               
+								<input hidden id="StaffID" name="StaffID" value='{val StaffID}' />               
+								<button style="display:none;" id="saveImage" class="button" type="submit">Save</button>
+						</form>
+						<div id="imageUploadedFrame" onclick="uploadImage();" style="cursor:pointer;float:right; margin-right: 0px; -moz-border-radius: 10px; border-radius: 10px;width:170px; border: solid 2px #4F81BD;">
+							<img src="{val image}" id="imageUploaded" style="display:block; border:none;width:170px;-webkit-border-radius: 10px; border-radius:10px; margin:auto;" title="">
+						</div>
+						<div id="disableScreen"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div style="clear: both;float: right;width: 627px;margin-top: 10px;">
+			<form action="detailInfo.htm" name="DetailInfo" id="DetailInfo" method="POST">
+				<input style="height: 30px;margin:0" type='hidden'  id="jsonString"  name="jsonString" /> 
+			</form>
+			<!-- <input style="height: 30px;margin:0" class="" id="editBut" type="button" value="Edit" onclick="enableField();"/> -->
+			<input style="height: 30px;margin:0" class="display-none" id="saveBut" type="button" value="Save" onclick="save();"/>
+			<button style="height: 30px;margin:0" class="" id="cancelBut"onclick="back('listStaff');">Cancel</button>
+			
+			
+		</div>
+		<div id="footer">@Copyright Phòng Công Nghệ Thông Tin<br>it@eiu.edu.vn</div>
+		<!-- Ch?a thông tin c?a save info -->
+		<div id="saveInfo"></div>
+</div>
+</html>

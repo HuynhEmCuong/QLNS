@@ -1,0 +1,154 @@
+<?php
+	session_start();
+	
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'BaseClass.htm');
+	require_once (EIU_CLASS.'EmailClass.htm');
+	require_once (EIU_CLASS.'MessageClass.htm');
+	
+	
+	if(isset($_POST['info']) && !empty($_POST['info'])){
+		
+		$oDB = new DBCommon();
+		$conn =  $oDB->stl_openConn();
+		
+		$arrFileCsv = '';
+		$num = 0;
+		$today = date("Y-m-d h:i:s");
+		
+		$_POST['info'] = str_replace('\"', '"',$_POST['info']);
+		$customer = json_decode($_POST['info'],true);
+	//	print_r($customer);exit();
+		if(is_array($customer)){
+			$arrStaffID = '';
+			foreach($customer as $key=>$value){
+				foreach($customer[$key] as $s_key=>$s_val){					
+					if($key=='createdEmail' && $s_val['isChecked'] == 1){
+						$field = "CreatedEmailOnGoogle";
+						
+						$rs_update = updateValueByField($field, "StaffID", "staff_tbl", $s_val['isChecked'], "'".$s_val['StaffID']."'");
+					
+						if($rs_update=='OK'){
+							$arrStaffID .= "\n".$s_val['StaffID'];
+							/*START SEND EMAIL -------------------------------------------------------*/
+							// Lấy thông tin staff
+							$arrInfo = selectALlTable('`CreateContractDate`,`Passport`,`Phone`,`Mobile`,`SchoolEmail`,`FirstName`,`LastName`,`MiddleName`,`DepartmentID`,`Nationality`,`BirthDate`,`BirthMonth`,`BirthYear`', '`staff_tbl`', '`StaffID`='.$s_val['StaffID']);
+							
+							$arr_value['DepartmentID'] = $arrInfo[0]->DepartmentID;
+							$arr_value['FirstName']	=	$arrInfo[0]->FirstName;
+							$arr_value['LastName']	=	$arrInfo[0]->LastName;
+							$arr_value['Email']	=	$arrInfo[0]->SchoolEmail;
+							
+							//Lấy department name khi biết department ID
+							$arrDepartment = getValue("department_tbl","`FullName`","`RecordID`=".$arr_value['DepartmentID']);
+							$arr_value['DepartmentName'] = $arrDepartment->FullName;
+							
+							if(!empty($arrInfo[0]->MiddleName)){
+								$middleName = " ".$arrInfo[0]->MiddleName." ";
+							}else{
+								$middleName = "";
+							}
+							$arr_value['FullName'] = $arr_value['LastName'].$middleName.$arr_value['FirstName'];
+
+							//Get nationality
+							$nationality = '';
+							if(isset($arrInfo[0]->Nationality) && !empty($arrInfo[0]->Nationality)){
+								$nationalities = explode("_",$arrInfo[0]->Nationality);
+								//print_r($nationalities);
+								$nationality = $nationalities[1];
+							}
+							
+							//Get type id to send email
+							$screen = basename($_SERVER["HTTP_REFERER"]).PHP_EOL;					
+							$arrTypeEmail = getTypeByScreenName(RTRIM($screen));
+							$arr_value['TypeDesc'] = $arrTypeEmail[0]->Description;
+							$arr_value['TypeID'] = $arrTypeEmail[0]->RecordID;							
+							
+							$subject = '';
+							$subject .= "Status Notification - ".$arr_value['TypeDesc'];					
+							$subject .= " StaffID: ".$s_val['StaffID']." - ".$arr_value['LastName'].$middleName.$arr_value['FirstName'];
+							
+							$msg = '';					
+							$msg .= '<div><b>Staff ID:	'.$s_val['StaffID'].'</div>';
+							$msg .= '<div><b>Full Name (Last name in CAPITAL): '.strtoupper($arr_value['LastName']).$middleName.$arr_value['FirstName'].'</div>';
+							$msg .= '<div><b>Department: '.$arr_value['DepartmentName'].'</b></div>';
+							
+							$gender = "";
+							if($arrInfo[0]->Gender == 1){
+								$gender = "Female";
+							}else if($arrInfo[0]->Gender == 0){
+								$gender = "Male";
+							}else if($arrInfo[0]->Gender == 2){
+								$gender = "Other";
+							}
+							
+							$msg .= '<br><div><b>Gender: '.$gender.'</b></div>';
+							
+							$birthday = '';
+							
+							if(isset($arrInfo[0]->BirthYear) && !empty($arrInfo[0]->BirthYear)){
+								$birthday .= $arrInfo[0]->BirthYear."-";
+							}else{
+								$birthday .= "-";
+							}	
+							
+							if(isset($arrInfo[0]->BirthMonth) && !empty($arrInfo[0]->BirthMonth)){
+								$birthday .= $arrInfo[0]->BirthMonth."-";
+							}else{
+								$birthday .= "-";
+							}
+							
+							if(isset($arrInfo[0]->BirthDate) && !empty($arrInfo[0]->BirthDate)){
+								$birthday .= $arrInfo[0]->BirthDate;
+							}										
+							
+							$msg .= '<div><b>DOB: '.$birthday.'</b></div>';					
+							$msg .= '<div><b>ID/Passport: '.$arrInfo[0]->Passport.'</b></div>';
+							$msg .= '<div><b>Nationality: '.$nationality.'</b></div>';
+							
+							$msg .= '<br><div><b>Mobile: '.$arrInfo[0]->Mobile.'</b></div>';
+							$msg .= '<div><b>Phone: '.$arrInfo[0]->Phone.'</b></div>';
+							if(!empty($arrInfo[0]->SchoolEmail)){
+								$msg .= '<br><div><b>Email: '.$arrInfo[0]->SchoolEmail.'</b></div>';
+								$msg .= '<div><b>Password: <font color="#15c">pwd'.$s_val['StaffID'].'</font></b></div>';
+								
+								$msg .= '<br><div><b>Account Portal: <font color="#15c">'.str_replace(DOMAIN,"",$arrInfo[0]->SchoolEmail).'</font></b></div>';
+								$msg .= '<div><b>Password: <font color="#15c">pwd'.$s_val['StaffID'].'</font></b></div><br>';
+							}				
+												
+							$msg .= '<div><b>Starting day at EIU: '.$arrInfo[0]->CreateContractDate.'</b></div>';
+							//$msg .= '<div><b>Ending day at EIU: '.$customer['expireContractDate'].'</b></div>';					
+							
+							$result = MSG_SUCCESSFUL_ADD_STAFF_INFO;
+							if(isset($arr_value['TypeDesc']) && !empty($arr_value['TypeDesc'])){
+								//print_r("hien");
+								$send = sendEmail($arr_value,$subject,$msg);
+								if($send == 1){
+									$result .= "\n".SUCCESSFUL_EMAIL_SENT;
+								}else{
+									$result .= "\n".FAIL_EMAIL_SENT;
+									$result .= "\n".$send;
+								}
+							}
+							
+							/*END SEND EMAIL ---------------------------------------------------------*/
+							
+						}
+					}
+					
+				}
+			}
+			if(!empty($arrStaffID)){
+				echo MSG_SUCCESSFUL_CREATE_EMAIL_GOOGLE.":".$arrStaffID;
+			}else{
+				echo MSG_NO_EMAIL_CREATED;
+			}			
+		}else{
+			echo MSG_UNSUCCESSFUL_UPDATE_EMAIL;
+		}
+	}else{
+		echo FAIL_TRANSPORT_INFO;
+	}
+?>
