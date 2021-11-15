@@ -13,13 +13,14 @@
 	$arrNationality = explode("_",$data1['Nationality']);
 	$data1['naID'] = $arrNationality[0];
 	
+	
 	if($data1['BirthDate']==0){
 		$data1['BirthDate'] = '';
 	}
 	if($data1['BirthYear']==0){
 		$data1['BirthYear'] = '';
 	}
-	$data1 = '';
+	$data1 = [];
 	$data1['image'] = EIU_IMAGE_STAFF."no_image.jpg";
 	
 	if(checkSession('listStaff.htm')==true){
@@ -37,10 +38,12 @@
 	$data1['isLogin'] = $data['isLogin'];
 	$data1['screen'] = $data['screen'];
 	$data1['permission'] = $data['permission'];
-	
+
 	if(checkIsAdmin($data1['userId'])==1){
 		$data1['permission'] = 4;
 	}
+
+	
 	
 	if($data1['permission']>0){		
 		$view->showTmpl("addDetailInfoStaff.tmpl","n",$data1);

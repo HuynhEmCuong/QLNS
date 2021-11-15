@@ -5,9 +5,14 @@
 	require_once (EIU_CLASS.'LoginClass.htm');
 	require_once (EIU_CLASS.'PermissionClass.htm');
 
-    
-    $data1 ='';
-    $view = new View();
+
+	if($_SESSION['isLogin'] ==1 ){
+		echo '<script type="text/javascript">';
+		echo " location.href='listStaff.htm';";
+		echo "</script>";	
+	}
+	$data1 ='';
+	$view = new View();
 	$view->showTmpl("loginLocal.tmpl","n",$data1);
 
 ?>
