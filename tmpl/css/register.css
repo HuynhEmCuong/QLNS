@@ -1,0 +1,21 @@
+#form-pw{
+    width: 460px;
+   padding: 10px 5px;
+    margin: auto;
+    border: 1px solid #303030;
+}
+
+
+
+#form-pw h3{
+    text-align: center;
+}
+
+#form-pw input{
+    width: 80%;
+    margin-top: 10px;
+}
+
+#form-pw .button{
+   margin-top: 10px;
+}

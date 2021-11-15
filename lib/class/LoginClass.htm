@@ -58,13 +58,11 @@
 	}
 	
 	function setSession(){
-		//print_r($_SESSION);
-	
 		if(isset($_SESSION['userName']) && isset($_SESSION['isLogin']) && $_SESSION['isLogin']==1)
 		{	
 			$userName 					= $_SESSION['userName'];
 			$userLogin_startTime 		= $_SESSION['userLoginTime'];
-			$userId 					= $_SESSION['userID'];
+			$userId 						= $_SESSION['userID'];
 			$email 					    = $_SESSION['email'];
 			$isLogin					= $_SESSION['isLogin'];
 			$data1['userName']			= $userName;
@@ -86,16 +84,11 @@
 	
 	function checkSession($screen){
 		date_default_timezone_set('Asia/Ho_Chi_Minh');
+	
 		$inactive = EXPIRE_SESSION;//test
-	
-		echo $inactive;
-	
 		if(isset($_SESSION['userLoginTime']) && isset($_SESSION['isLogin']) && $_SESSION['isLogin']==1) {
 			$curr_date = date("Y-M-d  g:i a");
-			var_dump(curr_date);
-			die;
 			$session_life = strtotime($curr_date) - strtotime($_SESSION['userLoginTime']);
-			echo $session_life;
 		//	echo $session_life."<br>";
 		//	echo $curr_date;
 			if($session_life > $inactive){
@@ -115,22 +108,36 @@
 	}
 
 	function checkLogin(){
+		
 		date_default_timezone_set('Asia/Ho_Chi_Minh');
 		$inactive = EXPIRE_SESSION;
-		$timeLogin  = $_SESSION['userLoginTime'];
-		$curr_date = date("Y-M-d  g:i a");
-		$session_life = strtotime($curr_date) - strtotime($timeLogin);
-		if($session_life > $inactive){
-			session_destroy();
-			@session_start();
-			$_SESSION['isLogin'] = 0;
+	
+		if(isset($_SESSION['userLoginTime']) && isset($_SESSION['isLogin']) && $_SESSION['isLogin']==1) {
+			$curr_date = date("Y-M-d  g:i a");
+			$session_life = strtotime($curr_date) - strtotime($_SESSION['userLoginTime']);
+			echo $session_life;
+		//	echo $session_life."<br>";
+		//	echo $curr_date;
+			if($session_life > $inactive){
+				session_destroy();
+				@session_start();
+				$_SESSION['isLogin'] = 0;
+				$strLocation = "loginLocal.htm";
+				echo '<script type="text/javascript">';
+				echo " location.href='".$strLocation."';";
+				echo "</script>";
+			}
+			$_SESSION['userLoginTime'] = $curr_date;
+			return true;
+		}
+		else {
 			$strLocation = "loginLocal.htm";
 			echo '<script type="text/javascript">';
 			echo " location.href='".$strLocation."';";
 			echo "</script>";
 		}
-		$_SESSION['userLoginTime'] = $curr_date;
-		return true;
+	
+		
 	}
 
 	function login($staffID , $pw){

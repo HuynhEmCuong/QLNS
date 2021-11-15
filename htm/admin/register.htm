@@ -1,0 +1,13 @@
+<?php 
+	require_once('../../lib/'.'BaseDir.inc.htm');
+	require_once (EIU_LIB.'View.class.htm');
+	require_once('../../lib/'.'DBCommon.class.htm');
+	require_once (EIU_CLASS.'LoginClass.htm');
+	require_once (EIU_CLASS.'PermissionClass.htm');
+
+    
+    $data1 ='';
+    $view = new View();
+    $view->showTmpl("register.tmpl","n",$data1);
+
+?>
